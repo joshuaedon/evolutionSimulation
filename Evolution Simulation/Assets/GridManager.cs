@@ -26,7 +26,5 @@ public class GridManager : MonoBehaviour {
         Destroy(referenceChunk);
 
         transform.position = new Vector3(-(cols-1)/2, 0, -(rows-1)/2);
-        transform.eulerAngles -= new Vector3(10, 10, 0);
-        transform.position += new Vector3(0, 0, 32);
     }
 }
