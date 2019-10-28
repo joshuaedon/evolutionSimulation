@@ -32,9 +32,9 @@ public class CameraController : MonoBehaviour {
 
         pos += Vector3.Normalize(camDir) * Input.GetAxis("Mouse ScrollWheel") * scrollSpeed * 100f * Time.deltaTime;
 
-        pos.x = Mathf.Clamp(pos.x, -(GridManager.cols/2 + panLimit), GridManager.cols/2 + panLimit);
+        pos.x = Mathf.Clamp(pos.x, -(GridController.cols/2 + panLimit), GridController.cols/2 + panLimit);
         pos.y = Mathf.Clamp(pos.y, minY, maxY);
-        pos.z = Mathf.Clamp(pos.z, -(GridManager.rows/2 + panLimit), GridManager.rows/2 + panLimit);
+        pos.z = Mathf.Clamp(pos.z, -(GridController.rows/2 + panLimit), GridController.rows/2 + panLimit);
         transform.position = pos;
 
         if(Input.GetKey("e") || Input.mousePosition.x <= panBorderThickness)
