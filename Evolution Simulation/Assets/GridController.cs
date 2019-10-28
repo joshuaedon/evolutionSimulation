@@ -5,7 +5,7 @@ public class GridController : MonoBehaviour {
     public static int rows = 30;
     public float scale = 5f;
     public float seaLevel = 0.4f;
-    public int seaBorder = 3;
+    public int seaBorder = 4;
     GameObject[,] gridArray;
 
     void Start() {
@@ -17,6 +17,9 @@ public class GridController : MonoBehaviour {
                 GameObject chunk = (GameObject)Instantiate(referenceChunk, transform);
 
                 float elevation = Mathf.PerlinNoise((float)c / cols * scale, (float)r / rows * scale);
+                int distFromBorder = Mathf.Min(c + 1, r + 1, cols - c, rows - r);
+                if(distFromBorder < seaBorder)
+                    elevation *= (float)distFromBorder / seaBorder;
                 chunk.transform.position = new Vector3(c, elevation / 2, r);
                 chunk.transform.localScale = new Vector3(1f, elevation, 1f);
 
