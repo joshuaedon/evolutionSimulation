@@ -1,12 +1,20 @@
 ﻿using UnityEngine;
 
 public class GridController : MonoBehaviour {
+    [Range(0.0f, 10000.0f)]
     public float seed;
+    [Range(0.0f, 20.0f)]
+    public float time = 0;
+    [Range(0, 200)]
     public int cols = 100;
+    [Range(0, 200)]
     public int rows = 50;
+    [Range(0.0f, 100.0f)]
     public float scale = 10f;
+    [Range(0.0f, 1.0f)]
     public float seaLevel = 0.4f;
-    public int seaBorder = 5;
+    [Range(0, 50)]
+    public int seaBorder = 10;
     GameObject[,] gridArray;
     OpenSimplexNoise osn;
 
@@ -45,7 +53,7 @@ public class GridController : MonoBehaviour {
             for(int c = 0; c < cols; c++) {
                 GameObject chunk = gridArray[c, r];
 
-                float elevation = ((float)osn.Evaluate(c / scale, r / scale, seed) + 1) / 2;
+                float elevation = ((float)osn.Evaluate(c / scale + seed, r / scale + seed, time) + 1) / 2;
                     
                 int distFromBorder = Mathf.Min(c + 1, r + 1, cols - c, rows - r);
                 if(distFromBorder < seaBorder)
