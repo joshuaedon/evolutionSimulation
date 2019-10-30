@@ -340,9 +340,10 @@ MonoBehaviour:
   time: 0
   cols: 100
   rows: 50
-  scale: 10
+  noiseScale: 10
   seaLevel: 0.4
-  seaBorder: 0
+  yScale: 3
+  seaBorder: 10
 --- !u!4 &1160484708
 Transform:
   m_ObjectHideFlags: 0
