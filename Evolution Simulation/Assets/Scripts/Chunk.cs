@@ -5,13 +5,18 @@ using UnityEngine;
 public class Chunk {
 		public int col;
 		public int row;
-    public GameObject chunk;
+		public float elevation;
+    public GameObject chunkObj;
     public GameObject agent;
 
-    public Chunk(GameObject chunk, int col, int row) {
+    public Chunk(GameObject chunkObj, int col, int row) {
     		this.col = col;
     		this.row = row;
-        this.chunk = chunk;
+        this.chunkObj = chunkObj;
     }
 
+		public bool isWater() {
+        GridController gridController = GameObject.Find("Grid").GetComponent<GridController>();
+        return elevation <= gridController.seaLevel;
+    }
 }

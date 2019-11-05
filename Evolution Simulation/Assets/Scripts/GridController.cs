@@ -18,7 +18,7 @@ public class GridController : MonoBehaviour {
     [Range(0, 50)]
     public int seaBorder = 10;
     public Chunk[,] gridArray;
-    OpenSimplexNoise osn;
+    public OpenSimplexNoise osn;
 
     void Start() {
         osn = new OpenSimplexNoise();
@@ -44,18 +44,21 @@ public class GridController : MonoBehaviour {
     void updateGrid() {
         for(int r = 0; r < rows; r++) {
             for(int c = 0; c < cols; c++) {
-                GameObject chunk = gridArray[c, r].chunk;
+                GameObject chunk = gridArray[c, r].chunkObj;
 
                 float elevation = ((float)osn.Evaluate(c / noiseScale + seed, r / noiseScale + seed, time) + 1) / 2;
-                    
+
                 int distFromBorder = Mathf.Min(c + 1, r + 1, cols - c, rows - r);
                 if(distFromBorder < seaBorder)
                     elevation *= (float)distFromBorder / seaBorder;
+
                 chunk.transform.position = new Vector3(c, yScale * elevation / 2, r);
                 chunk.transform.localScale = new Vector3(1f, yScale * elevation, 1f);
 
                 float col = Mathf.Clamp(0.3f + 0.7f * ((elevation - seaLevel) / (1f - seaLevel)), 0, 1);
                 chunk.GetComponent<Renderer>().material.color = new Color(1f - col, 1f - col * 0.6f, 1f - col);
+
+                gridArray[c, r].elevation = elevation;
             }
         }
 
