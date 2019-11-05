@@ -17,25 +17,23 @@ public class GridController : MonoBehaviour {
     public float yScale = 3f;
     [Range(0, 50)]
     public int seaBorder = 10;
-    GameObject[,] gridArray;
+    public Chunk[,] gridArray;
     OpenSimplexNoise osn;
 
     void Start() {
         osn = new OpenSimplexNoise();
         seed = Random.Range(0, 10000);
 
-        gridArray = new GameObject[cols, rows];
+        gridArray = new Chunk[cols, rows];
         GameObject referenceChunk = (GameObject)Instantiate(Resources.Load("Chunk"));
         for(int r = 0; r < rows; r++) {
             for(int c = 0; c < cols; c++) {
                 GameObject chunk = (GameObject)Instantiate(referenceChunk, transform);
-                gridArray[c, r] = chunk;
+                gridArray[c, r] = new Chunk(chunk, c, r);
             }
         }
         updateGrid();
         Destroy(referenceChunk);
-
-        transform.position = new Vector3(-(cols - 1) / 2, 0, -(rows - 1) / 2);
     }
 
     private void OnValidate() {
@@ -46,7 +44,7 @@ public class GridController : MonoBehaviour {
     void updateGrid() {
         for(int r = 0; r < rows; r++) {
             for(int c = 0; c < cols; c++) {
-                GameObject chunk = gridArray[c, r];
+                GameObject chunk = gridArray[c, r].chunk;
 
                 float elevation = ((float)osn.Evaluate(c / noiseScale + seed, r / noiseScale + seed, time) + 1) / 2;
                     

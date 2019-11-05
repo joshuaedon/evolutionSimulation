@@ -12,6 +12,11 @@ public class CameraController : MonoBehaviour {
 
     public static float rotateSpeed = 20f;
 
+    void Start() {
+        GridController gridController = GameObject.Find("Grid").GetComponent<GridController>();
+        transform.position = new Vector3((gridController.cols - 1) / 2, 60, (gridController.rows - 1) / 2 - 30);
+    }
+
     void Update() {
         Vector3 pos = transform.position;
         Vector3 camDir = Camera.main.transform.forward;
