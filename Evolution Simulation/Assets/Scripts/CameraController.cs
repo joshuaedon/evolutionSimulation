@@ -38,9 +38,9 @@ public class CameraController : MonoBehaviour {
         pos += Vector3.Normalize(camDir) * Input.GetAxis("Mouse ScrollWheel") * scrollSpeed * 100f * Time.deltaTime;
 
         GridController gridController = GameObject.Find("Grid").GetComponent<GridController>();
-        pos.x = Mathf.Clamp(pos.x, -(gridController.cols/2 + panLimit), gridController.cols/2 + panLimit);
+        pos.x = Mathf.Clamp(pos.x, -panLimit, gridController.cols + panLimit);
         pos.y = Mathf.Clamp(pos.y, minY, maxY);
-        pos.z = Mathf.Clamp(pos.z, -(gridController.rows/2 + panLimit), gridController.rows/2 + panLimit);
+        pos.z = Mathf.Clamp(pos.z, -panLimit, gridController.rows + panLimit);
         transform.position = pos;
 
         if(Input.GetKey("e"))

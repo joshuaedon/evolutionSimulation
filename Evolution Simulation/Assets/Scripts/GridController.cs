@@ -34,6 +34,27 @@ public class GridController : MonoBehaviour {
         }
         updateGrid();
         Destroy(referenceChunk);
+
+
+
+        GameObject referenceAgent = (GameObject)Instantiate(Resources.Load("Agent"));
+        for(int i = 0; i < 20; i++) {
+            int col, row;
+            int count = 0;
+            do {
+                col = Random.Range(0, cols);
+                row = Random.Range(0, rows);
+                count++;
+            } while((gridArray[col, row].isWater() || gridArray[col, row].agent != null) && count < 1000);
+            if(count < 1000) {
+                GameObject agentObj = (GameObject)Instantiate(referenceAgent, transform);
+                Agent agent = new Agent(agentObj, col, row);
+                gridArray[col, row].agent = agent;
+            } else {
+                Debug.Log("Agent could not be spawned");
+            }
+        }
+        Destroy(referenceAgent);
     }
 
     private void OnValidate() {
