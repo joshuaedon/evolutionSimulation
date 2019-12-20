@@ -1,0 +1,2 @@
+﻿- Make land shrink/grow from all sides when changing grid dimensions
+- Change terrain to a mesh??

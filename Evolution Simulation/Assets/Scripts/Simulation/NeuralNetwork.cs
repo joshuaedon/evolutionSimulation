@@ -1,13 +1,15 @@
 using UnityEngine;
 
 class NeuralNetwork {
-  string[] inputLabels = {"Random", "Bot R", "Bot B", "Water R", "Water B", "Food R", "Food B", "Bot Col R", "Bot Col B", "Scent R", "Scent B", "Hunger"};
-  string[] outputLabels = {"Left", "Right", "Step", "Stay", "Dist R", "Dir R", "Range R", "Dist B", "Dir B", "Range B", "Breed/Kill", "Mutation", "Drop Scent"};
+  // string[] inputLabels = {"Random", "Bot R", "Bot B", "Water R", "Water B", "Food R", "Food B", "Bot Col R", "Bot Col B", "Scent R", "Scent B", "Hunger"};
+  // string[] outputLabels = {"Left", "Right", "Step", "Stay", "Dist R", "Dir R", "Range R", "Dist B", "Dir B", "Range B", "Breed/Kill", "Mutation", "Drop Scent"};
+  string[] inputLabels = {"Random"};
+  string[] outputLabels = {"Left", "Right", "Step", "Stay"};
   float[] prevOutputs;
   Layer[] layers;
   float maxConnection;
   
-  NeuralNetwork(int[] layerSizes) {
+  public NeuralNetwork(int[] layerSizes) {
     this.prevOutputs = new float[layerSizes[layerSizes.Length-1]];
     this.layers = new Layer[layerSizes.Length];
     layers[0] = new Layer(0, layerSizes[0]);
@@ -16,7 +18,7 @@ class NeuralNetwork {
     setMaxConnection();
   }
 
-  NeuralNetwork(Layer[] a, Layer[] b, float aMutation, float bMutation) {
+  public NeuralNetwork(Layer[] a, Layer[] b, float aMutation, float bMutation) {
     this.prevOutputs = new float[a[a.Length-1].nodes.Length-1];
     this.layers = new Layer[a.Length];
     layers[0] = new Layer(0, a[0].nodes.Length-1);
@@ -43,7 +45,7 @@ class NeuralNetwork {
     }
   }
   
-  void loadInputs(float[] inputs) {
+  public void loadInputs(float[] inputs) {
     for (int i = 0; i < inputs.Length; i++) {
       layers[0].nodes[i].value = inputs[i];
     }
@@ -71,7 +73,7 @@ class NeuralNetwork {
     }
   }
   
-  float returnOutput(string outputStr, bool prev) {
+  public float returnOutput(string outputStr, bool prev) {
     int output = -1;
     for(int i = 0; i < outputLabels.Length; i++) {
       if(outputLabels[i].Equals(outputStr))

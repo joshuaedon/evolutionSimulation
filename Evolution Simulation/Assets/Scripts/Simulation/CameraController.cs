@@ -2,7 +2,7 @@
 
 public class CameraController : MonoBehaviour {
 
-    public static float panSpeed = 20f;
+    public static float minPanSpeed = 20f;
     public static float panBorderThickness = 10f;
     public static float panLimit = 30f;
 
@@ -10,7 +10,7 @@ public class CameraController : MonoBehaviour {
     public static float minY = 10f;
     public static float maxY = 120f;
 
-    public static float rotateSpeed = 20f;
+    public static float rotateSpeed = 40f;
 
     void Start() {
         GridController gridController = GameObject.Find("Grid").GetComponent<GridController>();
@@ -21,6 +21,7 @@ public class CameraController : MonoBehaviour {
         Vector3 pos = transform.position;
         Vector3 camDir = Camera.main.transform.forward;
         Vector3 flatCamDir = new Vector3(camDir.x, 0, camDir.z);
+        float panSpeed = minPanSpeed * Mathf.Sqrt(pos.y - minY + 1);
 
         //Time.deltaTime = time ellapsed since last frame
         if(Input.GetKey("w")/* || Input.mousePosition.y >= Screen.height - panBorderThickness*/)
