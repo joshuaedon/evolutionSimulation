@@ -19,7 +19,7 @@ public class GridController : MonoBehaviour {
     [Range(0, 50)]
     public int seaBorder = 10;
     public Chunk[,] gridArray;
-    List<Agent> agents;
+    public List<Agent> agents;
     OpenSimplexNoise osn;
 
     void Start() {
