@@ -5,7 +5,7 @@ using UnityEngine;
 public class Agent {
     public GameObject agentObj;
     public Chunk chunk;
-    NeuralNetwork network;
+    public NeuralNetwork network;
     int dir;
 
     public Agent(GameObject agentObj, Chunk chunk) {
@@ -41,7 +41,7 @@ public class Agent {
             turnRight();
         else if(stepOut > stayOut)
             stepForward();
-        if(a == 0) {
+        /*if(a == 0) {
             Debug.Log(leftOut + ", " + rightOut + ", " + stepOut + ", " + stayOut);
             if(leftOut > Mathf.Max(Mathf.Max(rightOut, stepOut), stayOut))
                 Debug.Log("left");
@@ -51,7 +51,7 @@ public class Agent {
                 Debug.Log("step");
             else
                 Debug.Log("stay");
-        }
+        }*/
     }
 
     void turnLeft() {

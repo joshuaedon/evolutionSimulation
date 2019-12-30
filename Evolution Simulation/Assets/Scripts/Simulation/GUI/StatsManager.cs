@@ -8,6 +8,7 @@ public class StatsManager : MonoBehaviour {
 
     void Update() {
     		GridController gridController = GameObject.Find("Grid").GetComponent<GridController>();
-        text.text = "Agent count: " + gridController.agents.Count;
+        text.text = "FPS: " + Mathf.Round(1f/Time.deltaTime) +
+        						"\nAgent count: " + gridController.agents.Count;
     }
 }

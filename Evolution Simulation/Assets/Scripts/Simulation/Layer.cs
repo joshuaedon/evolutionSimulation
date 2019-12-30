@@ -1,4 +1,4 @@
-class Layer {
+public class Layer {
   public Node[] nodes;
   
   public Layer(int prevSize, int layerSize) {

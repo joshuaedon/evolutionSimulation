@@ -20,6 +20,8 @@ public class GridController : MonoBehaviour {
     public int seaBorder = 10;
     public Chunk[,] gridArray;
     public List<Agent> agents;
+    public Agent selectedAgent;
+    public GameObject AgentPannel;
     OpenSimplexNoise osn;
 
     void Start() {
@@ -27,6 +29,7 @@ public class GridController : MonoBehaviour {
         seed = Random.Range(0, 10000);
         gridArray = new Chunk[0, 0];
         agents = new List<Agent>();
+        AgentPannel.SetActive(false);
 
         updateGrid();
 
@@ -53,6 +56,26 @@ public class GridController : MonoBehaviour {
     }
 
     void Update() {
+        // Select agent
+        if(Input.GetMouseButtonDown(0) && !UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            if(selectedAgent != null)
+                selectedAgent.agentObj.transform.GetChild(0).GetComponent<Renderer>().material.SetColor("_Color", Color.white);
+            if(Physics.Raycast(ray, out hit) && hit.transform.name == "AgentBody") {
+                foreach(Agent a in agents) {
+                    if(a.agentObj.transform.GetChild(0) == hit.transform) {
+                        a.agentObj.transform.GetChild(0).GetComponent<Renderer>().material.SetColor("_Color", Color.red);
+                        selectedAgent = a;
+                    }
+                }
+                AgentPannel.SetActive(true);
+            } else {
+                selectedAgent = null;
+                AgentPannel.SetActive(false);
+            }
+        }
+
         // Step bots
         for(int i = agents.Count - 1; i >= 0; i--)
             agents[i].act(i);
@@ -71,6 +94,7 @@ public class GridController : MonoBehaviour {
     }
 
     void updateGrid() {
+        // Delete and create chunk objects if grid dimensions have been changed
         if(cols != gridArray.GetLength(0) || rows != gridArray.GetLength(1)) {
             for(int c = 0; c < gridArray.GetLength(0); c++) {
                 for(int r = 0; r < gridArray.GetLength(1); r++) {
@@ -95,9 +119,7 @@ public class GridController : MonoBehaviour {
             }
             Destroy(referenceChunk);
         }
-
-
-        // Create chunk objects and set their size and position
+        // Set the size and position of chunk objects
         for(int c = 0; c < cols; c++) {
             for(int r = 0; r < rows; r++) {
                 GameObject chunk = gridArray[c, r].chunkObj;
@@ -113,7 +135,7 @@ public class GridController : MonoBehaviour {
                 chunk.transform.localScale = new Vector3(1f, yScale * elevation, 1f);
 
                 float col = Mathf.Clamp(0.3f + 0.7f * ((elevation - seaLevel) / (1f - seaLevel)), 0, 1);
-                chunk.GetComponent<Renderer>().material.color = new Color(1f - col, 1f - col * 0.6f, 1f - col);
+                chunk.GetComponent<Renderer>().material.SetColor("_Color", new Color(1f - col, 1f - col * 0.6f, 1f - col));
             }
         }
         // Set up water plane
@@ -122,7 +144,7 @@ public class GridController : MonoBehaviour {
         // Set up sea floor plane
         transform.Find("Sea Floor").transform.localScale = new Vector3((cols + CameraController.panLimit + 1000) / 10, 1, (rows + CameraController.panLimit + 1000) / 10);
         float seaFloorCol = Mathf.Clamp(0.3f - 0.7f * seaLevel / (1f - seaLevel), 0, 1);
-        transform.Find("Sea Floor").GetComponent<Renderer>().material.color = new Color(1f - seaFloorCol, 1f - seaFloorCol * 0.6f, 1f - seaFloorCol);
+        transform.Find("Sea Floor").GetComponent<Renderer>().material.SetColor("_Color", new Color(1f - seaFloorCol, 1f - seaFloorCol * 0.6f, 1f - seaFloorCol));
     }
 
     void createGrid() {
