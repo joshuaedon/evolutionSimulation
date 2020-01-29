@@ -19,6 +19,9 @@ public class GridController : MonoBehaviour {
     [Range(0, 50)]
     public int seaBorder = 10;
     public Chunk[,] gridArray;
+    Mesh mesh;
+    Vector3[] vertices;
+    int[] triangles;
     public List<Agent> agents;
     public Agent selectedAgent;
     public GameObject AgentPannel;
@@ -28,6 +31,8 @@ public class GridController : MonoBehaviour {
         osn = new OpenSimplexNoise();
         seed = Random.Range(0, 10000);
         gridArray = new Chunk[0, 0];
+        mesh = new Mesh();
+        GetComponent<MeshFilter>().mesh = mesh;
         agents = new List<Agent>();
         AgentPannel.SetActive(false);
 
@@ -96,46 +101,53 @@ public class GridController : MonoBehaviour {
     void updateGrid() {
         // Delete and create chunk objects if grid dimensions have been changed
         if(cols != gridArray.GetLength(0) || rows != gridArray.GetLength(1)) {
-            for(int c = 0; c < gridArray.GetLength(0); c++) {
-                for(int r = 0; r < gridArray.GetLength(1); r++) {
-                    Destroy(gridArray[c, r].chunkObj);
-                }
-            }
-            for(int i = agents.Count - 1; i >= 0; i--) {
-                if(agents[i].chunk.col > cols || agents[i].chunk.row > rows) {
-                    Destroy(agents[i].agentObj);
-                    agents.RemoveAt(i);
-                }
-            }
-            
             gridArray = new Chunk[cols, rows];
+            vertices = new Vector3[cols * rows];
 
-            GameObject referenceChunk = (GameObject)Instantiate(Resources.Load("Simulation/Chunk"));
             for(int c = 0; c < cols; c++) {
                 for(int r = 0; r < rows; r++) {
-                    GameObject chunk = (GameObject)Instantiate(referenceChunk, transform);
-                    gridArray[c, r] = new Chunk(chunk, c, r);
+                    Vector3 vertex = new Vector3(c, 0, r);
+                    vertices[c*rows + r] = vertex;
+                    gridArray[c, r] = new Chunk(vertex);
                 }
             }
-            Destroy(referenceChunk);
+
+            triangles = new int[(cols-1) * (rows - 1) * 6];
+            
+            int v = 0;
+            int t = 0;
+            for(int c = 0; c < cols-1; c++) {
+                for(int r = 0; r < rows-1; r++) {
+                    triangles[t]     = v;
+                    triangles[t + 1] = v + 1;
+                    triangles[t + 2] = v + rows;
+                    triangles[t + 3] = v + 1;
+                    triangles[t + 4] = v + rows + 1;
+                    triangles[t + 5] = v + rows;
+
+                    v++;
+                    t += 6;
+                }
+                v++;
+            }
         }
         // Set the size and position of chunk objects
         for(int c = 0; c < cols; c++) {
             for(int r = 0; r < rows; r++) {
-                GameObject chunk = gridArray[c, r].chunkObj;
-
                 float elevation = ((float)osn.Evaluate(c / noiseScale + seed, r / noiseScale + seed, time) + 1) / 2;
-                gridArray[c, r].elevation = elevation;
 
                 int distFromBorder = Mathf.Min(c + 1, r + 1, cols - c, rows - r);
                 if(distFromBorder < seaBorder)
                     elevation *= (float)distFromBorder / seaBorder;
 
-                chunk.transform.position = new Vector3(c, yScale * elevation / 2, r);
-                chunk.transform.localScale = new Vector3(1f, yScale * elevation, 1f);
+                gridArray[c, r].vertex.y = elevation;
+                vertices[c*rows + r].y = elevation * yScale;
+
+                // chunk.transform.position = new Vector3(c, yScale * elevation / 2, r);
+                // chunk.transform.localScale = new Vector3(1f, yScale * elevation, 1f);
 
                 float col = Mathf.Clamp(0.3f + 0.7f * ((elevation - seaLevel) / (1f - seaLevel)), 0, 1);
-                chunk.GetComponent<Renderer>().material.SetColor("_Color", new Color(1f - col, 1f - col * 0.6f, 1f - col));
+                // chunk.GetComponent<Renderer>().material.SetColor("_Color", new Color(1f - col, 1f - col * 0.6f, 1f - col));
             }
         }
         // Set up water plane
@@ -145,9 +157,10 @@ public class GridController : MonoBehaviour {
         transform.Find("Sea Floor").transform.localScale = new Vector3((cols + CameraController.panLimit + 1000) / 10, 1, (rows + CameraController.panLimit + 1000) / 10);
         float seaFloorCol = Mathf.Clamp(0.3f - 0.7f * seaLevel / (1f - seaLevel), 0, 1);
         transform.Find("Sea Floor").GetComponent<Renderer>().material.SetColor("_Color", new Color(1f - seaFloorCol, 1f - seaFloorCol * 0.6f, 1f - seaFloorCol));
-    }
-
-    void createGrid() {
-
+    
+        mesh.Clear();
+        mesh.vertices = vertices;
+        mesh.triangles = triangles;
+        mesh.RecalculateNormals();
     }
 }

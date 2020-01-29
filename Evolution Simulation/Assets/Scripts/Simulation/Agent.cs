@@ -20,8 +20,7 @@ public class Agent {
 
     void moveObj() {
         GridController gridController = GameObject.Find("Grid").GetComponent<GridController>();
-        float elivation = (float)gridController.gridArray[chunk.col, chunk.row].elevation;
-        agentObj.transform.position = new Vector3(chunk.col, gridController.yScale * elivation + 0.5f, chunk.row);
+        agentObj.transform.position = new Vector3(chunk.vertex.x, gridController.yScale * chunk.vertex.y + 0.5f, chunk.vertex.z);
     }
 
     public void loadInputs() {
@@ -63,8 +62,8 @@ public class Agent {
     }
 
     void stepForward() {
-        int newCol = chunk.col;
-        int newRow = chunk.row;
+        int newCol = Mathf.RoundToInt(chunk.vertex.x);
+        int newRow = Mathf.RoundToInt(chunk.vertex.z);
         switch(this.dir) {
             case 0: newCol++; break;
             case 1: newRow++; break;
