@@ -131,6 +131,7 @@ public class GridController : MonoBehaviour {
                 v++;
             }
         }
+        Color[] colours = new Color[cols * rows];
         // Set the size and position of chunk objects
         for(int c = 0; c < cols; c++) {
             for(int r = 0; r < rows; r++) {
@@ -143,11 +144,8 @@ public class GridController : MonoBehaviour {
                 gridArray[c, r].vertex.y = elevation;
                 vertices[c*rows + r].y = elevation * yScale;
 
-                // chunk.transform.position = new Vector3(c, yScale * elevation / 2, r);
-                // chunk.transform.localScale = new Vector3(1f, yScale * elevation, 1f);
-
                 float col = Mathf.Clamp(0.3f + 0.7f * ((elevation - seaLevel) / (1f - seaLevel)), 0, 1);
-                // chunk.GetComponent<Renderer>().material.SetColor("_Color", new Color(1f - col, 1f - col * 0.6f, 1f - col));
+                colours[c*rows + r] = new Color(1f - col, 1f - col * 0.6f, 1f - col);
             }
         }
         // Set up water plane
@@ -161,6 +159,7 @@ public class GridController : MonoBehaviour {
         mesh.Clear();
         mesh.vertices = vertices;
         mesh.triangles = triangles;
+        mesh.colors = colours;
         mesh.RecalculateNormals();
     }
 }
