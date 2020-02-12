@@ -2,42 +2,55 @@
 using UnityEngine;
 
 public class GridController : MonoBehaviour {
+    OpenSimplexNoise osn;
+    // Grid attributes
     [Range(0f, 10000f)]
     public float seed;
     [Range(0f, 20f)]
     public float time = 0;
     [Range(0, 200)]
-    public int cols = 100;
+    public static int cols = 100;
     [Range(0, 200)]
-    public int rows = 50;
+    public static int rows = 50;
     [Range(0f, 100f)]
     public float noiseScale = 10f;
     [Range(0f, 1f)]
-    public float seaLevel = 0.4f;
+    public static float seaLevel = 0.4f;
     [Range(1f, 10f)]
-    public float yScale = 3f;
+    public static float yScale = 3f;
     [Range(0, 50)]
     public int seaBorder = 10;
-    public Chunk[,] gridArray;
+    // Grid state
+    public static Chunk[,] gridArray;
     Mesh mesh;
     Vector3[] vertices;
     int[] triangles;
-    public List<Agent> agents;
-    public Agent selectedAgent;
+    public static List<Agent> agents;
+    // User variables
+    public static Agent selectedAgent;
+    public bool showVertices = false;
+    // Game objects
     public GameObject AgentPannel;
-    OpenSimplexNoise osn;
 
     void Start() {
         osn = new OpenSimplexNoise();
+
         seed = Random.Range(0, 10000);
+        time = 0;
+
         gridArray = new Chunk[0, 0];
         mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = mesh;
         agents = new List<Agent>();
+
+        selectedAgent = null;
+        showVertices = false;
+
         AgentPannel.SetActive(false);
 
         updateGrid();
 
+        // Spawn agents
         GameObject referenceAgent = (GameObject)Instantiate(Resources.Load("Simulation/Agent"));
         for(int i = 0; i < 20; i++) {
             Chunk chunk;
@@ -80,6 +93,22 @@ public class GridController : MonoBehaviour {
                 AgentPannel.SetActive(false);
             }
         }
+        // Show vertices
+        if(showVertices && !UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            // Casts the ray and get the first game object hit
+            Physics.Raycast(ray, out hit);
+
+            for(int c = 0; c < gridArray.GetLength(0); c++) {
+                for(int r = 0; r < gridArray.GetLength(1); r++) {
+                    if(Vector3.Distance(hit.point, gridArray[c, r].vertex) < 5)
+                        gridArray[c, r].vertexObj.SetActive(true);
+                    else
+                        gridArray[c, r].vertexObj.SetActive(false);
+                }
+            }
+        }
 
         // Step bots
         for(int i = agents.Count - 1; i >= 0; i--)
@@ -101,16 +130,23 @@ public class GridController : MonoBehaviour {
     void updateGrid() {
         // Delete and create chunk objects if grid dimensions have been changed
         if(cols != gridArray.GetLength(0) || rows != gridArray.GetLength(1)) {
+            for(int c = 0; c < gridArray.GetLength(0); c++) {
+                for(int r = 0; r < gridArray.GetLength(1); r++) {
+                    Destroy(gridArray[c, r].vertexObj);
+                }
+            }
+
             gridArray = new Chunk[cols, rows];
             vertices = new Vector3[cols * rows];
 
+            GameObject referenceVertex = (GameObject)Instantiate(Resources.Load("Simulation/Vertex"));
             for(int c = 0; c < cols; c++) {
                 for(int r = 0; r < rows; r++) {
-                    Vector3 vertex = new Vector3(c, 0, r);
-                    vertices[c*rows + r] = vertex;
-                    gridArray[c, r] = new Chunk(vertex);
+                    GameObject vertexObj = (GameObject)Instantiate(referenceVertex, transform);
+                    gridArray[c, r] = new Chunk(vertexObj, c, r);
                 }
             }
+            Destroy(referenceVertex);
 
             triangles = new int[(cols-1) * (rows - 1) * 6];
             
@@ -141,8 +177,8 @@ public class GridController : MonoBehaviour {
                 if(distFromBorder < seaBorder)
                     elevation *= (float)distFromBorder / seaBorder;
 
-                gridArray[c, r].vertex.y = elevation;
-                vertices[c*rows + r].y = elevation * yScale;
+                gridArray[c, r].setElevation(elevation, yScale);
+                vertices[c*rows + r] = new Vector3(c, elevation * yScale, r);
 
                 float col = Mathf.Clamp(0.3f + 0.7f * ((elevation - seaLevel) / (1f - seaLevel)), 0, 1);
                 colours[c*rows + r] = new Color(1f - col, 1f - col * 0.6f, 1f - col);
@@ -161,5 +197,7 @@ public class GridController : MonoBehaviour {
         mesh.triangles = triangles;
         mesh.colors = colours;
         mesh.RecalculateNormals();
+
+        MeshCollider meshc = gameObject.AddComponent(typeof(MeshCollider)) as MeshCollider;
     }
 }

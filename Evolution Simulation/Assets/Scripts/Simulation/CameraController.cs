@@ -13,8 +13,7 @@ public class CameraController : MonoBehaviour {
     public static float rotateSpeed = 40f;
 
     void Start() {
-        GridController gridController = GameObject.Find("Grid").GetComponent<GridController>();
-        transform.position = new Vector3((gridController.cols - 1) / 2, 60, (gridController.rows - 1) / 2 - 30);
+        transform.position = new Vector3((GridController.cols - 1) / 2, 60, (GridController.rows - 1) / 2 - 30);
     }
 
     void Update() {
@@ -38,10 +37,9 @@ public class CameraController : MonoBehaviour {
 
         pos += Vector3.Normalize(camDir) * Input.GetAxis("Mouse ScrollWheel") * scrollSpeed * 100f * Time.deltaTime;
 
-        GridController gridController = GameObject.Find("Grid").GetComponent<GridController>();
-        pos.x = Mathf.Clamp(pos.x, -panLimit, gridController.cols + panLimit);
+        pos.x = Mathf.Clamp(pos.x, -panLimit, GridController.cols + panLimit);
         pos.y = Mathf.Clamp(pos.y, minY, maxY);
-        pos.z = Mathf.Clamp(pos.z, -panLimit, gridController.rows + panLimit);
+        pos.z = Mathf.Clamp(pos.z, -panLimit, GridController.rows + panLimit);
         transform.position = pos;
 
         if(Input.GetKey("e"))

@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class AgentStats : MonoBehaviour {
 		void OnEnable() {
-    		GridController gridController = GameObject.Find("Grid").GetComponent<GridController>();
-    		NeuralNetwork n = gridController.selectedAgent.network;
+    		NeuralNetwork n = GridController.selectedAgent.network;
 
     		int maxNodes = 0;
     		for(int i = 0; i < n.layers.Length; i++)
@@ -13,8 +12,8 @@ public class AgentStats : MonoBehaviour {
     		float nodeSize = transform.GetComponentInParent<Canvas>().GetComponent<RectTransform>().sizeDelta.y/maxNodes;
     		nodeSize = Mathf.Min(nodeSize, (transform.GetComponentInParent<Canvas>().GetComponent<RectTransform>().sizeDelta.x - 400)/(2*n.layers.Length));
 
-    		GameObject referenceLayer = (GameObject)Instantiate(Resources.Load("Simulation/NetworkLayer"));
-    		GameObject referenceNode = (GameObject)Instantiate(Resources.Load("Simulation/NetworkNode"));
+    		GameObject referenceLayer = (GameObject)Instantiate(Resources.Load("Simulation/GUI/NetworkLayer"));
+    		GameObject referenceNode = (GameObject)Instantiate(Resources.Load("Simulation/GUI/NetworkNode"));
     		referenceNode.GetComponent<RectTransform>().sizeDelta = new Vector2(nodeSize, nodeSize);
     		for(int i = 0; i < n.layers.Length; i++) {
         		GameObject layerObj = (GameObject)Instantiate(referenceLayer, transform);

@@ -19,8 +19,7 @@ public class Agent {
     }
 
     void moveObj() {
-        GridController gridController = GameObject.Find("Grid").GetComponent<GridController>();
-        agentObj.transform.position = new Vector3(chunk.vertex.x, gridController.yScale * chunk.vertex.y + 0.5f, chunk.vertex.z);
+        agentObj.transform.position = new Vector3(chunk.vertex.x, GridController.yScale * chunk.vertex.y + 0.5f, chunk.vertex.z);
     }
 
     public void loadInputs() {
@@ -70,9 +69,8 @@ public class Agent {
             case 2: newCol--; break;
             case 3: newRow--; break;
         }
-        GridController gridController = GameObject.Find("Grid").GetComponent<GridController>();
-        if(newCol >= 0 && newRow >= 0 && newCol < gridController.cols && newRow < gridController.rows) {
-            Chunk newChunk = gridController.gridArray[newCol, newRow];
+        if(newCol >= 0 && newRow >= 0 && newCol < GridController.cols && newRow < GridController.rows) {
+            Chunk newChunk = GridController.gridArray[newCol, newRow];
             if(newChunk.agent == null) {
                 // Step Forward
                 this.chunk.agent = null;

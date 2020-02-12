@@ -3,15 +3,23 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Chunk {
+    public GameObject vertexObj;
 	public Vector3 vertex;
     public Agent agent;
 
-    public Chunk(Vector3 vertex) {
-		this.vertex = vertex;
+    public Chunk(GameObject vertexObj, int c, int r) {
+        this.vertexObj = vertexObj;
+        vertexObj.SetActive(false);
+        this.vertex = new Vector3(c, 0, r);
+
+    }
+
+    public void setElevation(float elevation, float yScale) {
+        this.vertexObj.transform.position = new Vector3(vertex.x, elevation * yScale, vertex.z);
+        this.vertex.y = elevation;
     }
 
 	public bool isWater() {
-        GridController gridController = GameObject.Find("Grid").GetComponent<GridController>();
-        return vertex.y <= gridController.seaLevel;
+        return vertex.y <= GridController.seaLevel;
     }
 }

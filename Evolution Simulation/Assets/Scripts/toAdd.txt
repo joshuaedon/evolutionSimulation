@@ -1,2 +1,26 @@
 ﻿- Make land shrink/grow from all sides when changing grid dimensions
-- Change terrain to a mesh??
+- Food
+	- Spawn type
+		- Grass
+		- Fruit
+		- Drop from agents
+			- Constant value
+			- Percentage of health
+	- Health
+		- Agent attack
+- Breeding
+	- Type
+- Setup menu
+- God features
+	- Raise/lower land
+	- Add/remove food
+	- Save, Copy, move, delete agents
+- Graphs
+	- Population
+	- Colour
+- To try tab
+
+
+
+BUGS
+- Can't click through statistics element
