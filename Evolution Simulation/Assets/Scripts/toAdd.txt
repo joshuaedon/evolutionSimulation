@@ -1,8 +1,7 @@
-﻿- Make land shrink/grow from all sides when changing grid dimensions
-- Food
+﻿- Food
 	- Spawn type
-		- Grass
-		- Fruit
+		- Grass spread
+		- Fruit spawn
 		- Drop from agents
 			- Constant value
 			- Percentage of health

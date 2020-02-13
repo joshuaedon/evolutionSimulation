@@ -6,12 +6,13 @@ public class Chunk {
     public GameObject vertexObj;
 	public Vector3 vertex;
     public Agent agent;
+    public float food;
 
     public Chunk(GameObject vertexObj, int c, int r) {
         this.vertexObj = vertexObj;
         vertexObj.SetActive(false);
         this.vertex = new Vector3(c, 0, r);
-
+        this.food = 10;
     }
 
     public void setElevation(float elevation, float yScale) {

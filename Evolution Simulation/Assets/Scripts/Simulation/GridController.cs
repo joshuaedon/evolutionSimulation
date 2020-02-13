@@ -20,6 +20,8 @@ public class GridController : MonoBehaviour {
     public static float yScale = 3f;
     [Range(0, 50)]
     public int seaBorder = 10;
+    [Range(0f, 10f)]
+    public static float maxFood = 10;
     // Grid state
     public static Chunk[,] gridArray;
     Mesh mesh;
@@ -168,7 +170,9 @@ public class GridController : MonoBehaviour {
             }
         }
         Color[] colours = new Color[cols * rows];
-        // Set the size and position of chunk objects
+        // Set the positions and colours of vertices
+        Color sand = new Color(0.941f, 0.953f, 0.741f);
+        Color land = new Color(0.263f, 0.157f, 0.094f);
         for(int c = 0; c < cols; c++) {
             for(int r = 0; r < rows; r++) {
                 float elevation = ((float)osn.Evaluate(c / noiseScale + seed, r / noiseScale + seed, time) + 1) / 2;
@@ -180,8 +184,10 @@ public class GridController : MonoBehaviour {
                 gridArray[c, r].setElevation(elevation, yScale);
                 vertices[c*rows + r] = new Vector3(c, elevation * yScale, r);
 
-                float col = Mathf.Clamp(0.3f + 0.7f * ((elevation - seaLevel) / (1f - seaLevel)), 0, 1);
-                colours[c*rows + r] = new Color(1f - col, 1f - col * 0.6f, 1f - col);
+
+                // float col = Mathf.Clamp(0.3f + 0.7f * ((elevation - seaLevel) / (1f - seaLevel)), 0, 1);
+                Color col = Color.Lerp(sand, land, (1 + seaLevel) * elevation - seaLevel);
+                colours[c*rows + r] = Color.Lerp(col, new Color(col.r, 1, col.b), gridArray[c, r].food / maxFood);//new Color(1f - col, 1f - col * 0.6f, 1f - col);
             }
         }
         // Set up water plane
@@ -189,8 +195,8 @@ public class GridController : MonoBehaviour {
         transform.Find("Water").transform.localScale = new Vector3((cols + CameraController.panLimit + 1000) / 10, 1, (rows + CameraController.panLimit + 1000) / 10);
         // Set up sea floor plane
         transform.Find("Sea Floor").transform.localScale = new Vector3((cols + CameraController.panLimit + 1000) / 10, 1, (rows + CameraController.panLimit + 1000) / 10);
-        float seaFloorCol = Mathf.Clamp(0.3f - 0.7f * seaLevel / (1f - seaLevel), 0, 1);
-        transform.Find("Sea Floor").GetComponent<Renderer>().material.SetColor("_Color", new Color(1f - seaFloorCol, 1f - seaFloorCol * 0.6f, 1f - seaFloorCol));
+        // float seaFloorCol = Mathf.Clamp(0.3f - 0.7f * seaLevel / (1f - seaLevel), 0, 1);
+        transform.Find("Sea Floor").GetComponent<Renderer>().material.SetColor("_Color", sand/*new Color(1f - seaFloorCol, 1f - seaFloorCol * 0.6f, 1f - seaFloorCol)*/);
     
         mesh.Clear();
         mesh.vertices = vertices;
