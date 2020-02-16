@@ -9,6 +9,7 @@
 		- Agent attack
 - Breeding
 	- Type
+- Agent senses
 - Setup menu
 - God features
 	- Raise/lower land

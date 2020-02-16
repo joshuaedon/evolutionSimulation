@@ -5,23 +5,24 @@ using UnityEngine;
 public class AgentStats : MonoBehaviour {
 		void OnEnable() {
 				if(GridController.selectedAgent != null) {
-	    		NeuralNetwork n = GridController.selectedAgent.network;
+		    		NeuralNetwork network = GridController.selectedAgent.network;
 
-	    		int maxNodes = 0;
-	    		for(int i = 0; i < n.layers.Length; i++)
-	    				maxNodes = Mathf.Max(maxNodes, n.layers[i].nodes.Length);
-	    		float nodeSize = transform.GetComponentInParent<Canvas>().GetComponent<RectTransform>().sizeDelta.y/maxNodes;
-	    		nodeSize = Mathf.Min(nodeSize, (transform.GetComponentInParent<Canvas>().GetComponent<RectTransform>().sizeDelta.x - 400)/(2*n.layers.Length));
+		    		int maxNodes = 0;
+		    		for(int i = 0; i < network.layers.Length; i++)
+		    				maxNodes = Mathf.Max(maxNodes, network.layers[i].nodes.Length);
+		    		float nodeSize = transform.GetComponentInParent<Canvas>().GetComponent<RectTransform>().sizeDelta.y/maxNodes;
+		    		nodeSize = Mathf.Min(nodeSize, (transform.GetComponentInParent<Canvas>().GetComponent<RectTransform>().sizeDelta.x - 400)/(2*network.layers.Length));
 
-	    		GameObject referenceLayer = (GameObject)Instantiate(Resources.Load("Simulation/GUI/NetworkLayer"));
-	    		GameObject referenceNode = (GameObject)Instantiate(Resources.Load("Simulation/GUI/NetworkNode"));
-	    		referenceNode.GetComponent<RectTransform>().sizeDelta = new Vector2(nodeSize, nodeSize);
-	    		for(int i = 0; i < n.layers.Length; i++) {
-	        		GameObject layerObj = (GameObject)Instantiate(referenceLayer, transform);
-	        		for(int j = 0; j < n.layers[i].nodes.Length; j++) {
+		    		GameObject referenceLayer = (GameObject)Instantiate(Resources.Load("GUI/NetworkLayer"));
+		    		GameObject referenceNode = (GameObject)Instantiate(Resources.Load("GUI/NetworkNode"));
+		    		referenceNode.GetComponent<RectTransform>().sizeDelta = new Vector2(nodeSize, nodeSize);
+		    		for(int l = 0; l < network.layers.Length; l++) {
+		        		GameObject layerObj = (GameObject)Instantiate(referenceLayer, transform);
+		        		for(int n = 0; n < network.layers[l].nodes.Length; n++) {
 	        				GameObject nodeObj = (GameObject)Instantiate(referenceNode, layerObj.transform);
-	        		}
-	      	}
+	        				network.layers[l].nodes[n].nodeObject = nodeObj;
+		        		}
+		      	}
 	      }
 
       	
@@ -124,7 +125,7 @@ public class AgentStats : MonoBehaviour {
     }
 
     void OnDisable() {
-    		foreach(Transform child in transform)
-    				GameObject.Destroy(child.gameObject);
+		foreach(Transform child in transform)
+			GameObject.Destroy(child.gameObject);
     }
 }

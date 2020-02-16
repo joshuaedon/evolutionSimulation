@@ -1,13 +1,14 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GridController : MonoBehaviour {
     OpenSimplexNoise osn;
     //// Grid attributes
     [Range(0, 4)]
-    public float tickSpeed = 0;
-    public float workingFramesPerTick;
-    public static float framesPerTick;
+    public float ticksPerSec = 0;
+    public float framesPerTick;
+    public static string tickFrame;
     [Range(0, 10000)]
     public static int time = 0;
     // []
@@ -47,6 +48,7 @@ public class GridController : MonoBehaviour {
     public bool showVertices = false;
     //// Game objects
     public GameObject AgentPanel;
+    public GameObject TickSpeedText;
 
     void Start() {
         osn = new OpenSimplexNoise();
@@ -64,6 +66,7 @@ public class GridController : MonoBehaviour {
 
         AgentPanel = GameObject.Find("AgentPanel");
         AgentPanel.SetActive(false);
+        TickSpeedText = GameObject.Find("TickSpeedText");
 
         updateGrid();
 
@@ -146,26 +149,31 @@ public class GridController : MonoBehaviour {
         }
 
         // Step
-        if(tickSpeed != 0) {
-            if(workingFramesPerTick > 0) {
-                workingFramesPerTick--;
+        if(ticksPerSec != 0) {
+            if(framesPerTick > 0) {
+                framesPerTick--;
             } else {
-                if((1/Time.deltaTime) < Mathf.Pow(10, tickSpeed-1)) {
-                    for(int i = 0; i < Mathf.Pow(10, tickSpeed-1) / Mathf.Max(1, (1/Time.deltaTime)); i++)
+                if((1/Time.deltaTime) < ticksPerSec) {
+                    float ticksPerFrame = Mathf.Floor(ticksPerSec / Mathf.Max(1, (1/Time.deltaTime)));
+                    for(int i = 0; i < ticksPerFrame; i++)
                         step();
+                    tickFrame = "Ticks/frame: " + ticksPerFrame;
                 } else {
                     step();
-                    workingFramesPerTick = Mathf.Floor(1 / (Mathf.Pow(10, tickSpeed-1) * Time.deltaTime));
-                    framesPerTick = workingFramesPerTick;
+                    framesPerTick = Mathf.Floor(1 / (ticksPerSec * Time.deltaTime));
+                    tickFrame = "Frames/tick: " + framesPerTick;
                 }
             }
         }
     }
 
     public void adjustTickSpeed(float speed) {
-        this.tickSpeed = speed;
-        workingFramesPerTick = Mathf.Floor(1 / (Mathf.Pow(10, tickSpeed-1) * Time.deltaTime));
-        framesPerTick = workingFramesPerTick;
+        if(speed == 0)
+            this.ticksPerSec = 0;
+        else
+            this.ticksPerSec = Mathf.Pow(10, speed-1);
+        framesPerTick = 1;
+        TickSpeedText.GetComponent<Text>().text = Mathf.Round(ticksPerSec * 100f) / 100f + " ticks/sec";
     }
 
     private void OnValidate() {
