@@ -18,7 +18,9 @@
 	- Population
 	- Colour
 - To try tab
-
+- Neural Networks
+	- Change so weights go across multiple layers
+	- Propagation animation
 
 
 BUGS

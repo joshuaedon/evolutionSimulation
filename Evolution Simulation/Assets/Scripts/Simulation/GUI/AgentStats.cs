@@ -4,23 +4,25 @@ using UnityEngine;
 
 public class AgentStats : MonoBehaviour {
 		void OnEnable() {
-    		NeuralNetwork n = GridController.selectedAgent.network;
+				if(GridController.selectedAgent != null) {
+	    		NeuralNetwork n = GridController.selectedAgent.network;
 
-    		int maxNodes = 0;
-    		for(int i = 0; i < n.layers.Length; i++)
-    				maxNodes = Mathf.Max(maxNodes, n.layers[i].nodes.Length);
-    		float nodeSize = transform.GetComponentInParent<Canvas>().GetComponent<RectTransform>().sizeDelta.y/maxNodes;
-    		nodeSize = Mathf.Min(nodeSize, (transform.GetComponentInParent<Canvas>().GetComponent<RectTransform>().sizeDelta.x - 400)/(2*n.layers.Length));
+	    		int maxNodes = 0;
+	    		for(int i = 0; i < n.layers.Length; i++)
+	    				maxNodes = Mathf.Max(maxNodes, n.layers[i].nodes.Length);
+	    		float nodeSize = transform.GetComponentInParent<Canvas>().GetComponent<RectTransform>().sizeDelta.y/maxNodes;
+	    		nodeSize = Mathf.Min(nodeSize, (transform.GetComponentInParent<Canvas>().GetComponent<RectTransform>().sizeDelta.x - 400)/(2*n.layers.Length));
 
-    		GameObject referenceLayer = (GameObject)Instantiate(Resources.Load("Simulation/GUI/NetworkLayer"));
-    		GameObject referenceNode = (GameObject)Instantiate(Resources.Load("Simulation/GUI/NetworkNode"));
-    		referenceNode.GetComponent<RectTransform>().sizeDelta = new Vector2(nodeSize, nodeSize);
-    		for(int i = 0; i < n.layers.Length; i++) {
-        		GameObject layerObj = (GameObject)Instantiate(referenceLayer, transform);
-        		for(int j = 0; j < n.layers[i].nodes.Length; j++) {
-        				GameObject nodeObj = (GameObject)Instantiate(referenceNode, layerObj.transform);
-        		}
-      	}
+	    		GameObject referenceLayer = (GameObject)Instantiate(Resources.Load("Simulation/GUI/NetworkLayer"));
+	    		GameObject referenceNode = (GameObject)Instantiate(Resources.Load("Simulation/GUI/NetworkNode"));
+	    		referenceNode.GetComponent<RectTransform>().sizeDelta = new Vector2(nodeSize, nodeSize);
+	    		for(int i = 0; i < n.layers.Length; i++) {
+	        		GameObject layerObj = (GameObject)Instantiate(referenceLayer, transform);
+	        		for(int j = 0; j < n.layers[i].nodes.Length; j++) {
+	        				GameObject nodeObj = (GameObject)Instantiate(referenceNode, layerObj.transform);
+	        		}
+	      	}
+	      }
 
       	
 

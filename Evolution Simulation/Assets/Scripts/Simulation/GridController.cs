@@ -3,15 +3,24 @@ using UnityEngine;
 
 public class GridController : MonoBehaviour {
     OpenSimplexNoise osn;
-    // Grid attributes
+    //// Grid attributes
+    [Range(0, 4)]
+    public float tickSpeed = 0;
+    public float workingFramesPerTick;
+    public static float framesPerTick;
+    [Range(0, 10000)]
+    public static int time = 0;
+    // []
+    public float terrainTimeStep = 0.0000001f;
+    // []
+    public int terrainTimeUpdate = 250;
+    // Terrain
     [Range(0f, 10000f)]
     public float seed;
-    [Range(0f, 20f)]
-    public float time = 0;
     [Range(0, 200)]
-    public static int cols = 100;
+    public static int cols = 150;
     [Range(0, 200)]
-    public static int rows = 50;
+    public static int rows = 75;
     [Range(0f, 100f)]
     public float noiseScale = 10f;
     [Range(0f, 1f)]
@@ -20,19 +29,24 @@ public class GridController : MonoBehaviour {
     public static float yScale = 3f;
     [Range(0, 50)]
     public int seaBorder = 10;
+    // Food
     [Range(0f, 10f)]
-    public static float maxFood = 10;
-    // Grid state
+    public float maxFood = 10f;
+    // []
+    public float foodSpread = 0.05f;
+    // [] Agents
+    public int startingAgents = 50;
+    //// Grid state
     public static Chunk[,] gridArray;
     Mesh mesh;
     Vector3[] vertices;
     int[] triangles;
     public static List<Agent> agents;
-    // User variables
+    //// User variables
     public static Agent selectedAgent;
     public bool showVertices = false;
-    // Game objects
-    public GameObject AgentPannel;
+    //// Game objects
+    public GameObject AgentPanel;
 
     void Start() {
         osn = new OpenSimplexNoise();
@@ -48,13 +62,14 @@ public class GridController : MonoBehaviour {
         selectedAgent = null;
         showVertices = false;
 
-        AgentPannel.SetActive(false);
+        AgentPanel = GameObject.Find("AgentPanel");
+        AgentPanel.SetActive(false);
 
         updateGrid();
 
         // Spawn agents
         GameObject referenceAgent = (GameObject)Instantiate(Resources.Load("Simulation/Agent"));
-        for(int i = 0; i < 20; i++) {
+        for(int i = 0; i < startingAgents; i++) {
             Chunk chunk;
             int count = 0;
             do {
@@ -75,6 +90,23 @@ public class GridController : MonoBehaviour {
         Destroy(referenceAgent);
     }
 
+    void step() {
+        // Step bots
+        for(int i = agents.Count - 1; i >= 0; i--)
+            agents[i].act(i);
+
+        // Load new agent inputs
+        foreach(Agent a in agents)
+            a.loadInputs();
+
+        // Update grid
+        if(time % terrainTimeUpdate == 0)
+            updateGrid();
+
+        // Increment time
+        time += 1;
+    }
+
     void Update() {
         // Select agent
         if(Input.GetMouseButtonDown(0) && !UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) {
@@ -89,13 +121,14 @@ public class GridController : MonoBehaviour {
                         selectedAgent = a;
                     }
                 }
-                AgentPannel.SetActive(true);
+                AgentPanel.SetActive(true);
             } else {
                 selectedAgent = null;
-                AgentPannel.SetActive(false);
+                AgentPanel.SetActive(false);
             }
         }
-        // Show vertices
+
+        // Display vertices
         if(showVertices && !UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
@@ -112,15 +145,27 @@ public class GridController : MonoBehaviour {
             }
         }
 
-        // Step bots
-        for(int i = agents.Count - 1; i >= 0; i--)
-            agents[i].act(i);
-        // Load new agent inputs
-        foreach(Agent a in agents)
-            a.loadInputs();
+        // Step
+        if(tickSpeed != 0) {
+            if(workingFramesPerTick > 0) {
+                workingFramesPerTick--;
+            } else {
+                if((1/Time.deltaTime) < Mathf.Pow(10, tickSpeed-1)) {
+                    for(int i = 0; i < Mathf.Pow(10, tickSpeed-1) / Mathf.Max(1, (1/Time.deltaTime)); i++)
+                        step();
+                } else {
+                    step();
+                    workingFramesPerTick = Mathf.Floor(1 / (Mathf.Pow(10, tickSpeed-1) * Time.deltaTime));
+                    framesPerTick = workingFramesPerTick;
+                }
+            }
+        }
+    }
 
-        // time += 0.001f;
-        // updateGrid();
+    public void adjustTickSpeed(float speed) {
+        this.tickSpeed = speed;
+        workingFramesPerTick = Mathf.Floor(1 / (Mathf.Pow(10, tickSpeed-1) * Time.deltaTime));
+        framesPerTick = workingFramesPerTick;
     }
 
     private void OnValidate() {
@@ -130,17 +175,20 @@ public class GridController : MonoBehaviour {
     }
 
     void updateGrid() {
-        // Delete and create chunk objects if grid dimensions have been changed
+        // Delete and create grid objects if grid dimensions have been changed
         if(cols != gridArray.GetLength(0) || rows != gridArray.GetLength(1)) {
+            // Destroy old vertex objects
             for(int c = 0; c < gridArray.GetLength(0); c++) {
                 for(int r = 0; r < gridArray.GetLength(1); r++) {
                     Destroy(gridArray[c, r].vertexObj);
                 }
             }
 
+            // Reset chunk and vertex arrays
             gridArray = new Chunk[cols, rows];
             vertices = new Vector3[cols * rows];
 
+            // Create new vertex objects
             GameObject referenceVertex = (GameObject)Instantiate(Resources.Load("Simulation/Vertex"));
             for(int c = 0; c < cols; c++) {
                 for(int r = 0; r < rows; r++) {
@@ -150,8 +198,8 @@ public class GridController : MonoBehaviour {
             }
             Destroy(referenceVertex);
 
+            // Create mesh triangles
             triangles = new int[(cols-1) * (rows - 1) * 6];
-            
             int v = 0;
             int t = 0;
             for(int c = 0; c < cols-1; c++) {
@@ -169,13 +217,14 @@ public class GridController : MonoBehaviour {
                 v++;
             }
         }
-        Color[] colours = new Color[cols * rows];
+
         // Set the positions and colours of vertices
+        Color[] colours = new Color[cols * rows];
         Color sand = new Color(0.941f, 0.953f, 0.741f);
         Color land = new Color(0.263f, 0.157f, 0.094f);
         for(int c = 0; c < cols; c++) {
             for(int r = 0; r < rows; r++) {
-                float elevation = ((float)osn.Evaluate(c / noiseScale + seed, r / noiseScale + seed, time) + 1) / 2;
+                float elevation = ((float)osn.Evaluate(c / noiseScale + seed, r / noiseScale + seed, time * terrainTimeStep * terrainTimeUpdate) + 1) / 2;
 
                 int distFromBorder = Mathf.Min(c + 1, r + 1, cols - c, rows - r);
                 if(distFromBorder < seaBorder)
@@ -184,26 +233,30 @@ public class GridController : MonoBehaviour {
                 gridArray[c, r].setElevation(elevation, yScale);
                 vertices[c*rows + r] = new Vector3(c, elevation * yScale, r);
 
-
-                // float col = Mathf.Clamp(0.3f + 0.7f * ((elevation - seaLevel) / (1f - seaLevel)), 0, 1);
                 Color col = Color.Lerp(sand, land, (1 + seaLevel) * elevation - seaLevel);
-                colours[c*rows + r] = Color.Lerp(col, new Color(col.r, 1, col.b), gridArray[c, r].food / maxFood);//new Color(1f - col, 1f - col * 0.6f, 1f - col);
+                colours[c*rows + r] = Color.Lerp(col, new Color(col.r, 1, col.b), gridArray[c, r].food / maxFood);
             }
         }
+        // Move any agent objects 
+        foreach(Agent a in agents)
+            a.moveObj();
+
+
         // Set up water plane
         transform.Find("Water").transform.position = new Vector3(0, yScale * seaLevel, 0);
         transform.Find("Water").transform.localScale = new Vector3((cols + CameraController.panLimit + 1000) / 10, 1, (rows + CameraController.panLimit + 1000) / 10);
+
         // Set up sea floor plane
         transform.Find("Sea Floor").transform.localScale = new Vector3((cols + CameraController.panLimit + 1000) / 10, 1, (rows + CameraController.panLimit + 1000) / 10);
-        // float seaFloorCol = Mathf.Clamp(0.3f - 0.7f * seaLevel / (1f - seaLevel), 0, 1);
-        transform.Find("Sea Floor").GetComponent<Renderer>().material.SetColor("_Color", sand/*new Color(1f - seaFloorCol, 1f - seaFloorCol * 0.6f, 1f - seaFloorCol)*/);
+        transform.Find("Sea Floor").GetComponent<Renderer>().material.SetColor("_Color", sand);
     
+        // Create mesh object
         mesh.Clear();
         mesh.vertices = vertices;
         mesh.triangles = triangles;
         mesh.colors = colours;
         mesh.RecalculateNormals();
-
+        // Create mesh collider
         MeshCollider meshc = gameObject.AddComponent(typeof(MeshCollider)) as MeshCollider;
     }
 }

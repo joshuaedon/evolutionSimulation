@@ -8,6 +8,8 @@ public class StatsManager : MonoBehaviour {
 
     void Update() {
         text.text = "FPS: " + Mathf.Round(1f/Time.deltaTime) +
+        						"\nFrames per tick: " + GridController.framesPerTick +
+        						"\nTime: " + GridController.time +
         						"\nAgent count: " + GridController.agents.Count;
     }
 }

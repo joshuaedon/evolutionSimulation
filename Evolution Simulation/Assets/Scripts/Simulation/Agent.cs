@@ -18,7 +18,7 @@ public class Agent {
         this.dir = Random.Range(0, 4);
     }
 
-    void moveObj() {
+    public void moveObj() {
         agentObj.transform.position = new Vector3(chunk.vertex.x, GridController.yScale * chunk.vertex.y + 0.5f, chunk.vertex.z);
     }
 
