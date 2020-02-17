@@ -880,7 +880,7 @@ MonoBehaviour:
   terrainTimeStep: 0.0000001
   terrainTimeUpdate: 250
   seed: 0
-  noiseScale: 10
+  noiseScale: 15
   seaBorder: 10
   maxFood: 10
   foodSpread: 0.05

@@ -1,7 +1,7 @@
 ﻿DOING
-- quadratic border
-- main menu
-
+- New main menu background
+- Grid update efficiency
+- Neural network connections
 
 
 - Food

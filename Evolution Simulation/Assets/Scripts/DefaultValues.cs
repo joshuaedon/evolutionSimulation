@@ -25,13 +25,11 @@ public class defaultVariables {
     // []
     public int terrainTimeUpdate = 250;
     // Terrain
-    [Range(0f, 10000f)]
-    public float seed;
     [Range(0, 200)]
     public static int cols = 150;
     [Range(0, 200)]
     public static int rows = 75;
-    [Range(0f, 100f)]
+    [Range(1f, 100f)]
     public float noiseScale = 15f;
     [Range(0f, 1f)]
     public static float seaLevel = 0.4f;

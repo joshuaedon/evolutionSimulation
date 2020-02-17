@@ -16,16 +16,14 @@ public class GridController : MonoBehaviour {
     // []
     public int terrainTimeUpdate = 250;
     // Terrain
-    [Range(0f, 10000f)]
-    public float seed;
     [Range(0, 200)]
     public static int cols = 150;
     [Range(0, 200)]
     public static int rows = 75;
-    [Range(0f, 100f)]
+    [Range(1f, 100f)]
     public float noiseScale = 15f;
     [Range(0f, 1f)]
-    public static float seaLevel = 0.4f;
+    public static float seaLevel = 0.45f;
     [Range(1f, 10f)]
     public static float yScale = 3f;
     [Range(0, 50)]
@@ -53,7 +51,6 @@ public class GridController : MonoBehaviour {
     void Start() {
         osn = new OpenSimplexNoise();
 
-        seed = Random.Range(0, 10000);
         time = 0;
 
         gridArray = new Chunk[0, 0];
@@ -68,7 +65,7 @@ public class GridController : MonoBehaviour {
         AgentPanel.SetActive(false);
         TickSpeedText = GameObject.Find("TickSpeedText");
 
-        updateGrid();
+        createGrid();
 
         // Spawn agents
         GameObject referenceAgent = (GameObject)Instantiate(Resources.Load("Simulation/Agent"));
@@ -180,11 +177,58 @@ public class GridController : MonoBehaviour {
 
     private void OnValidate() {
         if(gridArray != null) {
-            updateGrid();
+            createGrid();
         }
     }
 
     void updateGrid() {
+        // Set the positions and colours of vertices
+        Color[] colours = new Color[cols * rows];
+        Color sand = new Color(0.941f, 0.953f, 0.741f);
+        Color land = new Color(0.263f, 0.157f, 0.094f);
+        for(int c = 0; c < cols; c++) {
+            for(int r = 0; r < rows; r++) {
+                float elevation = (
+                                    (float)osn.Evaluate(c / noiseScale, r / noiseScale, time * terrainTimeStep * terrainTimeUpdate) + 
+                                    (float)osn.Evaluate(c / (noiseScale / 4), r / (noiseScale / 4), 1000 + time * terrainTimeStep * terrainTimeUpdate / 2) / 8 + 
+                                    1
+                                  ) / 2;
+
+                int distFromBorder = Mathf.Min(c + 1, r + 1, cols - c, rows - r);
+                if(distFromBorder < seaBorder)
+                    elevation *= -Mathf.Pow((float)distFromBorder / seaBorder - 1, 2) + 1;
+
+                gridArray[c, r].setElevation(elevation, yScale);
+                vertices[c*rows + r] = new Vector3(c, elevation * yScale, r);
+
+                Color col = Color.Lerp(sand, land, (1 + seaLevel) * elevation - seaLevel);
+                colours[c*rows + r] = Color.Lerp(col, new Color(col.r, 1, col.b), gridArray[c, r].food / maxFood);
+            }
+        }
+        // Move any agent objects 
+        foreach(Agent a in agents)
+            a.moveObj();
+
+
+        // Set up water plane
+        transform.Find("Water").transform.position = new Vector3(0, yScale * seaLevel, 0);
+        transform.Find("Water").transform.localScale = new Vector3((cols + CameraController.panLimit + 1000) / 10, 1, (rows + CameraController.panLimit + 1000) / 10);
+
+        // Set up sea floor plane
+        transform.Find("Sea Floor").transform.localScale = new Vector3((cols + CameraController.panLimit + 1000) / 10, 1, (rows + CameraController.panLimit + 1000) / 10);
+        transform.Find("Sea Floor").GetComponent<Renderer>().material.SetColor("_Color", sand);
+    
+        // Create mesh object
+        mesh.Clear();
+        mesh.vertices = vertices;
+        mesh.triangles = triangles;
+        mesh.colors = colours;
+        mesh.RecalculateNormals();
+        // Create mesh collider
+        MeshCollider meshc = gameObject.AddComponent(typeof(MeshCollider)) as MeshCollider;
+    }
+
+    void createGrid() {
         // Delete and create grid objects if grid dimensions have been changed
         if(cols != gridArray.GetLength(0) || rows != gridArray.GetLength(1)) {
             // Destroy old vertex objects
@@ -228,49 +272,6 @@ public class GridController : MonoBehaviour {
             }
         }
 
-        // Set the positions and colours of vertices
-        Color[] colours = new Color[cols * rows];
-        Color sand = new Color(0.941f, 0.953f, 0.741f);
-        Color land = new Color(0.263f, 0.157f, 0.094f);
-        for(int c = 0; c < cols; c++) {
-            for(int r = 0; r < rows; r++) {
-                float elevation = ((float)osn.Evaluate(c / noiseScale + seed, r / noiseScale + seed, time * terrainTimeStep * terrainTimeUpdate) + 1) / 2;
-
-                int distFromBorder = Mathf.Min(c + 1, r + 1, cols - c, rows - r);
-                if(distFromBorder < seaBorder)
-                    elevation *= -Mathf.Pow((float)distFromBorder / seaBorder - 1, 2) + 1;
-
-                gridArray[c, r].setElevation(elevation, yScale);
-                vertices[c*rows + r] = new Vector3(c, elevation * yScale, r);
-
-                Color col = Color.Lerp(sand, land, (1 + seaLevel) * elevation - seaLevel);
-                colours[c*rows + r] = Color.Lerp(col, new Color(col.r, 1, col.b), gridArray[c, r].food / maxFood);
-            }
-        }
-        // Move any agent objects 
-        foreach(Agent a in agents)
-            a.moveObj();
-
-
-        // Set up water plane
-        transform.Find("Water").transform.position = new Vector3(0, yScale * seaLevel, 0);
-        transform.Find("Water").transform.localScale = new Vector3((cols + CameraController.panLimit + 1000) / 10, 1, (rows + CameraController.panLimit + 1000) / 10);
-
-        // Set up sea floor plane
-        transform.Find("Sea Floor").transform.localScale = new Vector3((cols + CameraController.panLimit + 1000) / 10, 1, (rows + CameraController.panLimit + 1000) / 10);
-        transform.Find("Sea Floor").GetComponent<Renderer>().material.SetColor("_Color", sand);
-    
-        // Create mesh object
-        mesh.Clear();
-        mesh.vertices = vertices;
-        mesh.triangles = triangles;
-        mesh.colors = colours;
-        mesh.RecalculateNormals();
-        // Create mesh collider
-        MeshCollider meshc = gameObject.AddComponent(typeof(MeshCollider)) as MeshCollider;
-    }
-
-    void createGrid() {
-        
+        updateGrid();
     }
 }
