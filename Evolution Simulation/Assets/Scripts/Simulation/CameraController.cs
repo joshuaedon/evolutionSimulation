@@ -10,10 +10,10 @@ public class CameraController : MonoBehaviour {
     public static float minY = 10f;
     public static float maxY = 120f;
 
-    public static float rotateSpeed = 40f;
+    public static float rotateSpeed = 80f;
 
     void Start() {
-        transform.position = new Vector3((GridController.cols - 1) / 2, 60, (GridController.rows - 1) / 2 - 35);
+        transform.position = new Vector3((GridController.cols - 1) / 2.0f, 60, (GridController.rows - 1) / 2.0f - 35);
     }
 
     void Update() {
@@ -43,8 +43,8 @@ public class CameraController : MonoBehaviour {
         transform.position = pos;
 
         if(Input.GetKey("e"))
-            transform.RotateAround(pos, Vector3.up, Time.deltaTime*rotateSpeed * 2f);
+            transform.RotateAround(pos + transform.forward*70, Vector3.up, Time.deltaTime*rotateSpeed);
         if(Input.GetKey("q"))
-            transform.RotateAround(pos, Vector3.up, -Time.deltaTime*rotateSpeed * 2f);
+            transform.RotateAround(pos + transform.forward*70, Vector3.up, -Time.deltaTime*rotateSpeed);
     }
 }

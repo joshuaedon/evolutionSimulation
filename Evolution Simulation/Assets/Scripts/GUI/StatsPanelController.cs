@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class StatsManager : MonoBehaviour {
+public class StatsPanelController : MonoBehaviour {
 	public Text text;
 
     void Update() {

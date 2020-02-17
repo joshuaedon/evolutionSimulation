@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AgentStats : MonoBehaviour {
+public class AgentPanelController : MonoBehaviour {
 		void OnEnable() {
-				if(GridController.selectedAgent != null) {
-		    		NeuralNetwork network = GridController.selectedAgent.network;
+				if(SimulationManager.selectedAgent != null) {
+		    		NeuralNetwork network = SimulationManager.selectedAgent.network;
 
 		    		int maxNodes = 0;
 		    		for(int i = 0; i < network.layers.Length; i++)

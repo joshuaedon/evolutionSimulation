@@ -28,28 +28,28 @@ public class Agent {
         network.loadInputs(inputs);
     }
 
-    public void act(int a) {
-        float leftOut = network.returnOutput("Left", false);
-        float rightOut = network.returnOutput("Right", false);
-        float stepOut = network.returnOutput("Step", false);
-        float stayOut = network.returnOutput("Stay", false);
-        if(leftOut > Mathf.Max(Mathf.Max(rightOut, stepOut), stayOut))
-            turnLeft();
-        else if(rightOut > Mathf.Max(stepOut, stayOut))
-            turnRight();
-        else if(stepOut > stayOut)
-            stepForward();
-        /*if(a == 0) {
-            Debug.Log(leftOut + ", " + rightOut + ", " + stepOut + ", " + stayOut);
+    public void act(bool isMenu) {
+        if(!isMenu) {
+            float leftOut = network.returnOutput("Left", false);
+            float rightOut = network.returnOutput("Right", false);
+            float stepOut = network.returnOutput("Step", false);
+            float stayOut = network.returnOutput("Stay", false);
             if(leftOut > Mathf.Max(Mathf.Max(rightOut, stepOut), stayOut))
-                Debug.Log("left");
+                turnLeft();
             else if(rightOut > Mathf.Max(stepOut, stayOut))
-                Debug.Log("right");
+                turnRight();
             else if(stepOut > stayOut)
-                Debug.Log("step");
+                stepForward(isMenu);
+            loadInputs();
+        } else {
+            float rand = Random.Range(0f, 1f);
+            if(rand > 2.0f/3.0f)
+                turnLeft();
+            else if(rand > 1.0f/3.0f)
+                turnRight();
             else
-                Debug.Log("stay");
-        }*/
+                stepForward(isMenu);
+        }
     }
 
     void turnLeft() {
@@ -60,7 +60,7 @@ public class Agent {
         this.dir = (dir + 1) % 4;
     }
 
-    void stepForward() {
+    void stepForward(bool isMenu) {
         int newCol = Mathf.RoundToInt(chunk.vertex.x);
         int newRow = Mathf.RoundToInt(chunk.vertex.z);
         switch(this.dir) {
@@ -71,7 +71,7 @@ public class Agent {
         }
         if(newCol >= 0 && newRow >= 0 && newCol < GridController.cols && newRow < GridController.rows) {
             Chunk newChunk = GridController.gridArray[newCol, newRow];
-            if(newChunk.agent == null) {
+            if(newChunk.agent == null && (!isMenu || !newChunk.isWater() || this.chunk.isWater())) {
                 // Step Forward
                 this.chunk.agent = null;
                 this.chunk = newChunk;
