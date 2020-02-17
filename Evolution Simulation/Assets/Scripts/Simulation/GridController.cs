@@ -145,14 +145,19 @@ public class GridController : MonoBehaviour {
             // Casts the ray and get the first game object hit
             Physics.Raycast(ray, out hit);
 
+            GameObject referenceVertex = (GameObject)Instantiate(Resources.Load("Simulation/Vertex"));
             for(int c = 0; c < gridArray.GetLength(0); c++) {
                 for(int r = 0; r < gridArray.GetLength(1); r++) {
-                    if(Vector3.Distance(hit.point, gridArray[c, r].vertex) < 5)
-                        gridArray[c, r].vertexObj.SetActive(true);
-                    else
-                        gridArray[c, r].vertexObj.SetActive(false);
+                    if(Vector3.Distance(hit.point, gridArray[c, r].vertex) < 5) {
+                        if(gridArray[c, r].vertexObj == null) {
+                            gridArray[c, r].vertexObj = (GameObject)Instantiate(referenceVertex, transform);
+                            gridArray[c, r].setVertexPos(yScale);
+                        }
+                    } else
+                        Destroy(gridArray[c, r].vertexObj);
                 }
             }
+            Destroy(referenceVertex);
         }
 
         // Step
@@ -206,7 +211,9 @@ public class GridController : MonoBehaviour {
                 if(distFromBorder < seaBorder)
                     elevation *= -Mathf.Pow((float)distFromBorder / seaBorder - 1, 2) + 1;
 
-                gridArray[c, r].setElevation(elevation, yScale);
+                gridArray[c, r].vertex.y = elevation;
+                if(gridArray[c, r].vertexObj != null)
+                    gridArray[c, r].setVertexPos(yScale);
                 vertices[c*rows + r] = new Vector3(c, elevation * yScale, r);
 
                 Color col = Color.Lerp(sand, land, (1 + seaLevel) * elevation - seaLevel);
@@ -236,26 +243,24 @@ public class GridController : MonoBehaviour {
 
         // Delete and create grid objects if grid dimensions have been changed
         if(cols != gridArray.GetLength(0) || rows != gridArray.GetLength(1)) {
-            // Destroy old vertex objects
+            /*// Destroy old vertex objects
             for(int c = 0; c < gridArray.GetLength(0); c++) {
                 for(int r = 0; r < gridArray.GetLength(1); r++) {
                     Destroy(gridArray[c, r].vertexObj);
                 }
-            }
+            }*/
 
             // Reset chunk and vertex arrays
             gridArray = new Chunk[cols, rows];
             vertices = new Vector3[cols * rows];
 
-            // Create new vertex objects
-            GameObject referenceVertex = (GameObject)Instantiate(Resources.Load("Simulation/Vertex"));
+            // Create new chunk objects
             for(int c = 0; c < cols; c++) {
                 for(int r = 0; r < rows; r++) {
-                    GameObject vertexObj = (GameObject)Instantiate(referenceVertex, transform);
-                    gridArray[c, r] = new Chunk(vertexObj, c, r);
+                    gridArray[c, r] = new Chunk(c, r);
                 }
             }
-            Destroy(referenceVertex);
+            
 
             // Create mesh triangles
             triangles = new int[(cols-1) * (rows - 1) * 6];

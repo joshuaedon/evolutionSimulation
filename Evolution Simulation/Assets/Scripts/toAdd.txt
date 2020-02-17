@@ -17,6 +17,7 @@
 - Agent senses
 - Setup menu
 - God features
+	- Vertex objects must be deleted when !showVertices
 	- Raise/lower land
 	- Add/remove food
 	- Save, Copy, move, delete agents

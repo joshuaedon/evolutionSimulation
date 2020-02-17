@@ -8,16 +8,13 @@ public class Chunk {
     public Agent agent;
     public float food;
 
-    public Chunk(GameObject vertexObj, int c, int r) {
-        this.vertexObj = vertexObj;
-        vertexObj.SetActive(false);
+    public Chunk(int c, int r) {
         this.vertex = new Vector3(c, 0, r);
         this.food = 10;
     }
 
-    public void setElevation(float elevation, float yScale) {
-        this.vertexObj.transform.position = new Vector3(vertex.x, elevation * yScale, vertex.z);
-        this.vertex.y = elevation;
+    public void setVertexPos(float yScale) {
+        this.vertexObj.transform.position = new Vector3(vertex.x, vertex.y * yScale, vertex.z);
     }
 
 	public bool isWater() {
