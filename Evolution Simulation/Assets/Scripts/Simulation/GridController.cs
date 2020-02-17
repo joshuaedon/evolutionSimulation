@@ -40,11 +40,13 @@ public class GridController : MonoBehaviour {
     Mesh mesh;
     Vector3[] vertices;
     int[] triangles;
+    Color[] colours;
     public static List<Agent> agents;
     //// User variables
     public static Agent selectedAgent;
     public bool showVertices = false;
     //// Game objects
+    public GameObject StatsPanel;
     public GameObject AgentPanel;
     public GameObject TickSpeedText;
 
@@ -61,6 +63,8 @@ public class GridController : MonoBehaviour {
         selectedAgent = null;
         showVertices = false;
 
+        StatsPanel = GameObject.Find("StatsPanel");
+        StatsPanel.SetActive(true);
         AgentPanel = GameObject.Find("AgentPanel");
         AgentPanel.SetActive(false);
         TickSpeedText = GameObject.Find("TickSpeedText");
@@ -110,6 +114,10 @@ public class GridController : MonoBehaviour {
     }
 
     void Update() {
+        // Toggle stats panel
+        if(Input.GetKeyDown(KeyCode.F2))
+            StatsPanel.SetActive(!StatsPanel.activeInHierarchy);
+
         // Select agent
         if(Input.GetMouseButtonDown(0) && !UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -153,7 +161,7 @@ public class GridController : MonoBehaviour {
                 framesPerTick--;
             } else {
                 if((1/Time.deltaTime) < ticksPerSec) {
-                    float ticksPerFrame = Mathf.Floor(ticksPerSec / Mathf.Max(1, (1/Time.deltaTime)));
+                    float ticksPerFrame = Mathf.Floor(ticksPerSec / Mathf.Max(2, (1/Time.deltaTime)));
                     for(int i = 0; i < ticksPerFrame; i++)
                         step();
                     tickFrame = "Ticks/frame: " + ticksPerFrame;
@@ -183,7 +191,7 @@ public class GridController : MonoBehaviour {
 
     void updateGrid() {
         // Set the positions and colours of vertices
-        Color[] colours = new Color[cols * rows];
+        colours = new Color[cols * rows];
         Color sand = new Color(0.941f, 0.953f, 0.741f);
         Color land = new Color(0.263f, 0.157f, 0.094f);
         for(int c = 0; c < cols; c++) {
@@ -209,26 +217,23 @@ public class GridController : MonoBehaviour {
         foreach(Agent a in agents)
             a.moveObj();
 
-
-        // Set up water plane
-        transform.Find("Water").transform.position = new Vector3(0, yScale * seaLevel, 0);
-        transform.Find("Water").transform.localScale = new Vector3((cols + CameraController.panLimit + 1000) / 10, 1, (rows + CameraController.panLimit + 1000) / 10);
-
-        // Set up sea floor plane
-        transform.Find("Sea Floor").transform.localScale = new Vector3((cols + CameraController.panLimit + 1000) / 10, 1, (rows + CameraController.panLimit + 1000) / 10);
-        transform.Find("Sea Floor").GetComponent<Renderer>().material.SetColor("_Color", sand);
-    
         // Create mesh object
         mesh.Clear();
         mesh.vertices = vertices;
         mesh.triangles = triangles;
         mesh.colors = colours;
         mesh.RecalculateNormals();
-        // Create mesh collider
-        MeshCollider meshc = gameObject.AddComponent(typeof(MeshCollider)) as MeshCollider;
     }
 
     void createGrid() {
+        // Set up water plane
+        transform.Find("Water").transform.position = new Vector3(0, yScale * seaLevel, 0);
+        transform.Find("Water").transform.localScale = new Vector3((cols + CameraController.panLimit + 1000) / 10, 1, (rows + CameraController.panLimit + 1000) / 10);
+
+        // Set up sea floor plane
+        transform.Find("Sea Floor").transform.localScale = new Vector3((cols + CameraController.panLimit + 1000) / 10, 1, (rows + CameraController.panLimit + 1000) / 10);
+        transform.Find("Sea Floor").GetComponent<Renderer>().material.SetColor("_Color", new Color(0.941f, 0.953f, 0.741f));
+
         // Delete and create grid objects if grid dimensions have been changed
         if(cols != gridArray.GetLength(0) || rows != gridArray.GetLength(1)) {
             // Destroy old vertex objects
