@@ -13,7 +13,7 @@ public class CameraController : MonoBehaviour {
     public static float rotateSpeed = 40f;
 
     void Start() {
-        transform.position = new Vector3((GridController.cols - 1) / 2, 60, (GridController.rows - 1) / 2 - 30);
+        transform.position = new Vector3((GridController.cols - 1) / 2, 60, (GridController.rows - 1) / 2 - 35);
     }
 
     void Update() {

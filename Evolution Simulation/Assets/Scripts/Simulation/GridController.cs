@@ -23,7 +23,7 @@ public class GridController : MonoBehaviour {
     [Range(0, 200)]
     public static int rows = 75;
     [Range(0f, 100f)]
-    public float noiseScale = 10f;
+    public float noiseScale = 15f;
     [Range(0f, 1f)]
     public static float seaLevel = 0.4f;
     [Range(1f, 10f)]
@@ -103,8 +103,10 @@ public class GridController : MonoBehaviour {
             a.loadInputs();
 
         // Update grid
-        if(time % terrainTimeUpdate == 0)
+        if(time % Mathf.Ceil(terrainTimeUpdate / (terrainTimeStep * 10000000)) == 0) {
+            Debug.Log(time);
             updateGrid();
+        }
 
         // Increment time
         time += 1;
@@ -236,7 +238,7 @@ public class GridController : MonoBehaviour {
 
                 int distFromBorder = Mathf.Min(c + 1, r + 1, cols - c, rows - r);
                 if(distFromBorder < seaBorder)
-                    elevation *= (float)distFromBorder / seaBorder;
+                    elevation *= -Mathf.Pow((float)distFromBorder / seaBorder - 1, 2) + 1;
 
                 gridArray[c, r].setElevation(elevation, yScale);
                 vertices[c*rows + r] = new Vector3(c, elevation * yScale, r);
@@ -266,5 +268,9 @@ public class GridController : MonoBehaviour {
         mesh.RecalculateNormals();
         // Create mesh collider
         MeshCollider meshc = gameObject.AddComponent(typeof(MeshCollider)) as MeshCollider;
+    }
+
+    void createGrid() {
+        
     }
 }

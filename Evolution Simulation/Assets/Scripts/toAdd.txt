@@ -1,4 +1,10 @@
-﻿- Food
+﻿DOING
+- quadratic border
+- main menu
+
+
+
+- Food
 	- Spawn type
 		- Grass spread
 		- Fruit spawn
