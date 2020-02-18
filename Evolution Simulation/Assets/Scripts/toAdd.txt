@@ -1,5 +1,4 @@
 ﻿DOING
-- New main menu background
 - Neural network connections
 
 
@@ -32,3 +31,5 @@
 
 BUGS
 - Can't click through statistics element
+- Fix positions for different screen dimentions
+- 

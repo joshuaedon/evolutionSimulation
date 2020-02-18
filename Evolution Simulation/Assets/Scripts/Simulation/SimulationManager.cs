@@ -13,8 +13,6 @@ public class SimulationManager : MonoBehaviour {
     void Start() {
         StatsPanel = GameObject.Find("StatsPanel");
         StatsPanel.SetActive(true);
-        AgentPanel = GameObject.Find("AgentPanel");
-        AgentPanel.SetActive(false);
         TickSpeedText = GameObject.Find("TickSpeedText");
 
         GridController grid = GameObject.Find("Grid").GetComponent<GridController>();
@@ -31,8 +29,10 @@ public class SimulationManager : MonoBehaviour {
         if(Input.GetMouseButtonDown(0) && !UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
-            if(selectedAgent != null)
+            if(selectedAgent != null) {
                 selectedAgent.agentObj.transform.GetChild(0).GetComponent<Renderer>().material.SetColor("_Color", Color.white);
+                Destroy(AgentPanel);
+            }
             if(Physics.Raycast(ray, out hit) && hit.transform.name == "AgentBody") {
                 foreach(Agent a in GridController.agents) {
                     if(a.agentObj.transform.GetChild(0) == hit.transform) {
@@ -40,16 +40,14 @@ public class SimulationManager : MonoBehaviour {
                         selectedAgent = a;
                     }
                 }
-                AgentPanel.SetActive(true);
+                AgentPanel = (GameObject)Instantiate(Resources.Load("GUI/AgentPanel"), GameObject.Find("Canvas").transform);
             } else {
                 selectedAgent = null;
-                AgentPanel.SetActive(false);
             }
         }
     }
 
     public void adjustTickSpeed(float speed) {
-        Debug.Log(speed);
         if(speed == 0)
             GridController.ticksPerSec = 0;
         else

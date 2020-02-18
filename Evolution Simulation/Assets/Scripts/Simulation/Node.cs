@@ -6,7 +6,7 @@ public class Node {
     public Node[] nodes;
     public float[] weights;
     public GameObject nodeObject;
-    public GameObject[] weightObjects;
+    public GameObject[] connectionObjects;
     
     public Node(Node[] prevNodes) {
         this.nodes = new Node[prevNodes.Length];
@@ -15,7 +15,7 @@ public class Node {
         this.weights = new float[prevNodes.Length];
         for (int i = 0; i < weights.Length-1; i++)
             weights[i] = Random.Range(-1f, 1f);
-        this.weightObjects = new GameObject[prevNodes.Length];
+        this.connectionObjects = new GameObject[prevNodes.Length];
     }
 
     /*public Node(float[] a, float[] b, float aMutation, float bMutation) {

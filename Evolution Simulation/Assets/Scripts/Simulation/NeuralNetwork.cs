@@ -7,7 +7,7 @@ public class NeuralNetwork {
     string[] outputLabels = {"Left", "Right", "Step", "Stay"};
     float[] prevOutputs;
     public Layer[] layers;
-    float maxWeight;
+    public float maxWeight;
     
     public NeuralNetwork(int[] layerSizes) {
         this.prevOutputs = new float[layerSizes[layerSizes.Length-1]];

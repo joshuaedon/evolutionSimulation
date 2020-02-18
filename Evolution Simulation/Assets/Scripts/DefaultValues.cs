@@ -3,11 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class defaultVariables {
-	// Setup Constants
+	//// Setup Constants
 
-	// Variables
+	//// Variables
 
-
+	// Bot variables
+	/*
+	- Age
+	- 
+	*/
 
 
 

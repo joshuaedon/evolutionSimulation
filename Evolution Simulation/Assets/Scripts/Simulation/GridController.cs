@@ -44,6 +44,7 @@ public class GridController : MonoBehaviour {
     ////
     public static bool isMenu = false;
     public bool showVertices = false;
+    public static bool transpNNConnections = false;
 
     void Start() {
         osn = new OpenSimplexNoise();
