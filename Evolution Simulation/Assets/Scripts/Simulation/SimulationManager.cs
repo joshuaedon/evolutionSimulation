@@ -12,12 +12,16 @@ public class SimulationManager : MonoBehaviour {
 
     void Start() {
         StatsPanel = GameObject.Find("StatsPanel");
-        StatsPanel.SetActive(true);
+        StatsPanel.SetActive(false);
+        AgentPanel = GameObject.Find("AgentPanel");
+        AgentPanel.SetActive(false);
         TickSpeedText = GameObject.Find("TickSpeedText");
 
-        GridController grid = GameObject.Find("Grid").GetComponent<GridController>();
-        grid.createGrid();
-        grid.spawnAgents(GridController.startingAgents);
+        GridController.GC = GameObject.Find("Grid").GetComponent<GridController>();
+        GridController.GC.createGrid();
+        GridController.GC.spawnStartingAgents();
+        GridController.GC.isMenu = true;
+        GameObject.Find("Main Camera").transform.position = new Vector3((GridController.GC.cols - 1) / 2.0f, 60, (GridController.GC.rows - 1) / 2.0f - 35);
     }
 
     void Update() {
@@ -29,30 +33,31 @@ public class SimulationManager : MonoBehaviour {
         if(Input.GetMouseButtonDown(0) && !UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
+            // If an agent is already selected, set its colour back to white and destroy the old agent panel
             if(selectedAgent != null) {
                 selectedAgent.agentObj.transform.GetChild(0).GetComponent<Renderer>().material.SetColor("_Color", Color.white);
-                Destroy(AgentPanel);
+                AgentPanel.SetActive(false);
+                selectedAgent = null;
             }
             if(Physics.Raycast(ray, out hit) && hit.transform.name == "AgentBody") {
-                foreach(Agent a in GridController.agents) {
+                // If the mouse is over a new agent, set its colour to red and set it as the selected agent, then create a new agent panel
+                foreach(Agent a in GridController.GC.agents) {
                     if(a.agentObj.transform.GetChild(0) == hit.transform) {
                         a.agentObj.transform.GetChild(0).GetComponent<Renderer>().material.SetColor("_Color", Color.red);
                         selectedAgent = a;
                     }
                 }
-                AgentPanel = (GameObject)Instantiate(Resources.Load("GUI/AgentPanel"), GameObject.Find("Canvas").transform);
-            } else {
-                selectedAgent = null;
+                AgentPanel.SetActive(true);// = (GameObject)Instantiate(Resources.Load("GUI/AgentPanel"), GameObject.Find("Canvas").transform);
             }
         }
     }
 
     public void adjustTickSpeed(float speed) {
         if(speed == 0)
-            GridController.ticksPerSec = 0;
+            GridController.GC.ticksPerSec = 0;
         else
-            GridController.ticksPerSec = Mathf.Pow(10, speed-1);
-        GridController.framesPerTick = 1;
-        TickSpeedText.GetComponent<Text>().text = Mathf.Round(GridController.ticksPerSec * 100f) / 100f + " ticks/sec";
+            GridController.GC.ticksPerSec = Mathf.Pow(10, speed-1);
+        GridController.GC.framesPerTick = 1;
+        TickSpeedText.GetComponent<Text>().text = Mathf.Round(GridController.GC.ticksPerSec * 100f) / 100f + " ticks/sec";
     }
 }

@@ -18,6 +18,6 @@ public class Chunk {
     }
 
 	public bool isWater() {
-        return vertex.y <= GridController.seaLevel;
+        return vertex.y <= GridController.GC.seaLevel;
     }
 }

@@ -19,7 +19,7 @@ public class Agent {
     }
 
     public void moveObj() {
-        agentObj.transform.position = new Vector3(chunk.vertex.x, GridController.yScale * chunk.vertex.y + 0.5f, chunk.vertex.z);
+        agentObj.transform.position = new Vector3(chunk.vertex.x, GridController.GC.yScale * chunk.vertex.y + 0.5f, chunk.vertex.z);
     }
 
     public void loadInputs() {
@@ -69,8 +69,8 @@ public class Agent {
             case 2: newCol--; break;
             case 3: newRow--; break;
         }
-        if(newCol >= 0 && newRow >= 0 && newCol < GridController.cols && newRow < GridController.rows) {
-            Chunk newChunk = GridController.gridArray[newCol, newRow];
+        if(newCol >= 0 && newRow >= 0 && newCol < GridController.GC.cols && newRow < GridController.GC.rows) {
+            Chunk newChunk = GridController.GC.gridArray[newCol, newRow];
             if(newChunk.agent == null && (!isMenu || !newChunk.isWater() || this.chunk.isWater())) {
                 // Step Forward
                 this.chunk.agent = null;

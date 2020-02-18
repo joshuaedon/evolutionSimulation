@@ -4,61 +4,68 @@ using UnityEngine;
 using UnityEngine.UI.Extensions;
 
 public class AgentPanelController : MonoBehaviour {
-	void OnEnable() {
+	public void OnEnable() {
 		if(SimulationManager.selectedAgent != null) {
-			NeuralNetwork network = SimulationManager.selectedAgent.network;
+  			// Store the selected agent's neural network 
+  			NeuralNetwork network = SimulationManager.selectedAgent.network;
 
+  			// Store tha game objects of the node and connection panels
     		GameObject NodesPanel 		= GameObject.Find("NodesPanel");
     		GameObject ConnectionsPanel = GameObject.Find("ConnectionsPanel");
 
+    		// Find the max number of nodes in a single layer
     		int maxNodes = 0;
     		for(int i = 0; i < network.layers.Length; i++)
-				maxNodes = Mathf.Max(maxNodes, network.layers[i].nodes.Length);
-			float width =  transform.GetComponentInParent<Canvas>().GetComponent<RectTransform>().sizeDelta.x - 400
-						   + NodesPanel.GetComponent<RectTransform>().sizeDelta.x;
-			float height = transform.GetComponentInParent<Canvas>().GetComponent<RectTransform>().sizeDelta.y
-						   + NodesPanel.GetComponent<RectTransform>().sizeDelta.y;
-			float horizontalSpacing = 0.5f * width / network.layers.Length;
+  			maxNodes = Mathf.Max(maxNodes, network.layers[i].nodes.Length);
+  			// Get the panel width and height
+  			float width = transform.GetComponentInParent<Canvas>().GetComponent<RectTransform>().sizeDelta.x
+  						+ transform.GetComponent<RectTransform>().sizeDelta.x
+  						+ NodesPanel.GetComponent<RectTransform>().sizeDelta.x;
+  			float height = transform.GetComponentInParent<Canvas>().GetComponent<RectTransform>().sizeDelta.y
+  						 + transform.GetComponent<RectTransform>().sizeDelta.y
+  						 + NodesPanel.GetComponent<RectTransform>().sizeDelta.y;
+  			// Calculate the horizontal spacing between the layers when spaced evenly
+  			float horizontalSpacing = 0.5f * width / network.layers.Length;
+  			// Calculate the maximum size the nodes can be while not overlapping
     		float nodeSize = height / maxNodes;
     		nodeSize = Mathf.Min(nodeSize, horizontalSpacing);
 
+        // Store reference objects for the nodes and connections
     		GameObject referenceNode 	   = (GameObject)Instantiate(Resources.Load("GUI/NetworkNode"));
     		GameObject referenceConnection = (GameObject)Instantiate(Resources.Load("GUI/NetworkConnection"));
     		referenceNode.GetComponent<RectTransform>().sizeDelta = new Vector2(nodeSize, nodeSize);
+        // Create all the nodes and connections of the selected agent's neural network
     		for(int l = 0; l < network.layers.Length; l++) {
-        		for(int n = 0; n < network.layers[l].nodes.Length; n++) {
-        			Node curNode = network.layers[l].nodes[n];
-    				GameObject nodeObj = (GameObject)Instantiate(referenceNode, NodesPanel.transform);
-    				nodeObj.transform.localPosition = new Vector2((2.0f * l + 1 - network.layers.Length) * horizontalSpacing, nodeSize * (n + 0.5f - network.layers[l].nodes.Length / 2.0f));
-    				curNode.nodeObject = nodeObj;
-    				for(int c = 0; c < curNode.nodes.Length; c++) {
-    					GameObject connectionObj = (GameObject)Instantiate(referenceConnection, ConnectionsPanel.transform);
-    					UILineRenderer LineRenderer = connectionObj.GetComponent<UILineRenderer>();
-    					Vector2 point1 = new Vector2(curNode.nodeObject.transform.localPosition.x, curNode.nodeObject.transform.localPosition.y);
-    					Vector2 point2 = new Vector2(curNode.nodes[c].nodeObject.transform.localPosition.x, curNode.nodes[c].nodeObject.transform.localPosition.y);
-			            List<Vector2> pointlist = new List<Vector2>(LineRenderer.Points);
-			            pointlist.Add(point1);
-			            pointlist.Add(point2);
-			            LineRenderer.Points = pointlist.ToArray();
-			            if(GridController.transpNNConnections) {
-				            float opacity = Mathf.Abs(curNode.weights[c] * curNode.nodes[c].value / network.maxWeight);
-				            Debug.Log(curNode.weights[c] + ", " + curNode.nodes[c].value + ", " + network.maxWeight);
-				            if(curNode.weights[c] < 0)
-				              LineRenderer.color = new Color(1.0f, 0.0f, 0.0f, opacity);
-				            else
-				              LineRenderer.color = new Color(0.0f, 1.0f, 0.0f, opacity);
-				        } else
-			            	LineRenderer.color = new Color(-curNode.weights[c], curNode.weights[c], 0, Mathf.Abs(curNode.weights[c]) / network.maxWeight);
-    					curNode.connectionObjects[c] = connectionObj;	
-    				}
+            for(int n = 0; n < network.layers[l].nodes.Length; n++) {
+        		    Node curNode = network.layers[l].nodes[n];
+        				GameObject nodeObj = (GameObject)Instantiate(referenceNode, NodesPanel.transform);
+        				nodeObj.transform.localPosition = new Vector2((2.0f * l + 1 - network.layers.Length) * horizontalSpacing, nodeSize * (n + 0.5f - network.layers[l].nodes.Length / 2.0f));
+        				curNode.nodeObject = nodeObj;
+        				for(int c = 0; c < curNode.nodes.Length; c++) {
+        				    GameObject connectionObj = (GameObject)Instantiate(referenceConnection, ConnectionsPanel.transform);
+          					UILineRenderer LineRenderer = connectionObj.GetComponent<UILineRenderer>();
+          					Vector2 point1 = new Vector2(curNode.nodeObject.transform.localPosition.x, curNode.nodeObject.transform.localPosition.y);
+          					Vector2 point2 = new Vector2(curNode.nodes[c].nodeObject.transform.localPosition.x, curNode.nodes[c].nodeObject.transform.localPosition.y);
+                    List<Vector2> pointlist = new List<Vector2>(LineRenderer.Points);
+    			          pointlist.Add(point1);
+    			          pointlist.Add(point2);
+    			          LineRenderer.Points = pointlist.ToArray();
+    			          if(GridController.GC.transpNNConnections) {
+    				            float opacity = Mathf.Abs(curNode.weights[c] * curNode.nodes[c].value / network.maxWeight);
+    				            if(curNode.weights[c] < 0)
+    				                LineRenderer.color = new Color(1.0f, 0.0f, 0.0f, opacity);
+    				            else
+    				                LineRenderer.color = new Color(0.0f, 1.0f, 0.0f, opacity);
+    				        } else
+    			            	LineRenderer.color = new Color(-curNode.weights[c], curNode.weights[c], 0, Mathf.Abs(curNode.weights[c]) / network.maxWeight);
+        					  curNode.connectionObjects[c] = connectionObj;	
+        				}
         		}
       		}
       		Destroy(referenceNode);
       		Destroy(referenceConnection);
   		}
-  	}
-
-      	
+  	}      	
 
     /*float prevVerticalSpacing = 0;
     for (int l = 0; l < layers.length; l++) {
@@ -157,7 +164,9 @@ public class AgentPanelController : MonoBehaviour {
     }*/
 
     void OnDisable() {
-		foreach(Transform child in transform)
-			GameObject.Destroy(child.gameObject);
+		foreach(Transform child in transform) {
+			foreach(Transform child2 in child.transform)
+				GameObject.Destroy(child2.gameObject);
+		}
     }
 }

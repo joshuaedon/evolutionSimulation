@@ -4,13 +4,14 @@ using UnityEngine;
 
 public class MenuManager : MonoBehaviour {
 	void Start() {
-		GridController.cols = 150;
-		GridController.rows = 150;
-		GridController grid = GameObject.Find("Grid").GetComponent<GridController>();
-		grid.createGrid();
-		grid.spawnAgents(50);
-		GridController.isMenu = true;
-		GridController.ticksPerSec = 5.0f;
+		GridController.GC = GameObject.Find("Grid").GetComponent<GridController>();
+		GridController.GC.cols = 150;
+		GridController.GC.rows = 150;
+		GridController.GC.createGrid();
+		GridController.GC.spawnStartingAgents();
+		GridController.GC.isMenu = true;
+		GridController.GC.ticksPerSec = 5.0f;
+		GameObject.Find("Main Camera").transform.position = new Vector3((GridController.GC.cols - 1) / 2.0f, 60, (GridController.GC.rows - 1) / 2.0f - 35);
 	}
 
     public void play() {

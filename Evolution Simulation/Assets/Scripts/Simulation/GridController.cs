@@ -2,55 +2,54 @@
 using UnityEngine;
 
 public class GridController : MonoBehaviour {
+    public static GridController GC;
     OpenSimplexNoise osn;
+    //// Setup variables
+    public bool startingAgents;
     //// Grid attributes
-    [Range(0, 4)]
-    public static float ticksPerSec = 0;
-    public static float framesPerTick;
-    public static string tickFrame;
-    [Range(0, 10000)]
-    public static int time = 0;
+    // Time
+    public float ticksPerSec;
+    public float framesPerTick;
+    public string tickFrame;
+    public int time;
     // []
-    public float terrainTimeStep = 0.0000001f;
+    public float terrainTimeStep;
     // []
-    public int terrainTimeUpdate = 250;
+    public int terrainTimeUpdate;
     // Terrain
     [Range(0, 200)]
-    public static int cols = 150;
+    public int cols;
     [Range(0, 200)]
-    public static int rows = 75;
+    public int rows;
     [Range(1f, 100f)]
-    public float noiseScale = 15f;
+    public float noiseScale;
     [Range(0f, 1f)]
-    public static float seaLevel = 0.45f;
+    public float seaLevel;
     [Range(1f, 10f)]
-    public static float yScale = 3f;
+    public float yScale;
     [Range(0, 50)]
-    public int seaBorder = 10;
+    public int seaBorder;
     // Food
-    [Range(0f, 10f)]
-    public float maxFood = 10f;
     // []
-    public float foodSpread = 0.05f;
-    // [] Agents
-    public static int startingAgents = 50;
+    public float foodSpread;
     //// Grid state
-    public static Chunk[,] gridArray;
+    public Chunk[,] gridArray;
     Mesh mesh;
     Vector3[] vertices;
     int[] triangles;
     Color[] colours;
-    public static List<Agent> agents;
+    public List<Agent> agents;
     ////
-    public static bool isMenu = false;
+    public bool isMenu = false;
     public bool showVertices = false;
-    public static bool transpNNConnections = false;
+    public bool transpNNConnections = false;
 
     void Start() {
         osn = new OpenSimplexNoise();
 
         ticksPerSec = 0;
         time = 0;
+        setDefaultValues();
 
         gridArray = new Chunk[0, 0];
         mesh = new Mesh();
@@ -58,6 +57,24 @@ public class GridController : MonoBehaviour {
         agents = new List<Agent>();
 
         showVertices = false;
+    }
+
+    public void setDefaultValues() {
+        //// Setup variables
+        startingAgents = true;
+        //// Grid attributes
+        // Time
+        terrainTimeStep = 0.0000001f;
+        terrainTimeUpdate = 250;
+        // Terrain
+        cols = 150;
+        rows = 75;
+        noiseScale = 15f;
+        seaLevel = 0.45f;
+        yScale = 3f;
+        seaBorder = 10;
+        // Food
+        foodSpread = 0.05f;
     }
 
     void Update() {
@@ -190,7 +207,7 @@ public class GridController : MonoBehaviour {
                 vertices[c*rows + r] = new Vector3(c, elevation * yScale, r);
 
                 Color col = Color.Lerp(sand, land, (1 + seaLevel) * elevation - seaLevel);
-                colours[c*rows + r] = Color.Lerp(col, new Color(col.r, 1, col.b), gridArray[c, r].food / maxFood);
+                colours[c*rows + r] = Color.Lerp(col, new Color(col.r, 1, col.b), gridArray[c, r].food);
             }
         }
         // Move any agent objects 
@@ -203,6 +220,11 @@ public class GridController : MonoBehaviour {
         mesh.triangles = triangles;
         mesh.colors = colours;
         mesh.RecalculateNormals();
+    }
+
+    public void spawnStartingAgents() {
+        if(startingAgents)
+            spawnAgents(rows * cols / 150);
     }
 
     public void spawnAgents(int count) {

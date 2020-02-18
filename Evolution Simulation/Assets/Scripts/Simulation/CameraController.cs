@@ -12,10 +12,6 @@ public class CameraController : MonoBehaviour {
 
     public static float rotateSpeed = 80f;
 
-    void Start() {
-        transform.position = new Vector3((GridController.cols - 1) / 2.0f, 60, (GridController.rows - 1) / 2.0f - 35);
-    }
-
     void Update() {
         Vector3 pos = transform.position;
         Vector3 camDir = Camera.main.transform.forward;
@@ -37,9 +33,9 @@ public class CameraController : MonoBehaviour {
 
         pos += Vector3.Normalize(camDir) * Input.GetAxis("Mouse ScrollWheel") * scrollSpeed * 100f * Time.deltaTime;
 
-        pos.x = Mathf.Clamp(pos.x, -panLimit, GridController.cols + panLimit);
+        pos.x = Mathf.Clamp(pos.x, -panLimit, GridController.GC.cols + panLimit);
         pos.y = Mathf.Clamp(pos.y, minY, maxY);
-        pos.z = Mathf.Clamp(pos.z, -panLimit, GridController.rows + panLimit);
+        pos.z = Mathf.Clamp(pos.z, -panLimit, GridController.GC.rows + panLimit);
         transform.position = pos;
 
         if(Input.GetKey("e"))

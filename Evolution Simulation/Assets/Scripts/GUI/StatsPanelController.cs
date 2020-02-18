@@ -8,8 +8,8 @@ public class StatsPanelController : MonoBehaviour {
 
     void Update() {
         text.text = "FPS: " 		  + Mathf.Round(1f/Time.deltaTime) +
-        			"\n"	  		  + GridController.tickFrame +
-        			"\nTime: " 		  + GridController.time +
-        			"\nAgent count: " + GridController.agents.Count;
+        			"\n"	  		  + GridController.GC.tickFrame +
+        			"\nTime: " 		  + GridController.GC.time +
+        			"\nAgent count: " + GridController.GC.agents.Count;
     }
 }
