@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class SimulationManager : MonoBehaviour {
     public static Agent selectedAgent;
@@ -20,7 +21,6 @@ public class SimulationManager : MonoBehaviour {
         GridController.GC = GameObject.Find("Grid").GetComponent<GridController>();
         GridController.GC.createGrid();
         GridController.GC.spawnStartingAgents();
-        GridController.GC.isMenu = true;
         GameObject.Find("Main Camera").transform.position = new Vector3((GridController.GC.cols - 1) / 2.0f, 60, (GridController.GC.rows - 1) / 2.0f - 35);
     }
 
@@ -30,7 +30,7 @@ public class SimulationManager : MonoBehaviour {
             StatsPanel.SetActive(!StatsPanel.activeInHierarchy);
 
         // Select agent	
-        if(Input.GetMouseButtonDown(0) && !UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) {
+        if(Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject()) {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
             // If an agent is already selected, set its colour back to white and destroy the old agent panel

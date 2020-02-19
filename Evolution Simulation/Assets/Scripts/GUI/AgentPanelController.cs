@@ -2,16 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI.Extensions;
+using UnityEngine.EventSystems;
 
 public class AgentPanelController : MonoBehaviour {
+    NeuralNetwork network;
+    GameObject NodesPanel;
+    GameObject ConnectionsPanel;
+    bool isHighlight = false;
+
 	public void OnEnable() {
 		if(SimulationManager.selectedAgent != null) {
   			// Store the selected agent's neural network 
-  			NeuralNetwork network = SimulationManager.selectedAgent.network;
+  			network = SimulationManager.selectedAgent.network;
 
   			// Store tha game objects of the node and connection panels
-    		GameObject NodesPanel 		= GameObject.Find("NodesPanel");
-    		GameObject ConnectionsPanel = GameObject.Find("ConnectionsPanel");
+    		NodesPanel 	  	 = GameObject.Find("NodesPanel");
+    		ConnectionsPanel = GameObject.Find("ConnectionsPanel");
 
     		// Find the max number of nodes in a single layer
     		int maxNodes = 0;
@@ -39,7 +45,7 @@ public class AgentPanelController : MonoBehaviour {
             for(int n = 0; n < network.layers[l].nodes.Length; n++) {
         		    Node curNode = network.layers[l].nodes[n];
         				GameObject nodeObj = (GameObject)Instantiate(referenceNode, NodesPanel.transform);
-        				nodeObj.transform.localPosition = new Vector2((2.0f * l + 1 - network.layers.Length) * horizontalSpacing, nodeSize * (n + 0.5f - network.layers[l].nodes.Length / 2.0f));
+        				nodeObj.transform.localPosition = new Vector2((2.0f * l + 1 - network.layers.Length) * horizontalSpacing, nodeSize * (network.layers[l].nodes.Length / 2.0f - n - 0.5f));
         				curNode.nodeObject = nodeObj;
         				for(int c = 0; c < curNode.nodes.Length; c++) {
         				    GameObject connectionObj = (GameObject)Instantiate(referenceConnection, ConnectionsPanel.transform);
@@ -65,7 +71,56 @@ public class AgentPanelController : MonoBehaviour {
       		Destroy(referenceNode);
       		Destroy(referenceConnection);
   		}
-  	}      	
+  	}
+
+    void Update() {
+        if(EventSystem.current.IsPointerOverGameObject()) {
+            PointerEventData pointerEventData = new PointerEventData(EventSystem.current);
+            pointerEventData.position = Input.mousePosition;
+
+            List<RaycastResult> raycastResultsList = new List<RaycastResult>();
+            EventSystem.current.RaycastAll(pointerEventData, raycastResultsList);
+
+            bool highlighted = false;
+            for(int i = 0; i < raycastResultsList.Count; i++) {
+                if(raycastResultsList[i].gameObject.name == "NetworkNode(Clone)(Clone)") {
+                    highlightNode(raycastResultsList[i].gameObject);
+                    highlighted = true;
+                }
+            }
+            if(!highlighted)
+                unhighlight();
+        } else if(isHighlight) {
+            unhighlight();
+        }
+    }
+
+    void highlightNode(GameObject node) {
+        isHighlight = true;
+        for(int l = 0; l < network.layers.Length; l++) {
+            for(int n = 0; n < network.layers[l].nodes.Length; n++) {
+                Node curNode = network.layers[l].nodes[n];
+                for(int c = 0; c < curNode.nodes.Length; c++) {
+                    if(curNode.nodeObject == node || curNode.nodes[c].nodeObject == node)
+                        curNode.connectionObjects[c].SetActive(true);
+                    else
+                        curNode.connectionObjects[c].SetActive(false);
+                }
+            }
+        }
+    }
+
+    void unhighlight() {
+        isHighlight = false;
+        for(int l = 0; l < network.layers.Length; l++) {
+            for(int n = 0; n < network.layers[l].nodes.Length; n++) {
+                Node curNode = network.layers[l].nodes[n];
+                for(int c = 0; c < curNode.nodes.Length; c++) {
+                    curNode.connectionObjects[c].SetActive(true);
+                }
+            }
+        }
+    }
 
     /*float prevVerticalSpacing = 0;
     for (int l = 0; l < layers.length; l++) {
@@ -164,9 +219,11 @@ public class AgentPanelController : MonoBehaviour {
     }*/
 
     void OnDisable() {
-		foreach(Transform child in transform) {
-			foreach(Transform child2 in child.transform)
-				GameObject.Destroy(child2.gameObject);
-		}
+        if(NodesPanel != null) {
+    		foreach(Transform child in NodesPanel.transform)
+                GameObject.Destroy(child.gameObject);
+    		foreach(Transform child in ConnectionsPanel.transform)
+    			GameObject.Destroy(child.gameObject);
+        }
     }
 }

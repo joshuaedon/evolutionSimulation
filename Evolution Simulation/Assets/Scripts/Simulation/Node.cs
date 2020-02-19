@@ -13,7 +13,7 @@ public class Node {
         for(int i = 0; i < prevNodes.Length; i++)
             nodes[i] = prevNodes[i];
         this.weights = new float[prevNodes.Length];
-        for (int i = 0; i < weights.Length-1; i++)
+        for (int i = 0; i < weights.Length; i++)
             weights[i] = Random.Range(-1f, 1f);
         this.connectionObjects = new GameObject[prevNodes.Length];
     }
