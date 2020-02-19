@@ -6,14 +6,14 @@ using UnityEngine.EventSystems;
 
 public class SimulationManager : MonoBehaviour {
     public static Agent selectedAgent;
-    float lastTicksPerSec;
+    float lastTickSpeedSliderVal;
     // Game Objects
 	public GameObject StatsPanel;
 	public GameObject AgentPanel;
 	public GameObject TickSpeedText;
 
     void Start() {
-        lastTicksPerSec = 2.0f;
+        lastTickSpeedSliderVal = 2.0f;
 
         StatsPanel = GameObject.Find("StatsPanel");
         StatsPanel.SetActive(false);
@@ -31,13 +31,14 @@ public class SimulationManager : MonoBehaviour {
         // Toggle stats panel
         if(Input.GetKeyDown(KeyCode.F2))
             StatsPanel.SetActive(!StatsPanel.activeInHierarchy);
+        // Play/pause
         if(Input.GetKeyDown(KeyCode.Space)) {
-            Slider slider = GameObject.Find("TickSpeedSlider").GetComponent<Slider>();
+            Slider TickSpeedSlider = GameObject.Find("TickSpeedSlider").GetComponent<Slider>();
             if(GridController.GC.ticksPerSec == 0.0f)
-                slider.value = lastTicksPerSec;
+                TickSpeedSlider.value = lastTickSpeedSliderVal;
             else {
-                lastTicksPerSec = slider.value;
-                slider.value = 0;
+                lastTickSpeedSliderVal = TickSpeedSlider.value;
+                TickSpeedSlider.value = 0;
             }
         }
 

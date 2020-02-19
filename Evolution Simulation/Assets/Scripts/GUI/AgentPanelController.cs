@@ -29,7 +29,8 @@ public class AgentPanelController : MonoBehaviour {
   						+ NodesPanel.GetComponent<RectTransform>().sizeDelta.x;
   			float height = transform.GetComponentInParent<Canvas>().GetComponent<RectTransform>().sizeDelta.y
   						 + transform.GetComponent<RectTransform>().sizeDelta.y
-  						 + NodesPanel.GetComponent<RectTransform>().sizeDelta.y;
+  						 + NodesPanel.GetComponent<RectTransform>().sizeDelta.y
+                         - 5;
   			// Calculate the horizontal spacing between the layers when spaced evenly
   			float horizontalSpacing = 0.5f * width / network.layers.Length;
   			// Calculate the maximum size the nodes can be while not overlapping
