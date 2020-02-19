@@ -1,5 +1,5 @@
 DOING
-Swapped direction of NN nodes, connections disappear when hovering over nodes
+
 
 
 - Food

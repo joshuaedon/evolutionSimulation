@@ -16,8 +16,8 @@ public class AgentPanelController : MonoBehaviour {
   			network = SimulationManager.selectedAgent.network;
 
   			// Store tha game objects of the node and connection panels
-    		NodesPanel 	  	 = GameObject.Find("NodesPanel");
-    		ConnectionsPanel = GameObject.Find("ConnectionsPanel");
+    		NodesPanel 	  	 = transform.Find("NodesPanel").gameObject;
+    		ConnectionsPanel = transform.Find("ConnectionsPanel").gameObject;
 
     		// Find the max number of nodes in a single layer
     		int maxNodes = 0;
@@ -74,6 +74,7 @@ public class AgentPanelController : MonoBehaviour {
   	}
 
     void Update() {
+        // Highlight a node if the mouse is over it
         if(EventSystem.current.IsPointerOverGameObject()) {
             PointerEventData pointerEventData = new PointerEventData(EventSystem.current);
             pointerEventData.position = Input.mousePosition;
