@@ -1,5 +1,5 @@
 DOING
-Limited camera zoom to when mouse is not over UI, settings button working, settings sliders, added terrainBias so terrain wouldnt jump when changing the terrainSpeed variable
+Added reset button, 
 
 
 - Food
@@ -14,7 +14,6 @@ Limited camera zoom to when mouse is not over UI, settings button working, setti
 - Breeding
 	- Type
 - Agent senses
-- Setup menu
 - God features
 	- Vertex objects must be deleted when !showVertices
 	- Raise/lower land
@@ -27,6 +26,9 @@ Limited camera zoom to when mouse is not over UI, settings button working, setti
 - Neural Networks
 	- Change so weights go across multiple layers
 	- Propagation animation
+- Breed agent button & mutate button
+
+- Setup menu
 
 
 BUGS

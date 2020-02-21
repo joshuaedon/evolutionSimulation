@@ -83,27 +83,24 @@ public class SimulationManager : MonoBehaviour {
 
     public void setDefaultValues() {
         // Time
-        adjustTerrainTimeStep(1f);
+        GameObject.Find("TerrainTimeStepSlider").GetComponent<Slider>().value = 1f;
         // Terrain
         adjustCols(150f);
         adjustRows(75f);
         adjustNoiseScale(15f);
         adjustSeaLevel(0.45f);
-        adjustYScale(3f);
+        adjustYScale(5f);
         adjustSeaBorder(10f);
         // Food
-        adjustGrassSpread(0.05f);
+        // adjustGrassSpread(0.05f);
     }
 
     public void adjustTerrainTimeStep(float value) {
-        Debug.Log(GridController.GC == null);
         GridController.GC.terrainBias = GridController.GC.terrainBias + (GridController.GC.terrainTimeStep - Mathf.Pow(10, value-1)) * (GridController.GC.time * 0.0000001f * GridController.GC.terrainUpdate);
         if(value == 0)
             GridController.GC.terrainTimeStep = 0;
         else
             GridController.GC.terrainTimeStep = Mathf.Pow(10, value-1);
-        Debug.Log(GameObject.Find("TerrainTimeStepValue") == null);
-        Debug.Log(GameObject.Find("TerrainTimeStepText") == null);
         GameObject.Find("TerrainTimeStepValue").GetComponent<Text>().text = " " + Mathf.Round(GridController.GC.terrainTimeStep * 100f) / 100f;
     }
 
@@ -111,14 +108,14 @@ public class SimulationManager : MonoBehaviour {
         int value = Mathf.RoundToInt(valueF);
         GridController.GC.cols = value;
         GridController.GC.createGrid();
-        GameObject.Find("ColumnsValue").GetComponent<Text>().text = " " + value + "columns";
+        GameObject.Find("ColumnsValue").GetComponent<Text>().text = " " + value + " columns";
     }
 
     public void adjustRows(float valueF) {
         int value = Mathf.RoundToInt(valueF);
         GridController.GC.rows = value;
         GridController.GC.createGrid();
-        GameObject.Find("RowsValue").GetComponent<Text>().text = " " + value + "rows";
+        GameObject.Find("RowsValue").GetComponent<Text>().text = " " + value + " rows";
     }
 
     public void adjustNoiseScale(float value) {
@@ -146,8 +143,8 @@ public class SimulationManager : MonoBehaviour {
         GameObject.Find("SeaBorderValue").GetComponent<Text>().text = " " + value;
     }
 
-    public void adjustGrassSpread(float value) {
+    /*public void adjustGrassSpread(float value) {
         GridController.GC.grassSpread = value;
         GameObject.Find("GrassSpreadValue").GetComponent<Text>().text = " " + Mathf.Round(value * 100f) / 100f;
-    }
+    }*/
 }

@@ -23,13 +23,18 @@ public class GridController : MonoBehaviour {
     public float yScale = 3f;
     public int seaBorder = 10;
     // Food
-    public float grassSpread = 0.05f;
+    public int grassSpawnTime = 1;
+    public float grassSpawnAmount = 1f;
+    public float eatSpeed = 1f;
+    public bool underwaterFoodSpawn = true;
     //// Grid state
     public Chunk[,] gridArray;
     Mesh mesh;
     Vector3[] vertices;
     int[] triangles;
     Color[] colours;
+    Color sand;
+    Color land;
     public List<Agent> agents;
     ////
     public bool isMenu = false;
@@ -51,14 +56,19 @@ public class GridController : MonoBehaviour {
         rows = 75;
         noiseScale = 15f;
         seaLevel = 0.45f;
-        yScale = 3f;
+        yScale = 5f;
         seaBorder = 10;
         // Food
-        grassSpread = 0.05f;
+        grassSpawnTime = 1;
+        grassSpawnAmount = 1f;
+        eatSpeed = 1f;
+        underwaterFoodSpawn = true;
 
         gridArray = new Chunk[0, 0];
         mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = mesh;
+        sand = new Color(0.941f, 0.953f, 0.741f);
+        land = new Color(0.263f, 0.157f, 0.094f);
         agents = new List<Agent>();
     }
 
@@ -105,6 +115,11 @@ public class GridController : MonoBehaviour {
     }
 
     void step() {
+        // Debug.Log("1");
+        // if(time % grassSpawnTime == 0)
+        //     spawnGrass();
+        // Debug.Log("2");
+
         // Step bots
         for(int i = agents.Count - 1; i >= 0; i--)
             agents[i].act(isMenu);
@@ -115,6 +130,8 @@ public class GridController : MonoBehaviour {
 
         // Increment time
         time += 1;
+
+        mesh.colors = colours;
     }
 
     public void createGrid() {
@@ -172,12 +189,10 @@ public class GridController : MonoBehaviour {
 
         // Set up sea floor plane
         transform.Find("Sea Floor").transform.localScale = new Vector3((cols + CameraController.panLimit + 1000) / 10, 1, (rows + CameraController.panLimit + 1000) / 10);
-        transform.Find("Sea Floor").GetComponent<Renderer>().material.SetColor("_Color", new Color(0.941f, 0.953f, 0.741f));
+        transform.Find("Sea Floor").GetComponent<Renderer>().material.SetColor("_Color", sand);
 
         // Set the positions and colours of vertices
         colours = new Color[cols * rows];
-        Color sand = new Color(0.941f, 0.953f, 0.741f);
-        Color land = new Color(0.263f, 0.157f, 0.094f);
         for(int c = 0; c < cols; c++) {
             for(int r = 0; r < rows; r++) {
                 float elevation = (
@@ -226,8 +241,8 @@ public class GridController : MonoBehaviour {
                 int row = Random.Range(0, rows);
                 chunk = gridArray[col, row];
                 tries++;
-            } while((chunk.isWater() || chunk.agent != null) && tries < 1000);
-            if(tries < 1000) {
+            } while((chunk.isWater() || chunk.agent != null) && tries < 100);
+            if(tries < 100) {
                 GameObject agentObj = (GameObject)Instantiate(referenceAgent, transform);
                 Agent agent = new Agent(agentObj, chunk);
                 chunk.agent = agent;
@@ -237,5 +252,28 @@ public class GridController : MonoBehaviour {
             }
         }
         Destroy(referenceAgent);
+    }
+
+    public void spawnGrass() {
+        float toAdd = grassSpawnAmount;
+        int tries = 0;
+        Chunk chunk;
+        while(tries < 100 && toAdd > 0) {
+            int col = Random.Range(0, cols);
+            int row = Random.Range(0, rows);
+            chunk = gridArray[col, row];
+            if(chunk.food < 1 && (underwaterFoodSpawn || !chunk.isWater())) {
+                float add = Mathf.Min(toAdd, 1f - chunk.food);
+                toAdd -= add;
+                chunk.food += add;
+
+                // Reset the color of the chunk's vertex
+                Color color = Color.Lerp(sand, land, (1 + seaLevel) * chunk.vertex.y - seaLevel);
+                colours[Mathf.RoundToInt(chunk.vertex.x*rows + chunk.vertex.z)] = Color.Lerp(color, new Color(color.r, 1, color.b), chunk.food);
+            }
+            tries++;
+        }
+        if(toAdd > 0)
+            Debug.Log(toAdd + " food could not be spawned");
     }
 }
