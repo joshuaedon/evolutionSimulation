@@ -90,7 +90,7 @@ public class AgentPanelController : MonoBehaviour {
                     highlighted = true;
                 }
             }
-            if(!highlighted)
+            if(isHighlight && !highlighted)
                 unhighlight();
         } else if(isHighlight) {
             unhighlight();
@@ -99,6 +99,7 @@ public class AgentPanelController : MonoBehaviour {
 
     void highlightNode(GameObject node) {
         isHighlight = true;
+        Cursor.visible = false;
         for(int l = 0; l < network.layers.Length; l++) {
             for(int n = 0; n < network.layers[l].nodes.Length; n++) {
                 Node curNode = network.layers[l].nodes[n];
@@ -114,6 +115,7 @@ public class AgentPanelController : MonoBehaviour {
 
     void unhighlight() {
         isHighlight = false;
+        Cursor.visible = true;
         for(int l = 0; l < network.layers.Length; l++) {
             for(int n = 0; n < network.layers[l].nodes.Length; n++) {
                 Node curNode = network.layers[l].nodes[n];

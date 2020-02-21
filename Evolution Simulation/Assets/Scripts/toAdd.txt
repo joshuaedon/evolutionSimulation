@@ -1,5 +1,5 @@
 DOING
-
+Limited camera zoom to when mouse is not over UI, settings button working, settings sliders, added terrainBias so terrain wouldnt jump when changing the terrainSpeed variable
 
 
 - Food
@@ -32,4 +32,16 @@ DOING
 BUGS
 - Can't click through statistics element
 - Fix positions for different screen dimentions
-- 
+- terainUpdate variable
+
+
+
+
+
+
+
+- How hard is the machine learning cw?
+- Are they expecting us to have finished out projects completely by the presentation?
+- Tomorrow do some of the settings menu
+- On friday get hunger and asexual breeding done
+

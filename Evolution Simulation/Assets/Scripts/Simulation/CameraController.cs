@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class CameraController : MonoBehaviour {
 
@@ -43,11 +44,13 @@ public class CameraController : MonoBehaviour {
         }
 
         // Zoom the camera in/out
-        pos += Vector3.Normalize(camDir) * Input.GetAxis("Mouse ScrollWheel") * scrollSpeed * 100f * Time.deltaTime;
-        // Cap the camera's height
-        pos.x = Mathf.Clamp(pos.x, -panLimit, GridController.GC.cols + panLimit);
-        pos.y = Mathf.Clamp(pos.y, minY, maxY);
-        pos.z = Mathf.Clamp(pos.z, -panLimit, GridController.GC.rows + panLimit);
+        if(!EventSystem.current.IsPointerOverGameObject()) {
+        	pos += Vector3.Normalize(camDir) * Input.GetAxis("Mouse ScrollWheel") * scrollSpeed * 100f * Time.deltaTime;
+	        // Cap the camera's height
+	        pos.x = Mathf.Clamp(pos.x, -panLimit, GridController.GC.cols + panLimit);
+	        pos.y = Mathf.Clamp(pos.y, minY, maxY);
+	        pos.z = Mathf.Clamp(pos.z, -panLimit, GridController.GC.rows + panLimit);
+    	}
         transform.position = pos;
 
         // Rotate the camera

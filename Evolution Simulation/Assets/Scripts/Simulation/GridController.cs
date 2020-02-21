@@ -8,30 +8,22 @@ public class GridController : MonoBehaviour {
     public bool startingAgents;
     //// Grid attributes
     // Time
-    public float ticksPerSec;
+    public float ticksPerSec = 0;
     public float framesPerTick;
     public string tickFrame;
-    public int time;
-    // []
-    public float terrainTimeStep;
-    // []
-    public int terrainTimeUpdate;
+    public int time = 0;
+    public float terrainTimeStep = 1f;
+    public float terrainBias = 0;
+    public float terrainUpdate = 250;
     // Terrain
-    [Range(0, 200)]
-    public int cols;
-    [Range(0, 200)]
-    public int rows;
-    [Range(1f, 100f)]
-    public float noiseScale;
-    [Range(0f, 1f)]
-    public float seaLevel;
-    [Range(1f, 10f)]
-    public float yScale;
-    [Range(0, 50)]
-    public int seaBorder;
+    public int cols = 150;
+    public int rows = 75;
+    public float noiseScale = 15f;
+    public float seaLevel = 0.45f;
+    public float yScale = 3f;
+    public int seaBorder = 10;
     // Food
-    // []
-    public float foodSpread;
+    public float grassSpread = 0.05f;
     //// Grid state
     public Chunk[,] gridArray;
     Mesh mesh;
@@ -47,25 +39,13 @@ public class GridController : MonoBehaviour {
     void Start() {
         osn = new OpenSimplexNoise();
 
+        startingAgents = true;
+        // Time
         ticksPerSec = 0;
         time = 0;
-        setDefaultValues();
-
-        gridArray = new Chunk[0, 0];
-        mesh = new Mesh();
-        GetComponent<MeshFilter>().mesh = mesh;
-        agents = new List<Agent>();
-
-        showVertices = false;
-    }
-
-    public void setDefaultValues() {
-        //// Setup variables
-        startingAgents = true;
-        //// Grid attributes
-        // Time
-        terrainTimeStep = 0.0000001f;
-        terrainTimeUpdate = 250;
+        terrainTimeStep = 1f;
+        terrainBias = 0;
+        terrainUpdate = 250;
         // Terrain
         cols = 150;
         rows = 75;
@@ -74,7 +54,12 @@ public class GridController : MonoBehaviour {
         yScale = 3f;
         seaBorder = 10;
         // Food
-        foodSpread = 0.05f;
+        grassSpread = 0.05f;
+
+        gridArray = new Chunk[0, 0];
+        mesh = new Mesh();
+        GetComponent<MeshFilter>().mesh = mesh;
+        agents = new List<Agent>();
     }
 
     void Update() {
@@ -119,19 +104,13 @@ public class GridController : MonoBehaviour {
         }
     }
 
-    private void OnValidate() {
-        if(gridArray != null) {
-            createGrid();
-        }
-    }
-
     void step() {
         // Step bots
         for(int i = agents.Count - 1; i >= 0; i--)
             agents[i].act(isMenu);
 
         // Update grid
-        if(time % Mathf.Ceil(terrainTimeUpdate / (terrainTimeStep * 10000000)) == 0)
+        if(time % Mathf.Ceil(terrainUpdate / terrainTimeStep) == 0)
             updateGrid();
 
         // Increment time
@@ -139,6 +118,54 @@ public class GridController : MonoBehaviour {
     }
 
     public void createGrid() {
+        // Reset chunk and vertex arrays
+        Chunk[,] newGridArray = new Chunk[cols, rows];
+        vertices = new Vector3[cols * rows];
+
+        // Create new chunk objects
+        for(int c = 0; c < cols; c++) {
+            for(int r = 0; r < rows; r++) {
+                newGridArray[c, r] = new Chunk(c, r);
+            }
+        }
+        // Move over the agents and food from the previous gridArray
+        for(int c = 0; c < gridArray.GetLength(0); c++) {
+            for(int r = 0; r < gridArray.GetLength(1); r++) {
+                if(c < cols && r < rows) {
+                    newGridArray[c, r].agent = gridArray[c, r].agent;
+                    newGridArray[c, r].food = gridArray[c, r].food;
+                } else if(gridArray[c, r].agent != null) {
+                    Destroy(gridArray[c, r].agent.agentObj);
+                    agents.Remove(gridArray[c, r].agent);
+                }
+            }
+        }
+
+        // Create mesh triangles
+        triangles = new int[(cols-1) * (rows - 1) * 6];
+        int v = 0;
+        int t = 0;
+        for(int c = 0; c < cols-1; c++) {
+            for(int r = 0; r < rows - 1; r++) {
+                triangles[t]     = v;
+                triangles[t + 1] = v + 1;
+                triangles[t + 2] = v + rows;
+                triangles[t + 3] = v + 1;
+                triangles[t + 4] = v + rows + 1;
+                triangles[t + 5] = v + rows;
+
+                v++;
+                t += 6;
+            }
+            v++;
+        }
+
+        gridArray = newGridArray;
+
+        updateGrid();
+    }
+
+    public void updateGrid() {
         // Set up water plane
         transform.Find("Water").transform.position = new Vector3(0, yScale * seaLevel, 0);
         transform.Find("Water").transform.localScale = new Vector3((cols + CameraController.panLimit + 1000) / 10, 1, (rows + CameraController.panLimit + 1000) / 10);
@@ -147,44 +174,6 @@ public class GridController : MonoBehaviour {
         transform.Find("Sea Floor").transform.localScale = new Vector3((cols + CameraController.panLimit + 1000) / 10, 1, (rows + CameraController.panLimit + 1000) / 10);
         transform.Find("Sea Floor").GetComponent<Renderer>().material.SetColor("_Color", new Color(0.941f, 0.953f, 0.741f));
 
-        // Delete and create grid objects if grid dimensions have been changed
-        if(cols != gridArray.GetLength(0) || rows != gridArray.GetLength(1)) {
-            // Reset chunk and vertex arrays
-            gridArray = new Chunk[cols, rows];
-            vertices = new Vector3[cols * rows];
-
-            // Create new chunk objects
-            for(int c = 0; c < cols; c++) {
-                for(int r = 0; r < rows; r++) {
-                    gridArray[c, r] = new Chunk(c, r);
-                }
-            }
-            
-
-            // Create mesh triangles
-            triangles = new int[(cols-1) * (rows - 1) * 6];
-            int v = 0;
-            int t = 0;
-            for(int c = 0; c < cols-1; c++) {
-                for(int r = 0; r < rows-1; r++) {
-                    triangles[t]     = v;
-                    triangles[t + 1] = v + 1;
-                    triangles[t + 2] = v + rows;
-                    triangles[t + 3] = v + 1;
-                    triangles[t + 4] = v + rows + 1;
-                    triangles[t + 5] = v + rows;
-
-                    v++;
-                    t += 6;
-                }
-                v++;
-            }
-        }
-
-        updateGrid();
-    }
-
-    void updateGrid() {
         // Set the positions and colours of vertices
         colours = new Color[cols * rows];
         Color sand = new Color(0.941f, 0.953f, 0.741f);
@@ -192,8 +181,8 @@ public class GridController : MonoBehaviour {
         for(int c = 0; c < cols; c++) {
             for(int r = 0; r < rows; r++) {
                 float elevation = (
-                                    (float)osn.Evaluate(c / noiseScale, r / noiseScale, time * terrainTimeStep * terrainTimeUpdate) + 
-                                    (float)osn.Evaluate(c / (noiseScale / 4), r / (noiseScale / 4), 1000 + time * terrainTimeStep * terrainTimeUpdate / 2) / 8 + 
+                                    (float)osn.Evaluate(c / noiseScale      , r / noiseScale      ,        terrainBias + time * terrainTimeStep * 0.0000001f * terrainUpdate    )     + 
+                                    (float)osn.Evaluate(c / (noiseScale / 4), r / (noiseScale / 4), 1000 + terrainBias + time * terrainTimeStep * 0.0000001f * terrainUpdate * 2) / 8 + 
                                     1
                                   ) / 2;
 

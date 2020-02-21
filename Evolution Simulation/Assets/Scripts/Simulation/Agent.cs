@@ -30,16 +30,16 @@ public class Agent {
 
     public void act(bool isMenu) {
         if(!isMenu) {
+            float stepOut = network.returnOutput("Step", false);
             float leftOut = network.returnOutput("Left", false);
             float rightOut = network.returnOutput("Right", false);
-            float stepOut = network.returnOutput("Step", false);
             float stayOut = network.returnOutput("Stay", false);
-            if(leftOut > Mathf.Max(Mathf.Max(rightOut, stepOut), stayOut))
-                turnLeft();
-            else if(rightOut > Mathf.Max(stepOut, stayOut))
-                turnRight();
-            else if(stepOut > stayOut)
+            if(stepOut > Mathf.Max(Mathf.Max(leftOut, rightOut), stayOut))
                 stepForward(isMenu);
+            else if(leftOut > Mathf.Max(rightOut, stayOut))
+                turnLeft();
+            else if(rightOut > stayOut)
+                turnRight();
             loadInputs();
         } else {
             float rand = Random.Range(0f, 1f);
