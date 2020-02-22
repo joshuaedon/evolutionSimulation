@@ -1,3 +1,4 @@
+using UnityEngine.UI.Extensions;
 using UnityEngine;
 
 public class NeuralNetwork {
@@ -87,6 +88,52 @@ public class NeuralNetwork {
         this.layers = newLayers;
     }*/
     
+    /*  
+    NeuralNetwork copy() {
+      int[] layerSizes = new int[this.layers.length];
+      for (int i = 0; i < layerSizes.length; i++)
+        layerSizes[i] = this.layers[i].nodes.length - 1;
+      
+      NeuralNetwork newNetwork = new NeuralNetwork(layerSizes);
+      
+      for (int l = 0; l < newNetwork.layers.length; l++) {
+        Layer currentLayer = newNetwork.layers[l];
+        for (int n = 0; n < currentLayer.nodes.length; n++)
+          currentLayer.nodes[n].connections = this.layers[l].nodes[n].connections.clone();
+      }
+      
+      return newNetwork;
+    }*/
+
+    public void setConnectionColours() {
+    	foreach(Layer l in layers) {
+			foreach(Node n in l.nodes) {
+				for(int c = 0; c < n.nodes.Length; c++) {
+					UILineRenderer LineRenderer = n.connectionObjects[c].GetComponent<UILineRenderer>();
+		          	if(SimulationManager.NNFlow) {
+			            float opacity = Mathf.Abs(n.weights[c] * n.nodes[c].value / maxWeight);
+			            if(n.weights[c] < 0)
+			                LineRenderer.color = new Color(1.0f, 0.0f, 0.0f, opacity);
+			            else
+			                LineRenderer.color = new Color(0.0f, 1.0f, 0.0f, opacity);
+			        } else
+		            	LineRenderer.color = new Color(-n.weights[c], n.weights[c], 0, Mathf.Abs(n.weights[c]) / maxWeight);
+				}
+    		}
+  		}
+    }
+
+    void mutate(float amount) {
+		foreach(Layer l in layers) {
+			foreach(Node n in l.nodes) {
+				for(int c = 0; c < n.weights.Length; c++)
+					n.weights[c] += Random.Range(-amount, amount);
+			}
+		}
+		setmaxWeight();
+		setConnectionColours();
+    }
+
     public void printWeights() {
         string s = "";
         for (int l = 1; l < layers.Length; l++) {
@@ -103,38 +150,4 @@ public class NeuralNetwork {
         }
         Debug.Log(s);
     }
-    /*  
-    NeuralNetwork copy() {
-      int[] layerSizes = new int[this.layers.length];
-      for (int i = 0; i < layerSizes.length; i++)
-        layerSizes[i] = this.layers[i].nodes.length - 1;
-      
-      NeuralNetwork newNetwork = new NeuralNetwork(layerSizes);
-      
-      for (int l = 0; l < newNetwork.layers.length; l++) {
-        Layer currentLayer = newNetwork.layers[l];
-        for (int n = 0; n < currentLayer.nodes.length; n++)
-          currentLayer.nodes[n].connections = this.layers[l].nodes[n].connections.clone();
-      }
-      
-      return newNetwork;
-    }
-
-    void mutate(float amount) {
-      for (Layer l : layers) {
-        for (Node n : l.nodes) {
-          for (int c = 0; c < n.connections.length; c++)
-            n.connections[c] += random(-amount, amount);
-        }
-      }
-      for (int l = 0; l < this.layers.length; l++) {
-        Layer currentLayer = this.layers[l];
-        for (int n = 0; n < currentLayer.nodes.length; n++) {
-          Node currentNode = currentLayer.nodes[n];
-          for (int c = 0; c < currentNode.connections.length; c++)
-            currentNode.connections[c] += random(-amount, amount);
-        }
-      }
-    }
-    */
 }

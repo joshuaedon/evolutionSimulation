@@ -52,6 +52,8 @@ public class Agent {
             	eat();
 
             loadInputs();
+            if(this == SimulationManager.selectedAgent && SimulationManager.NNFlow)
+            	network.setConnectionColours();
         } else {
         	// If the agent is in the menu screen, randomely move forward, turn left or right
             float rand = Random.Range(0f, 1f);

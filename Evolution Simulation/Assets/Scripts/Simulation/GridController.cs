@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class GridController : MonoBehaviour {
     public static GridController GC;
+    public bool isMenu;
     OpenSimplexNoise osn;
     //// Setup variables
     public bool startingAgents;
@@ -37,12 +38,9 @@ public class GridController : MonoBehaviour {
     Color sand;
     Color land;
     public List<Agent> agents;
-    ////
-    public bool isMenu = false;
-    public bool showVertices = false;
-    public bool transpNNConnections = false;
-
+    
     void Start() {
+        isMenu = false;
         osn = new OpenSimplexNoise();
 
         startingAgents = true;
@@ -75,28 +73,6 @@ public class GridController : MonoBehaviour {
     }
 
     void Update() {
-        // Display vertices
-        if(showVertices && !UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-            // Casts the ray and get the first game object hit
-            Physics.Raycast(ray, out hit);
-
-            GameObject referenceVertex = (GameObject)Instantiate(Resources.Load("Simulation/Vertex"));
-            for(int c = 0; c < gridArray.GetLength(0); c++) {
-                for(int r = 0; r < gridArray.GetLength(1); r++) {
-                    if(Vector3.Distance(hit.point, gridArray[c, r].vertex) < 5) {
-                        if(gridArray[c, r].vertexObj == null) {
-                            gridArray[c, r].vertexObj = (GameObject)Instantiate(referenceVertex, transform);
-                            gridArray[c, r].setVertexPos(yScale);
-                        }
-                    } else
-                        Destroy(gridArray[c, r].vertexObj);
-                }
-            }
-            Destroy(referenceVertex);
-        }
-
         // Step
         if(ticksPerSec != 0) {
             if(framesPerTick > 0) {

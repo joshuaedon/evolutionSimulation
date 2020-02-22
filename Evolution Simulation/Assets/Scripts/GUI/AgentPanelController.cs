@@ -6,26 +6,23 @@ using UnityEngine.UI.Extensions;
 using UnityEngine.EventSystems;
 
 public class AgentPanelController : MonoBehaviour {
+    bool isHighlight;
 	Agent agent;
     NeuralNetwork network;
     GameObject HungerBar;
     GameObject NodesPanel;
     GameObject ConnectionsPanel;
-    bool isHighlight = false;
 
 	public void OnEnable() {
 		if(SimulationManager.selectedAgent != null) {
+			isHighlight = false;
+
   			// Store the selected agent and its neural network 
   			agent = SimulationManager.selectedAgent;
   			network = agent.network;
 
   			// Store game objects which will need to be used
   			HungerBar 	  	 = transform.Find("HungerBar").gameObject;
-
-          	foreach(Component component in HungerBar.GetComponents<Component>()) {
-            	Debug.Log(component);
-            }
-
     		NodesPanel 	  	 = transform.Find("NodesPanel").gameObject;
     		ConnectionsPanel = transform.Find("ConnectionsPanel").gameObject;
 
@@ -67,20 +64,13 @@ public class AgentPanelController : MonoBehaviour {
 			          	pointlist.Add(point1);
 			          	pointlist.Add(point2);
 			          	LineRenderer.Points = pointlist.ToArray();
-			          	if(GridController.GC.transpNNConnections) {
-				            float opacity = Mathf.Abs(curNode.weights[c] * curNode.nodes[c].value / network.maxWeight);
-				            if(curNode.weights[c] < 0)
-				                LineRenderer.color = new Color(1.0f, 0.0f, 0.0f, opacity);
-				            else
-				                LineRenderer.color = new Color(0.0f, 1.0f, 0.0f, opacity);
-				        } else
-			            	LineRenderer.color = new Color(-curNode.weights[c], curNode.weights[c], 0, Mathf.Abs(curNode.weights[c]) / network.maxWeight);
     					curNode.connectionObjects[c] = connectionObj;	
     				}
         		}
       		}
       		Destroy(referenceNode);
       		Destroy(referenceConnection);
+      		network.setConnectionColours();
   		}
   	}
 
@@ -108,6 +98,11 @@ public class AgentPanelController : MonoBehaviour {
         } else if(isHighlight) {
             unhighlight();
         }
+    }
+
+    public void toggleNNFlow(bool b) {
+    	SimulationManager.NNFlow = b;
+    	network.setConnectionColours();
     }
 
     void highlightNode(GameObject node) {

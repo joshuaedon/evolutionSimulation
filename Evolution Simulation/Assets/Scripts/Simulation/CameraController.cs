@@ -2,7 +2,6 @@
 using UnityEngine.EventSystems;
 
 public class CameraController : MonoBehaviour {
-
     public static float minPanSpeed = 20f;
     public static float panBorderThickness = 10f;
     public static float panLimit = 30f;
@@ -47,6 +46,9 @@ public class CameraController : MonoBehaviour {
         if(!EventSystem.current.IsPointerOverGameObject()) {
         	pos += Vector3.Normalize(camDir) * Input.GetAxis("Mouse ScrollWheel") * scrollSpeed * 100f * Time.deltaTime;
 	        // Cap the camera's height
+	        if(GridController.GC == null) {
+	        	Debug.Log("hhhuihuhuihiuh");
+	        }
 	        pos.x = Mathf.Clamp(pos.x, -panLimit, GridController.GC.cols + panLimit);
 	        pos.y = Mathf.Clamp(pos.y, minY, maxY);
 	        pos.z = Mathf.Clamp(pos.z, -panLimit, GridController.GC.rows + panLimit);
@@ -55,9 +57,9 @@ public class CameraController : MonoBehaviour {
 
         // Rotate the camera
         if(Input.GetKey("e"))
-            transform.RotateAround(pos + transform.forward*70, Vector3.up, Time.deltaTime*rotateSpeed);
+            transform.RotateAround(pos + transform.forward*2*pos.y*Mathf.Sin(Mathf.PI / 6f), Vector3.up, Time.deltaTime*rotateSpeed);
         if(Input.GetKey("q"))
-            transform.RotateAround(pos + transform.forward*70, Vector3.up, -Time.deltaTime*rotateSpeed);
+            transform.RotateAround(pos + transform.forward*2*pos.y*Mathf.Sin(Mathf.PI / 6f), Vector3.up, -Time.deltaTime*rotateSpeed);
     }
 
     public void toggleFollow(bool b) {
