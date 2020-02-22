@@ -7,7 +7,7 @@ public class Agent {
     public Chunk chunk;
     public NeuralNetwork network;
     int dir;
-    float hunger;
+    public float hunger;
 
     public Agent(GameObject agentObj, Chunk chunk) {
         this.agentObj = agentObj;
@@ -32,18 +32,26 @@ public class Agent {
 
     public void act(bool isMenu) {
         if(!isMenu) {
-            float stepOut = network.returnOutput("Step", false);
+        	// Loose hunger
+        	this.hunger -= GridController.GC.hungerLoss;
+
+        	// Move forward, turn left, right or eat depending on the agents NN outputs
+            float forwardsOut = network.returnOutput("Forwards", false);
             float leftOut = network.returnOutput("Left", false);
             float rightOut = network.returnOutput("Right", false);
-            float stayOut = network.returnOutput("Stay", false);
-            if(stepOut > Mathf.Max(Mathf.Max(leftOut, rightOut), stayOut))
+            float eatOut = network.returnOutput("Eat", false);
+            if(forwardsOut > Mathf.Max(Mathf.Max(leftOut, rightOut), eatOut))
                 stepForward(isMenu);
-            else if(leftOut > Mathf.Max(rightOut, stayOut))
+            else if(leftOut > Mathf.Max(rightOut, eatOut))
                 turnLeft();
-            else if(rightOut > stayOut)
+            else if(rightOut > eatOut)
                 turnRight();
+            else
+            	eat();
+
             loadInputs();
         } else {
+        	// If the agent is in the menu screen, randomely move forward, turn left or right
             float rand = Random.Range(0f, 1f);
             if(rand > 2.0f/3.0f)
                 turnLeft();
@@ -81,5 +89,13 @@ public class Agent {
                 moveObj();
             }
         }
+    }
+
+    void eat() {
+    	float amount = Mathf.Min(GridController.GC.eatSpeed, Mathf.Min(1f - hunger, chunk.food));
+    	hunger += amount;
+    	chunk.food -= amount;
+    	// Reset the color of the chunk's vertex
+        GridController.GC.updateVertexColour(Mathf.RoundToInt(chunk.vertex.x), Mathf.RoundToInt(chunk.vertex.z));
     }
 }

@@ -8,25 +8,26 @@ public class GridController : MonoBehaviour {
     public bool startingAgents;
     //// Grid attributes
     // Time
-    public float ticksPerSec = 0;
+    public float ticksPerSec;
     public float framesPerTick;
     public string tickFrame;
-    public int time = 0;
-    public float terrainTimeStep = 1f;
-    public float terrainBias = 0;
-    public float terrainUpdate = 250;
+    public int time;
+    public float terrainTimeStep;
+    public float terrainBias;
+    public float terrainUpdate;
     // Terrain
-    public int cols = 150;
-    public int rows = 75;
-    public float noiseScale = 15f;
-    public float seaLevel = 0.45f;
-    public float yScale = 3f;
-    public int seaBorder = 10;
+    public int cols;
+    public int rows;
+    public float noiseScale;
+    public float seaLevel;
+    public float yScale;
+    public int seaBorder;
     // Food
-    public int grassSpawnTime = 1;
-    public float grassSpawnAmount = 1f;
-    public float eatSpeed = 1f;
-    public bool underwaterFoodSpawn = true;
+    public int grassSpawnTime;
+    public float grassSpawnAmount;
+    public float eatSpeed;
+    public float hungerLoss;
+    public bool underwaterFoodSpawn;
     //// Grid state
     public Chunk[,] gridArray;
     Mesh mesh;
@@ -59,9 +60,10 @@ public class GridController : MonoBehaviour {
         yScale = 5f;
         seaBorder = 10;
         // Food
-        grassSpawnTime = 1;
         grassSpawnAmount = 1f;
+        grassSpawnTime = 100;
         eatSpeed = 1f;
+        hungerLoss = 0.01f;
         underwaterFoodSpawn = true;
 
         gridArray = new Chunk[0, 0];
@@ -116,13 +118,19 @@ public class GridController : MonoBehaviour {
 
     void step() {
         // Debug.Log("1");
-        // if(time % grassSpawnTime == 0)
-        //     spawnGrass();
+        if(time % grassSpawnTime == 0)
+            spawnGrass();
         // Debug.Log("2");
 
         // Step bots
-        for(int i = agents.Count - 1; i >= 0; i--)
+        for(int i = agents.Count - 1; i >= 0; i--) {
             agents[i].act(isMenu);
+            if(agents[i].hunger <= 0) {
+                Destroy(agents[i].agentObj);
+                agents[i].chunk.agent = null;
+                agents.RemoveAt(i);
+            }
+        }
 
         // Update grid
         if(time % Mathf.Ceil(terrainUpdate / terrainTimeStep) == 0)
@@ -226,6 +234,11 @@ public class GridController : MonoBehaviour {
         mesh.RecalculateNormals();
     }
 
+    public void updateVertexColour(int c, int r) {
+        Color color = Color.Lerp(sand, land, (1 + seaLevel) * gridArray[c, r].vertex.y - seaLevel);
+        colours[Mathf.RoundToInt(c*rows + r)] = Color.Lerp(color, new Color(color.r, 1, color.b), gridArray[c, r].food);
+    }
+
     public void spawnStartingAgents() {
         if(startingAgents)
             spawnAgents(rows * cols / 150);
@@ -268,12 +281,11 @@ public class GridController : MonoBehaviour {
                 chunk.food += add;
 
                 // Reset the color of the chunk's vertex
-                Color color = Color.Lerp(sand, land, (1 + seaLevel) * chunk.vertex.y - seaLevel);
-                colours[Mathf.RoundToInt(chunk.vertex.x*rows + chunk.vertex.z)] = Color.Lerp(color, new Color(color.r, 1, color.b), chunk.food);
+                updateVertexColour(Mathf.RoundToInt(chunk.vertex.x), Mathf.RoundToInt(chunk.vertex.z));
             }
             tries++;
         }
-        if(toAdd > 0)
-            Debug.Log(toAdd + " food could not be spawned");
+        // if(toAdd > 0)
+        //     Debug.Log(toAdd + " food could not be spawned");
     }
 }

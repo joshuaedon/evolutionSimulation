@@ -4,7 +4,7 @@ public class NeuralNetwork {
     // string[] inputLabels = {"Random", "Bot R", "Bot B", "Water R", "Water B", "Food R", "Food B", "Bot Col R", "Bot Col B", "Scent R", "Scent B", "Hunger"};
     // string[] outputLabels = {"Left", "Right", "Step", "Stay", "Dist R", "Dir R", "Range R", "Dist B", "Dir B", "Range B", "Breed/Kill", "Mutation", "Drop Scent"};
     string[] inputLabels = {"Random"};
-    string[] outputLabels = {"Step", "Left", "Right", "Stay"};
+    string[] outputLabels = {"Forwards", "Left", "Right", "Eat"};
     float[] prevOutputs;
     public Layer[] layers;
     public float maxWeight;

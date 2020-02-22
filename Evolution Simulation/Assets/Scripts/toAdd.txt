@@ -1,5 +1,5 @@
 DOING
-Added reset button, 
+
 
 
 - Food
