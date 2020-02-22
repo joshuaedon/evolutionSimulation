@@ -7,8 +7,10 @@ public class Node {
     public float[] weights;
     public GameObject nodeObject;
     public GameObject[] connectionObjects;
-    
-    public Node(Node[] prevNodes) {
+    public int layerNum;
+    public int nodeNum;
+
+    public Node(Node[] prevNodes, int layerNum, int nodeNum) {
         this.nodes = new Node[prevNodes.Length];
         for(int i = 0; i < prevNodes.Length; i++)
             nodes[i] = prevNodes[i];
@@ -16,6 +18,13 @@ public class Node {
         for (int i = 0; i < weights.Length; i++)
             weights[i] = Random.Range(-1f, 1f);
         this.connectionObjects = new GameObject[prevNodes.Length];
+        this.layerNum = layerNum;
+        this.nodeNum = nodeNum;
+    }
+
+    public Node(int layerNum, int nodeNum) {
+        this.layerNum = layerNum;
+        this.nodeNum = nodeNum;
     }
 
     /*public Node(float[] a, float[] b, float aMutation, float bMutation) {

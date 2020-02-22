@@ -55,6 +55,7 @@ public class AgentPanelController : MonoBehaviour {
     				GameObject nodeObj = (GameObject)Instantiate(referenceNode, NodesPanel.transform);
     				nodeObj.transform.localPosition = new Vector2((2.0f * l + 1 - network.layers.Length) * horizontalSpacing, nodeSize * (network.layers[l].nodes.Length / 2.0f - n - 0.5f));
     				curNode.nodeObject = nodeObj;
+    				curNode.display();
     				for(int c = 0; c < curNode.nodes.Length; c++) {
     				    GameObject connectionObj = (GameObject)Instantiate(referenceConnection, ConnectionsPanel.transform);
       					UILineRenderer LineRenderer = connectionObj.GetComponent<UILineRenderer>();
@@ -103,6 +104,15 @@ public class AgentPanelController : MonoBehaviour {
     public void toggleNNFlow(bool b) {
     	SimulationManager.NNFlow = b;
     	network.setConnectionColours();
+    }
+
+    public void mutateAgent() {
+    	network.mutate(0.1f);
+    	network.setConnectionColours();
+    }
+
+    public void reproduceAgent() {
+    	agent.reproduce();
     }
 
     void highlightNode(GameObject node) {

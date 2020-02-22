@@ -1,13 +1,15 @@
 public class Layer {
   public Node[] nodes;
   
-  public Layer(Node[] prevNodes, int layerSize) {
+  public Layer(Node[] prevNodes, int layerSize, int layerNum) {
       nodes = new Node[layerSize + 1];
       for (int i = 0; i < nodes.Length - 1; i++)
-          nodes[i] = new Node(prevNodes);
-      nodes[nodes.Length - 1] = new Node(new Node[0]);
+          nodes[i] = new Node(prevNodes, layerNum, i);
+      nodes[nodes.Length - 1] = new Node(new Node[0], layerNum, nodes.Length - 1);
       nodes[nodes.Length - 1].value = 1;
   }
+
+  public Layer() {}
 
   /*public Layer(Node[] a, Node[] b, float aMutation, float bMutation) {
       nodes = new Node[a.Length];

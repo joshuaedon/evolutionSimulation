@@ -6,17 +6,43 @@ public class NeuralNetwork {
     // string[] outputLabels = {"Left", "Right", "Step", "Stay", "Dist R", "Dir R", "Range R", "Dist B", "Dir B", "Range B", "Breed/Kill", "Mutation", "Drop Scent"};
     string[] inputLabels = {"Random"};
     string[] outputLabels = {"Forwards", "Left", "Right", "Eat"};
-    float[] prevOutputs;
+    // float[] prevOutputs;
     public Layer[] layers;
     public float maxWeight;
     
     public NeuralNetwork(int[] layerSizes) {
-        this.prevOutputs = new float[layerSizes[layerSizes.Length-1]];
+        // this.prevOutputs = new float[layerSizes[layerSizes.Length-1]];
         this.layers = new Layer[layerSizes.Length];
-        layers[0] = new Layer(new Node[0], layerSizes[0]);
+        layers[0] = new Layer(new Node[0], layerSizes[0], 0);
         for (int i = 1; i < layers.Length; i++)
-            layers[i] = new Layer(layers[i-1].nodes, layerSizes[i]);
+            layers[i] = new Layer(layers[i-1].nodes, layerSizes[i], i);
         setmaxWeight();
+    }
+
+    public NeuralNetwork(NeuralNetwork oldNetwork) {
+    	this.layers = new Layer[oldNetwork.layers.Length];
+    	for(int l = 0; l < oldNetwork.layers.Length; l++) {
+			Layer oldL = oldNetwork.layers[l];
+			Layer newL = new Layer();
+			newL.nodes = new Node[oldL.nodes.Length];
+			for(int n = 0; n < oldL.nodes.Length; n++) {
+				Node oldN = oldL.nodes[n];
+				Node newN = new Node(l, n);
+				newN.nodes = new Node[oldN.nodes.Length];
+				newN.weights = new float[oldN.nodes.Length];
+				newN.connectionObjects = new GameObject[oldN.nodes.Length];
+				for(int c = 0; c < oldN.nodes.Length; c++) {
+					Node toFind = oldN.nodes[c];
+					newN.nodes[c] = this.layers[toFind.layerNum].nodes[toFind.nodeNum];
+
+					newN.weights[c] = oldN.weights[c];
+				}
+				newL.nodes[n] = newN;
+			}
+			newL.nodes[newL.nodes.Length - 1].value = 1;
+			this.layers[l] = newL;
+		}
+		setmaxWeight();
     }
 
     /*public NeuralNetwork(Layer[] a, Layer[] b, float aMutation, float bMutation) {
@@ -54,8 +80,8 @@ public class NeuralNetwork {
     }
     
     void calculate() {
-        for(int i = 0; i < prevOutputs.Length; i++)
-            prevOutputs[i] = layers[layers.Length-1].nodes[i].value;
+        // for(int i = 0; i < prevOutputs.Length; i++)
+        //     prevOutputs[i] = layers[layers.Length-1].nodes[i].value;
 
         for (int l = 1; l < layers.Length; l++) {
             for (int n = 0; n < layers[l].nodes.Length - 1; n++)
@@ -67,15 +93,15 @@ public class NeuralNetwork {
         }
     }
     
-    public float returnOutput(string outputStr, bool prev) {
+    public float returnOutput(string outputStr/*, bool prev*/) {
         int output = -1;
         for(int i = 0; i < outputLabels.Length; i++) {
             if(outputLabels[i].Equals(outputStr))
               output = i;
         }
-        if(prev)
-            return prevOutputs[output];
-        else
+        // if(prev)
+        //     return prevOutputs[output];
+        // else
             return layers[layers.Length-1].nodes[output].value;
     }
 
@@ -86,23 +112,6 @@ public class NeuralNetwork {
         for(int i = 1; i < layers.Length; i++)
             newLayers[i+1] = layers[i];
         this.layers = newLayers;
-    }*/
-    
-    /*  
-    NeuralNetwork copy() {
-      int[] layerSizes = new int[this.layers.length];
-      for (int i = 0; i < layerSizes.length; i++)
-        layerSizes[i] = this.layers[i].nodes.length - 1;
-      
-      NeuralNetwork newNetwork = new NeuralNetwork(layerSizes);
-      
-      for (int l = 0; l < newNetwork.layers.length; l++) {
-        Layer currentLayer = newNetwork.layers[l];
-        for (int n = 0; n < currentLayer.nodes.length; n++)
-          currentLayer.nodes[n].connections = this.layers[l].nodes[n].connections.clone();
-      }
-      
-      return newNetwork;
     }*/
 
     public void setConnectionColours() {
@@ -123,7 +132,7 @@ public class NeuralNetwork {
   		}
     }
 
-    void mutate(float amount) {
+    public void mutate(float amount) {
 		foreach(Layer l in layers) {
 			foreach(Node n in l.nodes) {
 				for(int c = 0; c < n.weights.Length; c++)
@@ -131,7 +140,6 @@ public class NeuralNetwork {
 			}
 		}
 		setmaxWeight();
-		setConnectionColours();
     }
 
     public void printWeights() {
