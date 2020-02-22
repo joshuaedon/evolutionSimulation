@@ -48,6 +48,7 @@ public class CameraController : MonoBehaviour {
 	        // Cap the camera's height
 	        if(GridController.GC == null) {
 	        	Debug.Log("hhhuihuhuihiuh");
+	        	GridController.GC = GameObject.Find("Grid").GetComponent<GridController>();
 	        }
 	        pos.x = Mathf.Clamp(pos.x, -panLimit, GridController.GC.cols + panLimit);
 	        pos.y = Mathf.Clamp(pos.y, minY, maxY);

@@ -58,7 +58,7 @@ public class GridController : MonoBehaviour {
         yScale = 5f;
         seaBorder = 10;
         // Food
-        grassSpawnAmount = 1f;
+        grassSpawnAmount = 5f;
         grassSpawnTime = 1;
         eatSpeed = 1f;
         hungerLoss = 0.01f;

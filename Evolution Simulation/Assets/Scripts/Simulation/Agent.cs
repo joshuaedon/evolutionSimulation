@@ -14,7 +14,7 @@ public class Agent {
         this.chunk = chunk;
         moveObj();
 
-        this.network = new NeuralNetwork(new int[] {1, 10, 5});
+        this.network = new NeuralNetwork(new int[] {3, 10, 5});
 
         this.dir = Random.Range(0, 4);
         this.hunger = 1;
@@ -36,8 +36,10 @@ public class Agent {
     }
 
     public void loadInputs() {
-        float[] inputs = new float[1];
+        float[] inputs = new float[3];
         inputs[0] = Random.Range(0f, 1f);
+        inputs[1] = this.hunger;
+        inputs[2] = this.chunk.food;
         network.loadInputs(inputs);
     }
 
@@ -45,6 +47,10 @@ public class Agent {
         if(!isMenu) {
         	// Loose hunger
         	this.hunger -= GridController.GC.hungerLoss;
+        	if(chunk.isWater()) {
+        		network.mutate(0.1f);
+        		hunger -= 0.05f;
+        	}
 
         	// Move forward, turn left, right or eat depending on the agents NN outputs
             float forwardsOut = network.returnOutput("Forwards");
@@ -64,7 +70,7 @@ public class Agent {
             	reproduce();
 
             loadInputs();
-            if(this == SimulationManager.selectedAgent && SimulationManager.NNFlow)
+            if(this == SimulationManager.selectedAgent && (SimulationManager.NNFlow || chunk.isWater()))
             	network.setConnectionColours();
         } else {
         	// If the agent is in the menu screen, randomely move forward, turn left or right
@@ -130,7 +136,7 @@ public class Agent {
     		Chunk c = chunks[Random.Range(0, chunks.Count)];
     		Agent offspring = new Agent(c, network);
     		offspring.network.mutate(0.1f);
-    		this.hunger /= 2f;
+    		this.hunger /= 1f + Mathf.Min(GridController.GC.agents.Count / 200f, 1f);
     		offspring.hunger = this.hunger;
     		c.agent = offspring;
     		GridController.GC.agents.Add(offspring);
