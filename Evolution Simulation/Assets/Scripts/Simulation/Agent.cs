@@ -14,7 +14,7 @@ public class Agent {
         this.chunk = chunk;
         moveObj();
 
-        this.network = new NeuralNetwork(new int[] {1, 10, 4});
+        this.network = new NeuralNetwork(new int[] {1, 10, 5});
 
         this.dir = Random.Range(0, 4);
         this.hunger = 1;
@@ -51,14 +51,17 @@ public class Agent {
             float leftOut = network.returnOutput("Left");
             float rightOut = network.returnOutput("Right");
             float eatOut = network.returnOutput("Eat");
-            if(forwardsOut > Mathf.Max(Mathf.Max(leftOut, rightOut), eatOut))
+            float reproduceOut = network.returnOutput("Reproduce");
+            if(forwardsOut > Mathf.Max(Mathf.Max(Mathf.Max(leftOut, rightOut), eatOut), reproduceOut))
                 stepForward(isMenu);
-            else if(leftOut > Mathf.Max(rightOut, eatOut))
+            else if(leftOut > Mathf.Max(Mathf.Max(rightOut, eatOut), reproduceOut))
                 turnLeft();
-            else if(rightOut > eatOut)
+            else if(rightOut > Mathf.Max(eatOut, reproduceOut))
                 turnRight();
-            else
+            else if(eatOut > reproduceOut)
             	eat();
+            else if(hunger > 0)
+            	reproduce();
 
             loadInputs();
             if(this == SimulationManager.selectedAgent && SimulationManager.NNFlow)
@@ -114,9 +117,11 @@ public class Agent {
     
     public void reproduce() {
     	List<Chunk> chunks = new List<Chunk>();
-    	for(int i = -1; i <= 1; i++) {
-    		for(int j = -1; j <= 1; j++) {
-    			Chunk c = GridController.GC.gridArray[Mathf.RoundToInt(chunk.vertex.x) + i, Mathf.RoundToInt(chunk.vertex.z) + j];
+    	int x = Mathf.RoundToInt(chunk.vertex.x);
+    	int z = Mathf.RoundToInt(chunk.vertex.z);
+    	for(int i = Mathf.Max(x-1, 0); i <= Mathf.Min(x+1, GridController.GC.gridArray.GetLength(0)-1); i++) {
+    		for(int j = Mathf.Max(z-1, 0); j <= Mathf.Min(z+1, GridController.GC.gridArray.GetLength(1)-1); j++) {
+    			Chunk c = GridController.GC.gridArray[i, j];
     			if(c.agent == null)
     				chunks.Add(c);
     		}
@@ -125,6 +130,8 @@ public class Agent {
     		Chunk c = chunks[Random.Range(0, chunks.Count)];
     		Agent offspring = new Agent(c, network);
     		offspring.network.mutate(0.1f);
+    		this.hunger /= 2f;
+    		offspring.hunger = this.hunger;
     		c.agent = offspring;
     		GridController.GC.agents.Add(offspring);
     	}
