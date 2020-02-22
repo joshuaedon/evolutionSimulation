@@ -7,6 +7,7 @@ public class Agent {
     public Chunk chunk;
     public NeuralNetwork network;
     int dir;
+    public bool dead;
     public float hunger;
 
     public Agent(GameObject agentObj, Chunk chunk) {
@@ -17,6 +18,7 @@ public class Agent {
         this.network = new NeuralNetwork(new int[] {1, 10, 4});
 
         this.dir = Random.Range(0, 4);
+        this.dead = false;
         this.hunger = 1;
     }
 

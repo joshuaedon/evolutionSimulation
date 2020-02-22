@@ -126,6 +126,9 @@ public class GridController : MonoBehaviour {
         for(int i = agents.Count - 1; i >= 0; i--) {
             agents[i].act(isMenu);
             if(agents[i].hunger <= 0) {
+                if(SimulationManager.selectedAgent == agents[i])
+                    SimulationManager.selectedAgent = null;
+                // agents[i].dead = true;
                 Destroy(agents[i].agentObj);
                 agents[i].chunk.agent = null;
                 agents.RemoveAt(i);

@@ -49,10 +49,12 @@ public class SimulationManager : MonoBehaviour {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
             // If an agent is already selected, set its colour back to white and destroy the old agent panel
-            if(selectedAgent != null) {
-                selectedAgent.agentObj.transform.GetChild(0).GetComponent<Renderer>().material.SetColor("_Color", Color.white);
+            if(AgentPanel.activeInHierarchy) {
                 AgentPanel.SetActive(false);
-                selectedAgent = null;
+                if(selectedAgent != null) {
+                    selectedAgent.agentObj.transform.GetChild(0).GetComponent<Renderer>().material.SetColor("_Color", Color.white);
+                    selectedAgent = null;
+                }
             }
             if(Physics.Raycast(ray, out hit) && hit.transform.name == "AgentBody") {
                 // If the mouse is over a new agent, set its colour to red and set it as the selected agent, then create a new agent panel
