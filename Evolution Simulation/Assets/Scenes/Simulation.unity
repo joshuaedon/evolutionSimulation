@@ -1242,7 +1242,7 @@ GameObject:
   - component: {fileID: 149740643}
   - component: {fileID: 149740642}
   m_Layer: 5
-  m_Name: Button
+  m_Name: SettingsButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6237,7 +6237,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: ' 75 rows'
+  m_Text: ' 75 points'
 --- !u!222 &1186863944
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -6926,7 +6926,7 @@ GameObject:
   - component: {fileID: 1292773545}
   - component: {fileID: 1292773544}
   m_Layer: 5
-  m_Name: GrassSpawnTimeText
+  m_Name: GrassSpawnRateText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6982,7 +6982,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Food Spawn Time
+  m_Text: Food Spawn Rate
 --- !u!222 &1292773545
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -7502,9 +7502,9 @@ MonoBehaviour:
   m_HandleRect: {fileID: 944446161}
   m_Direction: 0
   m_MinValue: 0
-  m_MaxValue: 10
+  m_MaxValue: 200
   m_WholeNumbers: 0
-  m_Value: 5
+  m_Value: 45
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
@@ -7531,7 +7531,7 @@ GameObject:
   - component: {fileID: 1412082432}
   - component: {fileID: 1412082431}
   m_Layer: 5
-  m_Name: GrassSpawnTimeValue
+  m_Name: GrassSpawnRateValue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7587,7 +7587,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: ' every 1 ticks'
+  m_Text: ' every 10 ticks'
 --- !u!222 &1412082432
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -8240,7 +8240,7 @@ GameObject:
   - component: {fileID: 1552463712}
   - component: {fileID: 1552463711}
   m_Layer: 5
-  m_Name: ButtonsPanel
+  m_Name: ToolsPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8369,7 +8369,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: ' 150 columns'
+  m_Text: ' 150 points'
 --- !u!222 &1552990547
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -9819,7 +9819,7 @@ GameObject:
   - component: {fileID: 1860717279}
   - component: {fileID: 1860717280}
   m_Layer: 5
-  m_Name: GrassSpawnTimeSlider
+  m_Name: GrassSpawnRateSlider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9891,14 +9891,14 @@ MonoBehaviour:
   m_HandleRect: {fileID: 573931623}
   m_Direction: 0
   m_MinValue: 1
-  m_MaxValue: 1000
+  m_MaxValue: 100
   m_WholeNumbers: 1
-  m_Value: 1
+  m_Value: 10
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1649020190}
-        m_MethodName: adjustGrassSpawnTime
+        m_MethodName: adjustGrassSpawnRate
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -10399,7 +10399,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: ' 5 food'
+  m_Text: ' 45 food / 100^2 points'
 --- !u!222 &2016325851
 CanvasRenderer:
   m_ObjectHideFlags: 0

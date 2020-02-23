@@ -46,10 +46,6 @@ public class CameraController : MonoBehaviour {
         if(!EventSystem.current.IsPointerOverGameObject()) {
         	pos += Vector3.Normalize(camDir) * Input.GetAxis("Mouse ScrollWheel") * scrollSpeed * 100f * Time.deltaTime;
 	        // Cap the camera's height
-	        if(GridController.GC == null) {
-	        	Debug.Log("hhhuihuhuihiuh");
-	        	GridController.GC = GameObject.Find("Grid").GetComponent<GridController>();
-	        }
 	        pos.x = Mathf.Clamp(pos.x, -panLimit, GridController.GC.cols + panLimit);
 	        pos.y = Mathf.Clamp(pos.y, minY, maxY);
 	        pos.z = Mathf.Clamp(pos.z, -panLimit, GridController.GC.rows + panLimit);

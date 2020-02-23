@@ -1,5 +1,5 @@
-DOING
-
+DONE
+Reduced starting grass to 0.5, increased starting agents 3-fold, grassSpawnAmount changed to be per 100^2 points
 
 
 - Food
@@ -11,6 +11,8 @@ DOING
 			- Percentage of health
 	- Health
 		- Agent attack
+	- Make spawn rate dependent on area of land
+	- Change spawn time to spawn rate
 - Breeding
 	- Type
 - Agent senses
@@ -22,10 +24,12 @@ DOING
 - Graphs
 	- Population
 	- Colour
-- To try tab
+- To try tab/notifications
+	- Mass extinction is a big factor in evolution
 - Neural Networks
 	- Change so weights go across multiple layers
 	- Propagation animation
+	- Mutate weights tend to 0
 - Breed agent button & mutate button
 
 - Setup menu

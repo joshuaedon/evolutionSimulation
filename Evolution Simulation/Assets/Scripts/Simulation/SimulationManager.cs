@@ -121,8 +121,8 @@ public class SimulationManager : MonoBehaviour {
         GameObject.Find("YScaleSlider").GetComponent<Slider>().value = 5f;
         GameObject.Find("SeaBorderSlider").GetComponent<Slider>().value = 10f;
         // Food
-        GameObject.Find("GrassSpawnAmountSlider").GetComponent<Slider>().value = 5f;
-        GameObject.Find("GrassSpawnTimeSlider").GetComponent<Slider>().value = 1;
+        GameObject.Find("GrassSpawnAmountSlider").GetComponent<Slider>().value = 45f;
+        GameObject.Find("GrassSpawnRateSlider").GetComponent<Slider>().value = 10;
         GameObject.Find("EatSpeedSlider").GetComponent<Slider>().value = 1f;
         GameObject.Find("HungerLossSlider").GetComponent<Slider>().value = 0.01f;
     }
@@ -140,14 +140,14 @@ public class SimulationManager : MonoBehaviour {
         int value = Mathf.RoundToInt(valueF);
         GridController.GC.cols = value;
         GridController.GC.createGrid();
-        GameObject.Find("ColumnsValue").GetComponent<Text>().text = " " + value + " columns";
+        GameObject.Find("ColumnsValue").GetComponent<Text>().text = " " + value + " points";
     }
 
     public void adjustRows(float valueF) {
         int value = Mathf.RoundToInt(valueF);
         GridController.GC.rows = value;
         GridController.GC.createGrid();
-        GameObject.Find("RowsValue").GetComponent<Text>().text = " " + value + " rows";
+        GameObject.Find("RowsValue").GetComponent<Text>().text = " " + value + " points";
     }
 
     public void adjustNoiseScale(float value) {
@@ -177,12 +177,12 @@ public class SimulationManager : MonoBehaviour {
 
     public void adjustGrassSpawnAmount(float value) {
         GridController.GC.grassSpawnAmount = value;
-        GameObject.Find("GrassSpawnAmountValue").GetComponent<Text>().text = " " + Mathf.Round(value * 100f) / 100f + " food";
+        GameObject.Find("GrassSpawnAmountValue").GetComponent<Text>().text = " " + Mathf.Round(value * 100f) / 100f + " food / 100^2 points";
     }
 
-    public void adjustGrassSpawnTime(float value) {
-        GridController.GC.grassSpawnTime = Mathf.RoundToInt(value);
-        GameObject.Find("GrassSpawnTimeValue").GetComponent<Text>().text = " every " + value + " ticks";
+    public void adjustGrassSpawnRate(float value) {
+        GridController.GC.grassSpawnRate = Mathf.RoundToInt(value);
+        GameObject.Find("GrassSpawnRateValue").GetComponent<Text>().text = " every " + value + " ticks";
     }
 
     public void adjustEatSpeed(float value) {

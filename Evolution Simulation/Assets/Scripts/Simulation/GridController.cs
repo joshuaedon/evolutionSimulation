@@ -24,7 +24,7 @@ public class GridController : MonoBehaviour {
     public float yScale;
     public int seaBorder;
     // Food
-    public int grassSpawnTime;
+    public int grassSpawnRate;
     public float grassSpawnAmount;
     public float eatSpeed;
     public float hungerLoss;
@@ -58,8 +58,8 @@ public class GridController : MonoBehaviour {
         yScale = 5f;
         seaBorder = 10;
         // Food
-        grassSpawnAmount = 5f;
-        grassSpawnTime = 1;
+        grassSpawnAmount = 45f;
+        grassSpawnRate = 10;
         eatSpeed = 1f;
         hungerLoss = 0.01f;
         underwaterFoodSpawn = true;
@@ -94,7 +94,7 @@ public class GridController : MonoBehaviour {
 
     void step() {
         // Debug.Log("1");
-        if(time % grassSpawnTime == 0)
+        if(time % grassSpawnRate == 0)
             spawnGrass();
         // Debug.Log("2");
 
@@ -219,7 +219,7 @@ public class GridController : MonoBehaviour {
 
     public void spawnStartingAgents() {
         if(startingAgents)
-            spawnAgents(rows * cols / 150);
+            spawnAgents(rows * cols / 50);
     }
 
     public void spawnAgents(int count) {
@@ -246,7 +246,7 @@ public class GridController : MonoBehaviour {
     }
 
     public void spawnGrass() {
-        float toAdd = grassSpawnAmount;
+        float toAdd = grassSpawnAmount * cols * rows / 10000f;
         int tries = 0;
         Chunk chunk;
         while(tries < 100 && toAdd > 0) {
