@@ -9,7 +9,6 @@ public class AgentPanelController : MonoBehaviour {
     bool isHighlight;
 	Agent agent;
     NeuralNetwork network;
-    GameObject HungerBar;
     GameObject NodesPanel;
     GameObject ConnectionsPanel;
 
@@ -21,11 +20,12 @@ public class AgentPanelController : MonoBehaviour {
   			agent = SimulationManager.selectedAgent;
   			network = agent.network;
 
-  			// Store game objects which will need to be used
-  			HungerBar 	  	 = transform.Find("HungerBar").gameObject;
+  			transform.Find("GenerationText").GetComponent<Text>().text = "Generation: " + agent.generation;
+  			transform.Find("MutateAmountText").GetComponent<Text>().text = "Mutate amount: " + Mathf.Round(network.mutateAmount * 1000f) / 1000f;
+
+  			// Store game objects for the nodes and connections panels
     		NodesPanel 	  	 = transform.Find("NodesPanel").gameObject;
     		ConnectionsPanel = transform.Find("ConnectionsPanel").gameObject;
-
     		// Find the max number of nodes in a single layer
     		int maxNodes = 0;
     		for(int i = 0; i < network.layers.Length; i++)
@@ -77,7 +77,8 @@ public class AgentPanelController : MonoBehaviour {
 
     void Update() {
     	// Update the agent's hunger bar
-    	HungerBar.GetComponent<Slider>().value = agent.hunger;
+    	transform.Find("HungerBar").GetComponent<Slider>().value = agent.hunger;
+    	transform.Find("MaxNetworkWeightText").GetComponent<Text>().text = "Max network weight: " + Mathf.Round(network.maxWeight * 100f) / 100f;
 
         // Highlight a node if the mouse is over it
         if(EventSystem.current.IsPointerOverGameObject()) {
@@ -107,7 +108,8 @@ public class AgentPanelController : MonoBehaviour {
     }
 
     public void mutateAgent() {
-    	network.mutate(0.1f);
+    	network.mutateValue(0.1f);
+    	agent.changeColour(0.1f);
     	network.setConnectionColours();
     }
 

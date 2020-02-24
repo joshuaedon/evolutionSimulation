@@ -6,12 +6,15 @@ public class NeuralNetwork {
     // string[] outputLabels = {"Left", "Right", "Step", "Stay", "Dist R", "Dir R", "Range R", "Dist B", "Dir B", "Range B", "Breed/Kill", "Mutation", "Drop Scent"};
     string[] inputLabels = {"Random", "Hunger", "Food Below"};
     string[] outputLabels = {"Forwards", "Left", "Right", "Eat", "Reproduce"};
+    public float mutateAmount;
+    float weightDecay = 0.999f;
     // float[] prevOutputs;
     public Layer[] layers;
     public float maxWeight;
     
     public NeuralNetwork(int[] layerSizes) {
         // this.prevOutputs = new float[layerSizes[layerSizes.Length-1]];
+        this.mutateAmount = 0.1f;
         this.layers = new Layer[layerSizes.Length];
         layers[0] = new Layer(new Node[0], layerSizes[0], 0);
         for (int i = 1; i < layers.Length; i++)
@@ -20,6 +23,7 @@ public class NeuralNetwork {
     }
 
     public NeuralNetwork(NeuralNetwork oldNetwork) {
+    	this.mutateAmount = Mathf.Max(oldNetwork.mutateAmount * Random.Range(0.9f, 1f/0.9f), 0.005f);
     	this.layers = new Layer[oldNetwork.layers.Length];
     	for(int l = 0; l < oldNetwork.layers.Length; l++) {
 			Layer oldL = oldNetwork.layers[l];
@@ -132,14 +136,43 @@ public class NeuralNetwork {
   		}
     }
 
-    public void mutate(float amount) {
+    public void mutateValue(float amount) {
 		foreach(Layer l in layers) {
 			foreach(Node n in l.nodes) {
-				for(int c = 0; c < n.weights.Length; c++)
+				for(int c = 0; c < n.weights.Length; c++) {
 					n.weights[c] += Random.Range(-amount, amount);
+					// Weight decay
+					n.weights[c] *= weightDecay;
+				}
 			}
 		}
 		setmaxWeight();
+    }
+
+    public float mutate() {
+    	float sum = 0f;
+    	int count = 0;
+		foreach(Layer l in layers) {
+			foreach(Node n in l.nodes) {
+				for(int c = 0; c < n.weights.Length; c++) {
+					bool done = false;
+					float amount = mutateAmount;
+					/*while(!done) {
+						if(Random.Range(0f, 1f) > 0.9f)
+							amount *= 2;
+						else
+							done = true;
+					}*/
+					n.weights[c] += Random.Range(-amount, amount);
+					sum += amount;
+					count++;
+					// Weight decay
+					n.weights[c] *= weightDecay;
+				}
+			}
+		}
+		setmaxWeight();
+		return sum / count;
     }
 
     public void printWeights() {

@@ -1,5 +1,5 @@
 DONE
-Reduced starting grass to 0.5, increased starting agents 3-fold, grassSpawnAmount changed to be per 100^2 points
+weightDecay changed to 0.999, maxWeight displayed in the agent panel, agents record their generation and it is displayed, set starting grass to 0.25 to reduce mass replication at the beginning, varying mutate amount, implemented agent colour. Quite stable with no water. GETS STUCK IN LOOP SOMETIMES FOR UNKNOWN REASON
 
 
 - Food
@@ -11,8 +11,6 @@ Reduced starting grass to 0.5, increased starting agents 3-fold, grassSpawnAmoun
 			- Percentage of health
 	- Health
 		- Agent attack
-	- Make spawn rate dependent on area of land
-	- Change spawn time to spawn rate
 - Breeding
 	- Type
 - Agent senses
@@ -30,7 +28,9 @@ Reduced starting grass to 0.5, increased starting agents 3-fold, grassSpawnAmoun
 	- Change so weights go across multiple layers
 	- Propagation animation
 	- Mutate weights tend to 0
-- Breed agent button & mutate button
+- Settings
+	- Water damage/mutate
+	-
 
 - Setup menu
 

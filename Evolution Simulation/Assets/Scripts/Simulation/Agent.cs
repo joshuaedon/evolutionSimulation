@@ -6,6 +6,8 @@ public class Agent {
     public GameObject agentObj;
     public Chunk chunk;
     public NeuralNetwork network;
+    public int generation;
+    public float colour;
     int dir;
     public float hunger;
 
@@ -15,17 +17,23 @@ public class Agent {
         moveObj();
 
         this.network = new NeuralNetwork(new int[] {3, 10, 5});
+        this.generation = 1;
+        this.colour = Random.Range(0f, 1f);
+        changeColour(0f);
 
         this.dir = Random.Range(0, 4);
         this.hunger = 1;
     }
 
-    public Agent(Chunk chunk, NeuralNetwork n) {
+    public Agent(Chunk chunk, NeuralNetwork n, int generation, float colour) {
         this.agentObj = (GameObject)Transform.Instantiate(Resources.Load("Simulation/Agent"), GridController.GC.transform);
         this.chunk = chunk;
         moveObj();
 
         this.network = new NeuralNetwork(n);
+        this.generation = generation;
+        this.colour = colour;
+		changeColour(this.network.mutate());
 
         this.dir = Random.Range(0, 4);
         this.hunger = 1;
@@ -48,7 +56,8 @@ public class Agent {
         	// Loose hunger
         	this.hunger -= GridController.GC.hungerLoss;
         	if(chunk.isWater()) {
-        		network.mutate(0.1f);
+        		network.mutateValue(0.1f);
+        		changeColour(0.1f);
         		hunger -= 0.05f;
         	}
 
@@ -134,12 +143,16 @@ public class Agent {
     	}
     	if(chunks.Count > 0) {
     		Chunk c = chunks[Random.Range(0, chunks.Count)];
-    		Agent offspring = new Agent(c, network);
-    		offspring.network.mutate(0.1f);
+    		Agent offspring = new Agent(c, network, generation+1, colour);
     		this.hunger /= 1f + Mathf.Min(GridController.GC.agents.Count / 200f, 1f);
     		offspring.hunger = this.hunger;
     		c.agent = offspring;
     		GridController.GC.agents.Add(offspring);
     	}
+    }
+
+    public void changeColour(float amount) {
+    	colour = (colour + Random.Range(-amount, amount) + 1f) % 1f;
+    	agentObj.transform.GetChild(0).gameObject.GetComponent<MeshRenderer>().material.color = Color.HSVToRGB(colour, 1f, 1f);
     }
 }

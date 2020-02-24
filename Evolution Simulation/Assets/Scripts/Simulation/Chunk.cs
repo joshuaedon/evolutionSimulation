@@ -10,7 +10,7 @@ public class Chunk {
 
     public Chunk(int c, int r) {
         this.vertex = new Vector3(c, 0, r);
-        this.food = 0.5f;
+        this.food = 0.25f;
     }
 
     public void setVertexPos(float yScale) {

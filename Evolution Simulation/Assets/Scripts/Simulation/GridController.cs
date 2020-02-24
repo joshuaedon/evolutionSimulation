@@ -59,9 +59,9 @@ public class GridController : MonoBehaviour {
         seaBorder = 10;
         // Food
         grassSpawnAmount = 45f;
-        grassSpawnRate = 10;
+        grassSpawnRate = 20;
         eatSpeed = 1f;
-        hungerLoss = 0.01f;
+        hungerLoss = 0.005f;
         underwaterFoodSpawn = true;
 
         gridArray = new Chunk[0, 0];
