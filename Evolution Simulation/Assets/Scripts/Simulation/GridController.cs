@@ -39,7 +39,7 @@ public class GridController : MonoBehaviour {
     Color land;
     public List<Agent> agents;
     
-    void Start() {
+    void OnEnable() {
         isMenu = false;
         osn = new OpenSimplexNoise();
 
@@ -94,7 +94,7 @@ public class GridController : MonoBehaviour {
 
     void step() {
         // Debug.Log("1");
-        if(time % grassSpawnRate == 0)
+        if(time % grassSpawnRate == 0 && !isMenu)
             spawnGrass();
         // Debug.Log("2");
 

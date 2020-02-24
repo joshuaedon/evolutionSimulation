@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Agent {
     public GameObject agentObj;
+    MeshRenderer MR;
     public Chunk chunk;
     public NeuralNetwork network;
     public int generation;
@@ -13,6 +14,7 @@ public class Agent {
 
     public Agent(GameObject agentObj, Chunk chunk) {
         this.agentObj = agentObj;
+        this.MR = agentObj.transform.GetChild(0).gameObject.GetComponent<MeshRenderer>();
         this.chunk = chunk;
         moveObj();
 
@@ -27,6 +29,7 @@ public class Agent {
 
     public Agent(Chunk chunk, NeuralNetwork n, int generation, float colour) {
         this.agentObj = (GameObject)Transform.Instantiate(Resources.Load("Simulation/Agent"), GridController.GC.transform);
+        this.MR = agentObj.transform.GetChild(0).gameObject.GetComponent<MeshRenderer>();
         this.chunk = chunk;
         moveObj();
 
@@ -95,10 +98,12 @@ public class Agent {
 
     void turnLeft() {
         this.dir = (dir + 3) % 4;
+        agentObj.transform.RotateAround(agentObj.transform.position, Vector3.up, -Mathf.PI / 2f);
     }
 
     void turnRight() {
         this.dir = (dir + 1) % 4;
+        agentObj.transform.RotateAround(agentObj.transform.position, Vector3.up, Mathf.PI / 2f);
     }
 
     void stepForward(bool isMenu) {
@@ -152,7 +157,7 @@ public class Agent {
     }
 
     public void changeColour(float amount) {
-    	colour = (colour + Random.Range(-amount, amount) + 1f) % 1f;
-    	agentObj.transform.GetChild(0).gameObject.GetComponent<MeshRenderer>().material.color = Color.HSVToRGB(colour, 1f, 1f);
+    	colour = (colour + Random.Range(-amount, amount) + 1000000f) % 1f;
+    	MR.material.color = Color.HSVToRGB(colour, 1f, 1f);
     }
 }

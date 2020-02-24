@@ -8,6 +8,11 @@ public class MenuManager : MonoBehaviour {
 		GridController.GC.cols = 150;
 		GridController.GC.rows = 150;
 		GridController.GC.createGrid();
+		for(int c = 0; c < 150; c++) {
+            for(int r = 0; r < 150; r++) {
+            	GridController.GC.gridArray[c, r].food = 1f;
+            }
+        }
 		GridController.GC.spawnStartingAgents();
 		GridController.GC.isMenu = true;
 		GridController.GC.ticksPerSec = 5.0f;
@@ -15,6 +20,7 @@ public class MenuManager : MonoBehaviour {
 	}
 
     public void play() {
+    	UnityEngine.SceneManagement.SceneManager.UnloadSceneAsync("MainMenu");
 		UnityEngine.SceneManagement.SceneManager.LoadScene("Simulation");
     }
 

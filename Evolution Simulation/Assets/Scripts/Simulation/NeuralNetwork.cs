@@ -136,33 +136,20 @@ public class NeuralNetwork {
   		}
     }
 
-    public void mutateValue(float amount) {
-		foreach(Layer l in layers) {
-			foreach(Node n in l.nodes) {
-				for(int c = 0; c < n.weights.Length; c++) {
-					n.weights[c] += Random.Range(-amount, amount);
-					// Weight decay
-					n.weights[c] *= weightDecay;
-				}
-			}
-		}
-		setmaxWeight();
-    }
-
-    public float mutate() {
-    	float sum = 0f;
+    public float mutateValue(float a) {
+		float sum = 0f;
     	int count = 0;
 		foreach(Layer l in layers) {
 			foreach(Node n in l.nodes) {
 				for(int c = 0; c < n.weights.Length; c++) {
 					bool done = false;
-					float amount = mutateAmount;
-					/*while(!done) {
+					float amount = a;
+					while(!done) {
 						if(Random.Range(0f, 1f) > 0.9f)
 							amount *= 2;
 						else
 							done = true;
-					}*/
+					}
 					n.weights[c] += Random.Range(-amount, amount);
 					sum += amount;
 					count++;
@@ -173,6 +160,10 @@ public class NeuralNetwork {
 		}
 		setmaxWeight();
 		return sum / count;
+    }
+
+    public float mutate() {
+		return mutateValue(mutateAmount);
     }
 
     public void printWeights() {

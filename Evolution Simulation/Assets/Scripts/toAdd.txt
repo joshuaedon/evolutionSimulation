@@ -1,5 +1,6 @@
 DONE
-weightDecay changed to 0.999, maxWeight displayed in the agent panel, agents record their generation and it is displayed, set starting grass to 0.25 to reduce mass replication at the beginning, varying mutate amount, implemented agent colour. Quite stable with no water. GETS STUCK IN LOOP SOMETIMES FOR UNKNOWN REASON
+Created all buttons, exit button working, UnloadSceneAsync before switching scenes, add larger number before moding to get new colour
+
 
 
 - Food
@@ -30,10 +31,8 @@ weightDecay changed to 0.999, maxWeight displayed in the agent panel, agents rec
 	- Mutate weights tend to 0
 - Settings
 	- Water damage/mutate
-	-
-
 - Setup menu
-
+- Fix thrashing
 
 BUGS
 - Can't click through statistics element

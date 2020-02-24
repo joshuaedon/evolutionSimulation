@@ -104,6 +104,11 @@ public class SimulationManager : MonoBehaviour {
         GameObject.Find("TickSpeedText").GetComponent<Text>().text = Mathf.Round(GridController.GC.ticksPerSec * 100f) / 100f + " ticks/sec";
     }
 
+    public void exitButton() {
+        UnityEngine.SceneManagement.SceneManager.UnloadSceneAsync("Simulation");
+    	UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
+    }
+
     public void settingsButton() {
         SettingsPanel.SetActive(!SettingsPanel.activeInHierarchy);
         if(SettingsPanel.activeInHierarchy)
