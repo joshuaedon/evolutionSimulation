@@ -14,6 +14,9 @@ public class SimulationManager : MonoBehaviour {
     public GameObject SettingsPanel;
     public static GameObject GraphPanel;
 	public GameObject AgentPanel;
+	public GameObject AgentButtons;
+	public GameObject TerrainButtons;
+	public GameObject GrassButtons;
 
     void Start() {
 		NNFlow = false;
@@ -29,6 +32,12 @@ public class SimulationManager : MonoBehaviour {
         GraphPanel.SetActive(false);
         AgentPanel = GameObject.Find("AgentPanel");
         AgentPanel.SetActive(false);
+		AgentButtons = GameObject.Find("AgentButtons");
+        AgentButtons.SetActive(false);
+		TerrainButtons = GameObject.Find("TerrainButtons");
+        TerrainButtons.SetActive(false);
+		GrassButtons = GameObject.Find("GrassButtons");
+        GrassButtons.SetActive(false);
 
         GridController.GC = GameObject.Find("Grid").GetComponent<GridController>();
         GridController.GC.createGrid();
@@ -117,6 +126,30 @@ public class SimulationManager : MonoBehaviour {
         if(SettingsPanel.activeInHierarchy) {
             StatsPanel.SetActive(false);
             GraphPanel.SetActive(false);
+        }
+    }
+
+    public void agentButton() {
+        AgentButtons.SetActive(!AgentButtons.activeInHierarchy);
+        if(AgentButtons.activeInHierarchy) {
+            TerrainButtons.SetActive(false);
+            GrassButtons.SetActive(false);
+        }
+    }
+
+    public void terrainButton() {
+        TerrainButtons.SetActive(!TerrainButtons.activeInHierarchy);
+        if(TerrainButtons.activeInHierarchy) {
+            AgentButtons.SetActive(false);
+            GrassButtons.SetActive(false);
+        }
+    }
+
+    public void grassButton() {
+        GrassButtons.SetActive(!GrassButtons.activeInHierarchy);
+        if(GrassButtons.activeInHierarchy) {
+            AgentButtons.SetActive(false);
+            TerrainButtons.SetActive(false);
         }
     }
 
