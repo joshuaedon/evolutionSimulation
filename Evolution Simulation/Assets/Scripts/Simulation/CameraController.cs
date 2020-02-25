@@ -43,7 +43,7 @@ public class CameraController : MonoBehaviour {
         }
 
         // Zoom the camera in/out
-        if(!EventSystem.current.IsPointerOverGameObject()) {
+        if(!EventSystem.current.IsPointerOverGameObject() && !Input.GetKey(KeyCode.LeftControl)) {
         	pos += Vector3.Normalize(camDir) * Input.GetAxis("Mouse ScrollWheel") * scrollSpeed * 100f * Time.deltaTime;
 	        // Cap the camera's height
 	        pos.x = Mathf.Clamp(pos.x, -panLimit, GridController.GC.cols + panLimit);

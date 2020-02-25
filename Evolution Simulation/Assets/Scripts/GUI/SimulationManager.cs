@@ -8,6 +8,7 @@ public class SimulationManager : MonoBehaviour {
     public static Agent selectedAgent;
     public static bool NNFlow;
     public bool showVertices;
+    float brushSize;
     float lastTickSpeedSliderVal;
     // Game Objects
 	public GameObject StatsPanel;
@@ -20,8 +21,9 @@ public class SimulationManager : MonoBehaviour {
 
     void Start() {
 		NNFlow = false;
-        showVertices = false;
-        lastTickSpeedSliderVal = 2.0f;
+        showVertices = true;
+        brushSize = 5f;
+        lastTickSpeedSliderVal = 2f;
 
         StatsPanel = GameObject.Find("StatsPanel");
         StatsPanel.SetActive(false);
@@ -84,17 +86,16 @@ public class SimulationManager : MonoBehaviour {
             }
         }
 
-        // Display vertices
         if(showVertices && !UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) {
+        	// Display vertices
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
             // Casts the ray and get the first game object hit
             Physics.Raycast(ray, out hit);
-
             GameObject referenceVertex = (GameObject)Instantiate(Resources.Load("Simulation/Vertex"));
             for(int c = 0; c < GridController.GC.gridArray.GetLength(0); c++) {
                 for(int r = 0; r < GridController.GC.gridArray.GetLength(1); r++) {
-                    if(Vector3.Distance(hit.point, GridController.GC.gridArray[c, r].vertex) < 5) {
+                    if(Vector3.Distance(hit.point, GridController.GC.gridArray[c, r].vertex) < brushSize) {
                         if(GridController.GC.gridArray[c, r].vertexObj == null) {
                             GridController.GC.gridArray[c, r].vertexObj = (GameObject)Instantiate(referenceVertex, transform);
                             GridController.GC.gridArray[c, r].setVertexPos(GridController.GC.yScale);
@@ -104,7 +105,15 @@ public class SimulationManager : MonoBehaviour {
                 }
             }
             Destroy(referenceVertex);
+
+            // Change brush size
+            if(Input.GetKey(KeyCode.LeftControl)) {
+            	brushSize -= Input.GetAxis("Mouse ScrollWheel") * 20f * Time.deltaTime;
+            	brushSize = Mathf.Min(brushSize, 50f);
+            }
         }
+
+
     }
 
     public void adjustTickSpeed(float value) {
