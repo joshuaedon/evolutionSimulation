@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Agent {
     public GameObject agentObj;
-    MeshRenderer MR;
+    public MeshRenderer MR;
     public Chunk chunk;
     public NeuralNetwork network;
     public int generation;
@@ -24,6 +24,8 @@ public class Agent {
         changeColour(0f);
 
         this.dir = Random.Range(0, 4);
+        // Rotate the agent's object to the correct direction
+    	agentObj.transform.Rotate(0f, 90f - dir * 90f, 0f, Space.Self);
         this.hunger = 1;
     }
 
@@ -39,6 +41,8 @@ public class Agent {
 		changeColour(this.network.mutate());
 
         this.dir = Random.Range(0, 4);
+        // Rotate the agent's object to the correct direction
+    	agentObj.transform.Rotate(0f, 90f - dir * 90f, 0f, Space.Self);
         this.hunger = 1;
     }
 
@@ -98,12 +102,12 @@ public class Agent {
 
     void turnLeft() {
         this.dir = (dir + 3) % 4;
-        agentObj.transform.RotateAround(agentObj.transform.position, Vector3.up, -Mathf.PI / 2f);
+        agentObj.transform.Rotate(0f, 90, 0f, Space.Self);
     }
 
     void turnRight() {
         this.dir = (dir + 1) % 4;
-        agentObj.transform.RotateAround(agentObj.transform.position, Vector3.up, Mathf.PI / 2f);
+        agentObj.transform.Rotate(0f, -90, 0f, Space.Self);
     }
 
     void stepForward(bool isMenu) {

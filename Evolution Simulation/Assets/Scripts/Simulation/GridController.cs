@@ -38,6 +38,8 @@ public class GridController : MonoBehaviour {
     Color sand;
     Color land;
     public List<Agent> agents;
+    //// Graph data
+    public List<List<int>> population;
     
     void OnEnable() {
         isMenu = false;
@@ -70,6 +72,10 @@ public class GridController : MonoBehaviour {
         sand = new Color(0.941f, 0.953f, 0.741f);
         land = new Color(0.263f, 0.157f, 0.094f);
         agents = new List<Agent>();
+
+        population = new List<List<int>>();
+        population.Add(new List<int>());
+        population[0].Add(0);
     }
 
     void Update() {
@@ -93,10 +99,8 @@ public class GridController : MonoBehaviour {
     }
 
     void step() {
-        // Debug.Log("1");
         if(time % grassSpawnRate == 0 && !isMenu)
             spawnGrass();
-        // Debug.Log("2");
 
         // Step bots
         for(int i = agents.Count - 1; i >= 0; i--) {
@@ -105,10 +109,14 @@ public class GridController : MonoBehaviour {
                 if(SimulationManager.selectedAgent == agents[i])
                     SimulationManager.selectedAgent = null;
                 Destroy(agents[i].agentObj);
+                Destroy(agents[i].MR.material);
                 agents[i].chunk.agent = null;
                 agents.RemoveAt(i);
             }
         }
+
+        if(time % 10 == 0 && !isMenu)
+        	recordPopulation();
 
         // Update grid
         if(time % Mathf.Ceil(terrainUpdate / terrainTimeStep) == 0)
@@ -265,5 +273,39 @@ public class GridController : MonoBehaviour {
         }
         // if(toAdd > 0)
         //     Debug.Log(toAdd + " food could not be spawned");
+    }
+
+    public void recordPopulation() {
+    	int popCount = agents.Count;
+
+    	if(time % (10 * Mathf.Pow(2, population.Count - 1)) == 0 && population[population.Count - 1].Count >= 100) {
+    		population.Add(new List<int>());
+    		int max = 0;
+    		for(int i = 1; i < population[population.Count - 2].Count; i += 2) {
+    			int val = population[population.Count - 2][i];
+    			max = Mathf.Max(max, val);
+    			population[population.Count - 1].Add(val);
+    		}
+    		population[population.Count - 1].Insert(0, max);
+    	}
+
+    	for(int i = 0; i < population.Count; i++) {
+    		if(time % (10 * Mathf.Pow(2, i)) == 0) {
+    			population[i].Insert(1, popCount);
+    			if(population[i][0] < popCount)
+					population[i][0] = popCount;
+				if(population[i].Count > 101) {
+					if(population[i][population[i].Count - 1] >= population[i][0]) {
+						int max = 0;
+						for(int j = 1; j < population[i].Count - 1; j++)
+							max = Mathf.Max(max, population[i][j]);
+						population[i][0] = max;
+					}
+					population[i].RemoveAt(population[i].Count - 1);
+				}
+    		}
+    	}
+
+    	SimulationManager.GraphPanel.GetComponent<GraphPanelController>().drawGraph();
     }
 }

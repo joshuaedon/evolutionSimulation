@@ -12,6 +12,7 @@ public class SimulationManager : MonoBehaviour {
     // Game Objects
 	public GameObject StatsPanel;
     public GameObject SettingsPanel;
+    public static GameObject GraphPanel;
 	public GameObject AgentPanel;
 
     void Start() {
@@ -24,6 +25,8 @@ public class SimulationManager : MonoBehaviour {
         setDefaultValues();
         SettingsPanel = GameObject.Find("SettingsPanel");
         SettingsPanel.SetActive(false);
+        GraphPanel = GameObject.Find("GraphPanel");
+        GraphPanel.SetActive(false);
         AgentPanel = GameObject.Find("AgentPanel");
         AgentPanel.SetActive(false);
 
@@ -111,8 +114,18 @@ public class SimulationManager : MonoBehaviour {
 
     public void settingsButton() {
         SettingsPanel.SetActive(!SettingsPanel.activeInHierarchy);
-        if(SettingsPanel.activeInHierarchy)
+        if(SettingsPanel.activeInHierarchy) {
             StatsPanel.SetActive(false);
+            GraphPanel.SetActive(false);
+        }
+    }
+
+    public void graphButton() {
+        GraphPanel.SetActive(!GraphPanel.activeInHierarchy);
+        if(GraphPanel.activeInHierarchy) {
+            StatsPanel.SetActive(false);
+            SettingsPanel.SetActive(false);
+        }
     }
 
     public void setDefaultValues() {
