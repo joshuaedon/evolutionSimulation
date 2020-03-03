@@ -208,9 +208,9 @@ public class GridController : MonoBehaviour {
                 gridArray[c, r].yPos = elevation;
                 if(gridArray[c, r].vertexObj != null)
                     gridArray[c, r].setVertexPos(yScale);
-                vertices[c*rows + r] = new Vector3(c, Mathf.Clamp(elevation + gridArray[c, r].yOffset, 0f, 1f) * yScale, r);
+                vertices[c*rows + r] = new Vector3(c, Mathf.Clamp(elevation + gridArray[c, r].yOffset, 0.001f, 1f) * yScale, r);
 
-                Color col = Color.Lerp(sand, land, (1 + seaLevel) * elevation - seaLevel);
+                Color col = Color.Lerp(sand, land, (1 + seaLevel) * Mathf.Clamp(elevation + gridArray[c, r].yOffset, 0.001f, 1f) - seaLevel);
                 colours[c*rows + r] = Color.Lerp(col, new Color(col.r, 1, col.b), gridArray[c, r].food);
             }
         }

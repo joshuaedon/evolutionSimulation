@@ -133,7 +133,19 @@ public class SimulationManager : MonoBehaviour {
             // Use
             if(Input.GetMouseButton(1)) {
             	switch(godTool) {
-            		case 1:
+            		case 1: {
+            			foreach(Chunk chunk in brushChunks) {
+            				if(SimulationManager.selectedAgent == chunk.agent)
+		                    	SimulationManager.selectedAgent = null;
+		                    if(chunk.agent != null) {
+				                Destroy(chunk.agent.agentObj);
+				                Destroy(chunk.agent.MR.material);
+				                GridController.GC.agents.Remove(chunk.agent);
+				                chunk.agent = null;
+			            	}
+            			}
+            			break;
+            		} case 2: {
             			if(brushChunks.Count == 0)
             				break;
             			Chunk chunk = brushChunks[Random.Range(0, brushChunks.Count)];
@@ -144,16 +156,29 @@ public class SimulationManager : MonoBehaviour {
 			                GridController.GC.agents.Add(agent);
 			            }
             			break;
-            		case 2:
+            		} case 3: {
+            			foreach(Chunk chunk in brushChunks)
+            				chunk.yOffset = Mathf.Clamp(chunk.yOffset - (brushSize - Vector3.Distance(hit.point, new Vector3(chunk.xPos, 0f, chunk.zPos))) * 0.025f, -1f, 1f);
+            			GridController.GC.updateGrid();
             			break;
-            		case 3:
+            		} case 4: {
+            			foreach(Chunk chunk in brushChunks) {
+            				chunk.yOffset = Mathf.Clamp(chunk.yOffset + (brushSize - Vector3.Distance(hit.point, new Vector3(chunk.xPos, 0f, chunk.zPos))) * 0.025f, -1f, 1f);
+            				Debug.Log(chunk.yOffset);
+            			}
+        				GridController.GC.updateGrid();
             			break;
-            		case 4:
+            		} case 5: {
+            			foreach(Chunk chunk in brushChunks)
+            				chunk.food = Mathf.Clamp(chunk.food - (brushSize - Vector3.Distance(hit.point, new Vector3(chunk.xPos, 0f, chunk.zPos))) * 0.1f, 0f, 1f);
+        				GridController.GC.updateGrid();
             			break;
-            		case 5:
+            		} case 6: {
+            			foreach(Chunk chunk in brushChunks)
+            				chunk.food = Mathf.Clamp(chunk.food + (brushSize - Vector3.Distance(hit.point, new Vector3(chunk.xPos, 0f, chunk.zPos))) * 0.1f, 0f, 1f);
+            			GridController.GC.updateGrid();
             			break;
-            		case 6:
-            			break;
+            		}
             	}
             }
         }

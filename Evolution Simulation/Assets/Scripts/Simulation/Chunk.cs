@@ -20,7 +20,7 @@ public class Chunk {
     }
 
     public void setVertexPos(float yScale) {
-        this.vertexObj.transform.position = new Vector3(xPos, Mathf.Clamp(yPos + yOffset, 0f, 1f) * yScale, zPos);
+        this.vertexObj.transform.position = new Vector3(xPos, Mathf.Clamp(yPos + yOffset, 0.001f, 1f) * yScale, zPos);
     }
 
 	public bool isWater() {

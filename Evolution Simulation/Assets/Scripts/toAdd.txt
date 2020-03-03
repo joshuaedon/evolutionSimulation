@@ -1,5 +1,5 @@
 DONE
-Replaced chunk.vector with 3 variables and added yOffset, fexed vertex view (vertex center is where mouse hits sea floor), selecting agent now changes 'face' colour, changed defalut noise scale from 15 to 20 to widen land so agents have more room to spread at initial simulation stage, all agents no longer reproduce on their first tick, agent left and right were reversed, implementing god tools WIPds
+
 
 
 - Food
