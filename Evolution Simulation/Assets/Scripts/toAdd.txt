@@ -1,5 +1,5 @@
 DONE
-Changed panel transparency and text colour, step button, agent redesign, nn labels and input node colours
+
 
 
 - Food

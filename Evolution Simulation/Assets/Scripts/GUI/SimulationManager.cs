@@ -72,7 +72,7 @@ public class SimulationManager : MonoBehaviour {
             if(AgentPanel.activeInHierarchy) {
                 AgentPanel.SetActive(false);
                 if(selectedAgent != null) {
-                    selectedAgent.changeColour(0f);
+                    selectedAgent.display();
                     selectedAgent = null;
                 }
             }

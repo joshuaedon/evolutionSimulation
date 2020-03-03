@@ -9,7 +9,6 @@ public class NeuralNetwork {
     
     // Used for starting agents
     public NeuralNetwork(int[] layerSizes) {
-        // this.prevOutputs = new float[layerSizes[layerSizes.Length-1]];
         this.mutateAmount = 0.1f;
         this.layers = new Layer[layerSizes.Length];
         layers[0] = new Layer(new Node[0], layerSizes[0], 0);

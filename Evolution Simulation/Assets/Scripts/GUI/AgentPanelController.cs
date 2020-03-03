@@ -6,8 +6,8 @@ using UnityEngine.UI.Extensions;
 using UnityEngine.EventSystems;
 
 public class AgentPanelController : MonoBehaviour {
-	string[] inputLabels = {"Random", "Hunger", "Food Below"};
-	int[] inputColours = {0, 0, 1};
+	string[] inputLabels = {"Random", "Hunger", "Food Below", "Water Below", "Food Front", "Water Front", "Agent Front"};
+	int[] inputColours = {0, 0, 1, 2, 1, 2, 0};
     string[] outputLabels = {"Forwards", "Left", "Right", "Eat", "Reproduce"};
     bool isHighlight;
 	Agent agent;

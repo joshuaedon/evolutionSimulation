@@ -142,14 +142,20 @@ public class GridController : MonoBehaviour {
         // Move over the agents and food from the previous gridArray
         for(int c = 0; c < gridArray.GetLength(0); c++) {
             for(int r = 0; r < gridArray.GetLength(1); r++) {
-                if(c < cols && r < rows) {
-                    newGridArray[c, r].agent = gridArray[c, r].agent;
+                if(c < cols && r < rows)
                     newGridArray[c, r].food = gridArray[c, r].food;
-                } else if(gridArray[c, r].agent != null) {
-                    Destroy(gridArray[c, r].agent.agentObj);
-                    agents.Remove(gridArray[c, r].agent);
-                }
             }
+        }
+        // Remove agents outside of the grid
+        for(int i = agents.Count - 1; i >= 0; i--) {
+        	if(agents[i].chunk.vertex.x >= cols || agents[i].chunk.vertex.z >= rows) {
+        		if(SimulationManager.selectedAgent == agents[i])
+                    SimulationManager.selectedAgent = null;
+                Destroy(agents[i].agentObj);
+                Destroy(agents[i].MR.material);
+                agents[i].chunk.agent = null;
+                agents.RemoveAt(i);
+        	}
         }
 
         // Create mesh triangles

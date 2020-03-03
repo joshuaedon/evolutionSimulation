@@ -18,7 +18,7 @@ public class Agent {
         this.chunk = chunk;
         moveObj();
 
-        this.network = new NeuralNetwork(new int[] {3, 10, 5});
+        this.network = new NeuralNetwork(new int[] {7, 10, 5});
         this.generation = 1;
         this.colour = Random.Range(0f, 1f);
         changeColour(0f);
@@ -51,10 +51,15 @@ public class Agent {
     }
 
     public void loadInputs() {
-        float[] inputs = new float[3];
+        float[] inputs = new float[7];
         inputs[0] = Random.Range(0f, 1f);
         inputs[1] = this.hunger;
         inputs[2] = this.chunk.food;
+        inputs[3] = this.chunk.isWater() ? 1 : 0;
+        Chunk newChunk = getNewChunk();
+        inputs[4] = (newChunk != null) ? newChunk.food : 0f;
+        inputs[5] = (newChunk == null || newChunk.isWater()) ? 1 : 0;
+        inputs[6] = (newChunk == null || newChunk.agent == null) ? 0 : 1;
         network.loadInputs(inputs);
     }
 
@@ -63,9 +68,9 @@ public class Agent {
         	// Loose hunger
         	this.hunger -= GridController.GC.hungerLoss;
         	if(chunk.isWater()) {
-        		network.mutateValue(0.1f);
-        		changeColour(0.1f);
-        		hunger -= 0.05f;
+        		network.mutateValue(1f);
+        		changeColour(1f);
+        		hunger -= 0.1f;
         	}
 
         	// Move forward, turn left, right or eat depending on the agents NN outputs
@@ -111,23 +116,13 @@ public class Agent {
     }
 
     void stepForward(bool isMenu) {
-        int newCol = Mathf.RoundToInt(chunk.vertex.x);
-        int newRow = Mathf.RoundToInt(chunk.vertex.z);
-        switch(this.dir) {
-            case 0: newCol++; break;
-            case 1: newRow++; break;
-            case 2: newCol--; break;
-            case 3: newRow--; break;
-        }
-        if(newCol >= 0 && newRow >= 0 && newCol < GridController.GC.cols && newRow < GridController.GC.rows) {
-            Chunk newChunk = GridController.GC.gridArray[newCol, newRow];
-            if(newChunk.agent == null && (!isMenu || !newChunk.isWater() || this.chunk.isWater())) {
-                // Step Forward
-                this.chunk.agent = null;
-                this.chunk = newChunk;
-                newChunk.agent = this;
-                moveObj();
-            }
+        Chunk newChunk = getNewChunk();
+        if(newChunk != null && newChunk.agent == null && (!isMenu || !newChunk.isWater() || this.chunk.isWater())) {
+            // Step Forward
+            this.chunk.agent = null;
+            this.chunk = newChunk;
+            newChunk.agent = this;
+            moveObj();
         }
     }
 
@@ -161,7 +156,27 @@ public class Agent {
     }
 
     public void changeColour(float amount) {
-    	colour = (colour + Random.Range(-amount, amount) + 1000000f) % 1f;
+    	colour = (colour + Random.Range(-amount/5f, amount/5f) + 1000000f) % 1f;
+    	if(SimulationManager.selectedAgent != this)
+    		display();
+    }
+
+    public void display() {
     	MR.material.color = Color.HSVToRGB(colour, 1f, 1f);
+    }
+
+    Chunk getNewChunk() {
+		int newCol = Mathf.RoundToInt(chunk.vertex.x);
+        int newRow = Mathf.RoundToInt(chunk.vertex.z);
+        switch(this.dir) {
+            case 0: newCol++; break;
+            case 1: newRow++; break;
+            case 2: newCol--; break;
+            case 3: newRow--; break;
+        }
+        if(newCol >= 0 && newRow >= 0 && newCol < GridController.GC.cols && newRow < GridController.GC.rows) {
+            return GridController.GC.gridArray[newCol, newRow];
+        }
+        return null;
     }
 }
