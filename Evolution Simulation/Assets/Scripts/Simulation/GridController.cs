@@ -55,7 +55,7 @@ public class GridController : MonoBehaviour {
         // Terrain
         cols = 150;
         rows = 75;
-        noiseScale = 15f;
+        noiseScale = 20f;
         seaLevel = 0.45f;
         yScale = 5f;
         seaBorder = 10;
@@ -148,7 +148,7 @@ public class GridController : MonoBehaviour {
         }
         // Remove agents outside of the grid
         for(int i = agents.Count - 1; i >= 0; i--) {
-        	if(agents[i].chunk.vertex.x >= cols || agents[i].chunk.vertex.z >= rows) {
+        	if(agents[i].chunk.xPos >= cols || agents[i].chunk.zPos >= rows) {
         		if(SimulationManager.selectedAgent == agents[i])
                     SimulationManager.selectedAgent = null;
                 Destroy(agents[i].agentObj);
@@ -205,10 +205,10 @@ public class GridController : MonoBehaviour {
                 if(distFromBorder < seaBorder)
                     elevation *= -Mathf.Pow((float)distFromBorder / seaBorder - 1, 2) + 1;
 
-                gridArray[c, r].vertex.y = elevation;
+                gridArray[c, r].yPos = elevation;
                 if(gridArray[c, r].vertexObj != null)
                     gridArray[c, r].setVertexPos(yScale);
-                vertices[c*rows + r] = new Vector3(c, elevation * yScale, r);
+                vertices[c*rows + r] = new Vector3(c, Mathf.Clamp(elevation + gridArray[c, r].yOffset, 0f, 1f) * yScale, r);
 
                 Color col = Color.Lerp(sand, land, (1 + seaLevel) * elevation - seaLevel);
                 colours[c*rows + r] = Color.Lerp(col, new Color(col.r, 1, col.b), gridArray[c, r].food);
@@ -227,7 +227,7 @@ public class GridController : MonoBehaviour {
     }
 
     public void updateVertexColour(int c, int r) {
-        Color color = Color.Lerp(sand, land, (1 + seaLevel) * gridArray[c, r].vertex.y - seaLevel);
+        Color color = Color.Lerp(sand, land, (1 + seaLevel) * Mathf.Clamp(gridArray[c, r].yPos + gridArray[c, r].yOffset, 0f, 1f) - seaLevel);
         colours[Mathf.RoundToInt(c*rows + r)] = Color.Lerp(color, new Color(color.r, 1, color.b), gridArray[c, r].food);
     }
 
@@ -274,7 +274,7 @@ public class GridController : MonoBehaviour {
                 chunk.food += add;
 
                 // Reset the color of the chunk's vertex
-                updateVertexColour(Mathf.RoundToInt(chunk.vertex.x), Mathf.RoundToInt(chunk.vertex.z));
+                updateVertexColour(chunk.xPos, chunk.zPos);
             }
             tries++;
         }

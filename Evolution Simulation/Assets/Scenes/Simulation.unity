@@ -3059,7 +3059,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1649020190}
-        m_MethodName: 
+        m_MethodName: terrainResetButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3373,7 +3373,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1649020190}
-        m_MethodName: 
+        m_MethodName: terrainLowerButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4412,7 +4412,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1649020190}
-        m_MethodName: 
+        m_MethodName: agentResetButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5094,7 +5094,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: ' 15'
+  m_Text: ' 20'
 --- !u!222 &661826511
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -5982,7 +5982,7 @@ MonoBehaviour:
   m_MinValue: 1
   m_MaxValue: 100
   m_WholeNumbers: 0
-  m_Value: 15
+  m_Value: 20
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
@@ -7577,7 +7577,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1649020190}
-        m_MethodName: 
+        m_MethodName: agentClearButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -7844,7 +7844,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1649020190}
-        m_MethodName: 
+        m_MethodName: terrainRaiseButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -8582,7 +8582,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1649020190}
-        m_MethodName: 
+        m_MethodName: agentAddButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -9111,7 +9111,7 @@ MonoBehaviour:
   m_FillRect: {fileID: 1200689206}
   m_HandleRect: {fileID: 374648374}
   m_Direction: 0
-  m_MinValue: 0.01
+  m_MinValue: 0.05
   m_MaxValue: 25
   m_WholeNumbers: 0
   m_Value: 5
@@ -11269,7 +11269,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1649020190}
-        m_MethodName: 
+        m_MethodName: agentRemoveButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -11486,7 +11486,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13ea8787439cb354c946f579d96935c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  showVertices: 0
+  godTool: 0
   StatsPanel: {fileID: 0}
   SettingsPanel: {fileID: 0}
   AgentPanel: {fileID: 0}

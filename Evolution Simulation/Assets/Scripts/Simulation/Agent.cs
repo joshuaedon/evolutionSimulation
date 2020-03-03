@@ -47,7 +47,7 @@ public class Agent {
     }
 
     public void moveObj() {
-        agentObj.transform.position = new Vector3(chunk.vertex.x, GridController.GC.yScale * chunk.vertex.y + 0.5f, chunk.vertex.z);
+        agentObj.transform.position = new Vector3(chunk.xPos, GridController.GC.yScale * Mathf.Clamp(chunk.yPos + chunk.yOffset, 0f, 1f) + 0.5f, chunk.zPos);
     }
 
     public void loadInputs() {
@@ -87,7 +87,7 @@ public class Agent {
                 turnRight();
             else if(eatOut > reproduceOut)
             	eat();
-            else if(hunger > 0)
+            else if(hunger > 0 && reproduceOut > 0)
             	reproduce();
 
             loadInputs();
@@ -96,9 +96,9 @@ public class Agent {
         } else {
         	// If the agent is in the menu screen, randomely move forward, turn left or right
             float rand = Random.Range(0f, 1f);
-            if(rand > 2.0f/3.0f)
+            if(rand > 0.75f)
                 turnLeft();
-            else if(rand > 1.0f/3.0f)
+            else if(rand > 0.5f)
                 turnRight();
             else
                 stepForward(isMenu);
@@ -106,13 +106,13 @@ public class Agent {
     }
 
     void turnLeft() {
-        this.dir = (dir + 3) % 4;
-        agentObj.transform.Rotate(0f, 90, 0f, Space.Self);
+        this.dir = (dir + 1) % 4;
+        agentObj.transform.Rotate(0f, -90, 0f, Space.Self);
     }
 
     void turnRight() {
-        this.dir = (dir + 1) % 4;
-        agentObj.transform.Rotate(0f, -90, 0f, Space.Self);
+        this.dir = (dir + 3) % 4;
+        agentObj.transform.Rotate(0f, 90, 0f, Space.Self);
     }
 
     void stepForward(bool isMenu) {
@@ -131,15 +131,13 @@ public class Agent {
     	hunger += amount;
     	chunk.food -= amount;
     	// Reset the color of the chunk's vertex
-        GridController.GC.updateVertexColour(Mathf.RoundToInt(chunk.vertex.x), Mathf.RoundToInt(chunk.vertex.z));
+        GridController.GC.updateVertexColour(chunk.xPos, chunk.zPos);
     }
     
     public void reproduce() {
     	List<Chunk> chunks = new List<Chunk>();
-    	int x = Mathf.RoundToInt(chunk.vertex.x);
-    	int z = Mathf.RoundToInt(chunk.vertex.z);
-    	for(int i = Mathf.Max(x-1, 0); i <= Mathf.Min(x+1, GridController.GC.gridArray.GetLength(0)-1); i++) {
-    		for(int j = Mathf.Max(z-1, 0); j <= Mathf.Min(z+1, GridController.GC.gridArray.GetLength(1)-1); j++) {
+    	for(int i = Mathf.Max(chunk.xPos-1, 0); i <= Mathf.Min(chunk.xPos+1, GridController.GC.gridArray.GetLength(0)-1); i++) {
+    		for(int j = Mathf.Max(chunk.zPos-1, 0); j <= Mathf.Min(chunk.zPos+1, GridController.GC.gridArray.GetLength(1)-1); j++) {
     			Chunk c = GridController.GC.gridArray[i, j];
     			if(c.agent == null)
     				chunks.Add(c);
@@ -158,16 +156,12 @@ public class Agent {
     public void changeColour(float amount) {
     	colour = (colour + Random.Range(-amount/5f, amount/5f) + 1000000f) % 1f;
     	if(SimulationManager.selectedAgent != this)
-    		display();
-    }
-
-    public void display() {
-    	MR.material.color = Color.HSVToRGB(colour, 1f, 1f);
+    		MR.material.color = Color.HSVToRGB(colour, 1f, 1f);
     }
 
     Chunk getNewChunk() {
-		int newCol = Mathf.RoundToInt(chunk.vertex.x);
-        int newRow = Mathf.RoundToInt(chunk.vertex.z);
+		int newCol = chunk.xPos;
+        int newRow = chunk.zPos;
         switch(this.dir) {
             case 0: newCol++; break;
             case 1: newRow++; break;

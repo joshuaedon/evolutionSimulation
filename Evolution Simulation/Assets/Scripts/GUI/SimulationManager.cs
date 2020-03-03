@@ -7,7 +7,8 @@ using UnityEngine.EventSystems;
 public class SimulationManager : MonoBehaviour {
     public static Agent selectedAgent;
     public static bool NNFlow;
-    public bool showVertices;
+    public int godTool;
+    List<Chunk> brushChunks;
     float brushSize;
     float lastTickSpeedSliderVal;
     // Game Objects
@@ -22,7 +23,8 @@ public class SimulationManager : MonoBehaviour {
 
     void Start() {
 		NNFlow = false;
-        showVertices = false;
+        godTool = 0;
+        brushChunks = new List<Chunk>();
         brushSize = 5f;
         lastTickSpeedSliderVal = 2f;
 
@@ -72,7 +74,7 @@ public class SimulationManager : MonoBehaviour {
             if(AgentPanel.activeInHierarchy) {
                 AgentPanel.SetActive(false);
                 if(selectedAgent != null) {
-                    selectedAgent.display();
+                    selectedAgent.agentObj.transform.GetChild(1).GetComponent<Renderer>().material.SetColor("_Color", Color.white);
                     selectedAgent = null;
                 }
             }
@@ -80,7 +82,7 @@ public class SimulationManager : MonoBehaviour {
                 // If the mouse is over a new agent, set its colour to red and set it as the selected agent, then create a new agent panel
                 foreach(Agent a in GridController.GC.agents) {
                     if(a.agentObj.transform.GetChild(0) == hit.transform || a.agentObj.transform.GetChild(1) == hit.transform) {
-                        a.agentObj.transform.GetChild(0).GetComponent<Renderer>().material.SetColor("_Color", Color.black);
+                        a.agentObj.transform.GetChild(1).GetComponent<Renderer>().material.SetColor("_Color", Color.red);
                         selectedAgent = a;
                     }
                 }
@@ -88,7 +90,7 @@ public class SimulationManager : MonoBehaviour {
             }
         }
 
-        if(showVertices && !UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) {
+        if(godTool != 0 && !UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) {
         	// Display vertices
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
@@ -97,13 +99,17 @@ public class SimulationManager : MonoBehaviour {
             GameObject referenceVertex = (GameObject)Instantiate(Resources.Load("Simulation/Vertex"));
             for(int c = 0; c < GridController.GC.gridArray.GetLength(0); c++) {
                 for(int r = 0; r < GridController.GC.gridArray.GetLength(1); r++) {
-                    if(Vector3.Distance(hit.point, GridController.GC.gridArray[c, r].vertex) < brushSize) {
+                	Chunk chunk = GridController.GC.gridArray[c, r];
+                    if(Vector3.Distance(hit.point, new Vector3(chunk.xPos, 0f, chunk.zPos)) < brushSize) {
                         if(GridController.GC.gridArray[c, r].vertexObj == null) {
                             GridController.GC.gridArray[c, r].vertexObj = (GameObject)Instantiate(referenceVertex, transform);
                             GridController.GC.gridArray[c, r].setVertexPos(GridController.GC.yScale);
+                            brushChunks.Add(GridController.GC.gridArray[c, r]);
                         }
-                    } else
+                    } else {
                         Destroy(GridController.GC.gridArray[c, r].vertexObj);
+                        brushChunks.Remove(GridController.GC.gridArray[c, r]);
+                    }
                 }
             }
             Destroy(referenceVertex);
@@ -113,7 +119,46 @@ public class SimulationManager : MonoBehaviour {
             	brushSize -= Input.GetAxis("Mouse ScrollWheel") * 20f * Time.deltaTime;
             	brushSize = Mathf.Min(brushSize, 50f);
             }
+
+            // Deselect
+            if(Input.GetMouseButtonDown(0)) {
+            	godTool = 0;
+            	for(int c = 0; c < GridController.GC.gridArray.GetLength(0); c++) {
+                	for(int r = 0; r < GridController.GC.gridArray.GetLength(1); r++)
+                        Destroy(GridController.GC.gridArray[c, r].vertexObj);
+                }
+                brushChunks.Clear();
+            }
+
+            // Use
+            if(Input.GetMouseButton(1)) {
+            	switch(godTool) {
+            		case 1:
+            			if(brushChunks.Count == 0)
+            				break;
+            			Chunk chunk = brushChunks[Random.Range(0, brushChunks.Count)];
+            			if(chunk.agent == null) {
+	            			GameObject agentObj = (GameObject)Instantiate(Resources.Load("Simulation/Agent"), transform);
+			                Agent agent = new Agent(agentObj, chunk);
+			                chunk.agent = agent;
+			                GridController.GC.agents.Add(agent);
+			            }
+            			break;
+            		case 2:
+            			break;
+            		case 3:
+            			break;
+            		case 4:
+            			break;
+            		case 5:
+            			break;
+            		case 6:
+            			break;
+            	}
+            }
         }
+
+
     }
 
     public void adjustTickSpeed(float value) {
@@ -141,12 +186,44 @@ public class SimulationManager : MonoBehaviour {
         }
     }
 
+    public void graphButton() {
+        GraphPanel.SetActive(!GraphPanel.activeInHierarchy);
+        if(GraphPanel.activeInHierarchy) {
+            StatsPanel.SetActive(false);
+            SettingsPanel.SetActive(false);
+        }
+    }
+
     public void agentButton() {
         AgentButtons.SetActive(!AgentButtons.activeInHierarchy);
         if(AgentButtons.activeInHierarchy) {
             TerrainButtons.SetActive(false);
             GrassButtons.SetActive(false);
         }
+    }
+
+	public void agentClearButton() {
+        for(int i = GridController.GC.agents.Count - 1; i >= 0; i--) {
+            if(SimulationManager.selectedAgent == GridController.GC.agents[i])
+                SimulationManager.selectedAgent = null;
+            Destroy(GridController.GC.agents[i].agentObj);
+            Destroy(GridController.GC.agents[i].MR.material);
+            GridController.GC.agents[i].chunk.agent = null;
+            GridController.GC.agents.RemoveAt(i);
+        }
+    }
+
+    public void agentResetButton() {
+        agentClearButton();
+        GridController.GC.spawnStartingAgents();
+    }
+
+    public void agentRemoveButton() {
+        godTool = 1;
+    }
+
+    public void agentAddButton() {
+        godTool = 2;
     }
 
     public void terrainButton() {
@@ -157,6 +234,23 @@ public class SimulationManager : MonoBehaviour {
         }
     }
 
+    public void terrainResetButton() {
+    	for(int c = 0; c < GridController.GC.cols; c++) {
+            for(int r = 0; r < GridController.GC.rows; r++) {
+                GridController.GC.gridArray[c, r].yOffset = 0f;
+            }
+        }
+        GridController.GC.updateGrid();
+    }
+
+    public void terrainLowerButton() {
+        godTool = 3;
+    }
+
+    public void terrainRaiseButton() {
+        godTool = 4;
+    }
+
     public void grassButton() {
         GrassButtons.SetActive(!GrassButtons.activeInHierarchy);
         if(GrassButtons.activeInHierarchy) {
@@ -165,12 +259,30 @@ public class SimulationManager : MonoBehaviour {
         }
     }
 
-    public void graphButton() {
-        GraphPanel.SetActive(!GraphPanel.activeInHierarchy);
-        if(GraphPanel.activeInHierarchy) {
-            StatsPanel.SetActive(false);
-            SettingsPanel.SetActive(false);
+    public void grassClearButton() {
+    	for(int c = 0; c < GridController.GC.cols; c++) {
+            for(int r = 0; r < GridController.GC.rows; r++) {
+                GridController.GC.gridArray[c, r].food = 0f;
+            }
         }
+        GridController.GC.updateGrid();
+    }
+
+    public void grassResetButton() {
+    	for(int c = 0; c < GridController.GC.cols; c++) {
+            for(int r = 0; r < GridController.GC.rows; r++) {
+                GridController.GC.gridArray[c, r].food = 0.25f;
+            }
+        }
+        GridController.GC.updateGrid();
+    }
+
+    public void grassRemoveButton() {
+        godTool = 5;
+    }
+
+    public void grassAddButton() {
+        godTool = 6;
     }
 
     public void setDefaultValues() {
@@ -179,7 +291,7 @@ public class SimulationManager : MonoBehaviour {
         // Terrain
         GameObject.Find("ColumnsSlider").GetComponent<Slider>().value = 150;
         GameObject.Find("RowsSlider").GetComponent<Slider>().value = 75;
-        GameObject.Find("NoiseScaleSlider").GetComponent<Slider>().value = 15f;
+        GameObject.Find("NoiseScaleSlider").GetComponent<Slider>().value = 20f;
         GameObject.Find("SeaLevelSlider").GetComponent<Slider>().value = 0.45f;
         GameObject.Find("YScaleSlider").GetComponent<Slider>().value = 5f;
         GameObject.Find("SeaBorderSlider").GetComponent<Slider>().value = 10f;
