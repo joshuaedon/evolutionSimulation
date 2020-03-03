@@ -98,7 +98,7 @@ public class GridController : MonoBehaviour {
         }
     }
 
-    void step() {
+    public void step() {
         if(time % grassSpawnRate == 0 && !isMenu)
             spawnGrass();
 
@@ -255,6 +255,7 @@ public class GridController : MonoBehaviour {
 
     public void spawnGrass() {
         float toAdd = grassSpawnAmount * cols * rows / 10000f;
+
         int tries = 0;
         Chunk chunk;
         while(tries < 100 && toAdd > 0) {
@@ -262,7 +263,7 @@ public class GridController : MonoBehaviour {
             int row = Random.Range(0, rows);
             chunk = gridArray[col, row];
             if(chunk.food < 1 && (underwaterFoodSpawn || !chunk.isWater())) {
-                float add = Mathf.Min(toAdd, 1f - chunk.food);
+                float add = Mathf.Min(Mathf.Min(toAdd, 1f - chunk.food), 0.5f);
                 toAdd -= add;
                 chunk.food += add;
 

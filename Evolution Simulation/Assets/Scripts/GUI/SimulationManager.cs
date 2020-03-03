@@ -15,13 +15,14 @@ public class SimulationManager : MonoBehaviour {
     public GameObject SettingsPanel;
     public static GameObject GraphPanel;
 	public GameObject AgentPanel;
+	public GameObject StepButton;
 	public GameObject AgentButtons;
 	public GameObject TerrainButtons;
 	public GameObject GrassButtons;
 
     void Start() {
 		NNFlow = false;
-        showVertices = true;
+        showVertices = false;
         brushSize = 5f;
         lastTickSpeedSliderVal = 2f;
 
@@ -34,6 +35,7 @@ public class SimulationManager : MonoBehaviour {
         GraphPanel.SetActive(false);
         AgentPanel = GameObject.Find("AgentPanel");
         AgentPanel.SetActive(false);
+        StepButton = GameObject.Find("StepButton");
 		AgentButtons = GameObject.Find("AgentButtons");
         AgentButtons.SetActive(false);
 		TerrainButtons = GameObject.Find("TerrainButtons");
@@ -77,8 +79,8 @@ public class SimulationManager : MonoBehaviour {
             if(Physics.Raycast(ray, out hit) && hit.transform.name == "AgentBody") {
                 // If the mouse is over a new agent, set its colour to red and set it as the selected agent, then create a new agent panel
                 foreach(Agent a in GridController.GC.agents) {
-                    if(a.agentObj.transform.GetChild(0) == hit.transform) {
-                        a.agentObj.transform.GetChild(0).GetComponent<Renderer>().material.SetColor("_Color", Color.white);
+                    if(a.agentObj.transform.GetChild(0) == hit.transform || a.agentObj.transform.GetChild(1) == hit.transform) {
+                        a.agentObj.transform.GetChild(0).GetComponent<Renderer>().material.SetColor("_Color", Color.black);
                         selectedAgent = a;
                     }
                 }
@@ -112,15 +114,16 @@ public class SimulationManager : MonoBehaviour {
             	brushSize = Mathf.Min(brushSize, 50f);
             }
         }
-
-
     }
 
     public void adjustTickSpeed(float value) {
-        if(value == 0)
+        if(value == 0) {
             GridController.GC.ticksPerSec = 0;
-        else
+            StepButton.GetComponent<Button>().interactable = true;
+        } else {
             GridController.GC.ticksPerSec = Mathf.Pow(10, value-1);
+            StepButton.GetComponent<Button>().interactable = false;
+        }
         GridController.GC.framesPerTick = 1;
         GameObject.Find("TickSpeedText").GetComponent<Text>().text = Mathf.Round(GridController.GC.ticksPerSec * 100f) / 100f + " ticks/sec";
     }
@@ -237,7 +240,7 @@ public class SimulationManager : MonoBehaviour {
 
     public void adjustGrassSpawnAmount(float value) {
         GridController.GC.grassSpawnAmount = value;
-        GameObject.Find("GrassSpawnAmountValue").GetComponent<Text>().text = " " + Mathf.Round(value * 100f) / 100f + " food / 100^2 points";
+        GameObject.Find("GrassSpawnAmountValue").GetComponent<Text>().text = " " + Mathf.Round(value * GridController.GC.cols * GridController.GC.rows / 100f) / 100f + " food";
     }
 
     public void adjustGrassSpawnRate(float value) {

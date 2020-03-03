@@ -2,16 +2,12 @@ using UnityEngine.UI.Extensions;
 using UnityEngine;
 
 public class NeuralNetwork {
-    // string[] inputLabels = {"Random", "Bot R", "Bot B", "Water R", "Water B", "Food R", "Food B", "Bot Col R", "Bot Col B", "Scent R", "Scent B", "Hunger"};
-    // string[] outputLabels = {"Left", "Right", "Step", "Stay", "Dist R", "Dir R", "Range R", "Dist B", "Dir B", "Range B", "Breed/Kill", "Mutation", "Drop Scent"};
-    string[] inputLabels = {"Random", "Hunger", "Food Below"};
-    string[] outputLabels = {"Forwards", "Left", "Right", "Eat", "Reproduce"};
     public float mutateAmount;
     float weightDecay = 0.999f;
-    // float[] prevOutputs;
     public Layer[] layers;
     public float maxWeight;
     
+    // Used for starting agents
     public NeuralNetwork(int[] layerSizes) {
         // this.prevOutputs = new float[layerSizes[layerSizes.Length-1]];
         this.mutateAmount = 0.1f;
@@ -22,6 +18,7 @@ public class NeuralNetwork {
         setmaxWeight();
     }
 
+    // Used when an agent reproduces
     public NeuralNetwork(NeuralNetwork oldNetwork) {
     	this.mutateAmount = Mathf.Max(oldNetwork.mutateAmount * Random.Range(0.9f, 1f/0.9f), 0.005f);
     	this.layers = new Layer[oldNetwork.layers.Length];
@@ -97,16 +94,8 @@ public class NeuralNetwork {
         }
     }
     
-    public float returnOutput(string outputStr/*, bool prev*/) {
-        int output = -1;
-        for(int i = 0; i < outputLabels.Length; i++) {
-            if(outputLabels[i].Equals(outputStr))
-              output = i;
-        }
-        // if(prev)
-        //     return prevOutputs[output];
-        // else
-            return layers[layers.Length-1].nodes[output].value;
+    public float returnOutput(int output) {
+        return layers[layers.Length-1].nodes[output].value;
     }
 
     /*void addLayer() {
@@ -136,6 +125,8 @@ public class NeuralNetwork {
   		}
     }
 
+    // Mutate each weight in the network by a certain value with a 90% probability
+    // There is a 10% chance the value will double recursively
     public float mutateValue(float a) {
 		float sum = 0f;
     	int count = 0;

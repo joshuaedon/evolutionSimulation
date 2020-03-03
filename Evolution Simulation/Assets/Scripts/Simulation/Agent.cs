@@ -69,11 +69,11 @@ public class Agent {
         	}
 
         	// Move forward, turn left, right or eat depending on the agents NN outputs
-            float forwardsOut = network.returnOutput("Forwards");
-            float leftOut = network.returnOutput("Left");
-            float rightOut = network.returnOutput("Right");
-            float eatOut = network.returnOutput("Eat");
-            float reproduceOut = network.returnOutput("Reproduce");
+            float forwardsOut = network.returnOutput(0);
+            float leftOut = network.returnOutput(1);
+            float rightOut = network.returnOutput(2);
+            float eatOut = network.returnOutput(3);
+            float reproduceOut = network.returnOutput(4);
             if(forwardsOut > Mathf.Max(Mathf.Max(Mathf.Max(leftOut, rightOut), eatOut), reproduceOut))
                 stepForward(isMenu);
             else if(leftOut > Mathf.Max(Mathf.Max(rightOut, eatOut), reproduceOut))

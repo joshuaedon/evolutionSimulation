@@ -6,6 +6,9 @@ using UnityEngine.UI.Extensions;
 using UnityEngine.EventSystems;
 
 public class AgentPanelController : MonoBehaviour {
+	string[] inputLabels = {"Random", "Hunger", "Food Below"};
+	int[] inputColours = {0, 0, 1};
+    string[] outputLabels = {"Forwards", "Left", "Right", "Eat", "Reproduce"};
     bool isHighlight;
 	Agent agent;
     NeuralNetwork network;
@@ -33,7 +36,8 @@ public class AgentPanelController : MonoBehaviour {
   			// Get the panel width and height
   			float width = transform.GetComponentInParent<Canvas>().GetComponent<RectTransform>().sizeDelta.x
   						+ transform.GetComponent<RectTransform>().sizeDelta.x
-  						+ NodesPanel.GetComponent<RectTransform>().sizeDelta.x;
+  						+ NodesPanel.GetComponent<RectTransform>().sizeDelta.x
+  						- 20;
   			float height = transform.GetComponentInParent<Canvas>().GetComponent<RectTransform>().sizeDelta.y
   						 + transform.GetComponent<RectTransform>().sizeDelta.y
   						 + NodesPanel.GetComponent<RectTransform>().sizeDelta.y
@@ -44,9 +48,11 @@ public class AgentPanelController : MonoBehaviour {
     		float nodeSize = height / maxNodes;
     		nodeSize = Mathf.Min(nodeSize, horizontalSpacing);
 
-        	// Store reference objects for the nodes and connections
-    		GameObject referenceNode 	   = (GameObject)Instantiate(Resources.Load("GUI/NetworkNode"));
-    		GameObject referenceConnection = (GameObject)Instantiate(Resources.Load("GUI/NetworkConnection"));
+        	// Store reference objects for the nodes, connections and lebels
+    		GameObject referenceNode 	    = (GameObject)Instantiate(Resources.Load("GUI/NetworkNode"));
+    		GameObject referenceConnection  = (GameObject)Instantiate(Resources.Load("GUI/NetworkConnection"));
+    		GameObject referenceInputLabel  = (GameObject)Instantiate(Resources.Load("GUI/InputLabel"));
+    		GameObject referenceOutputLabel = (GameObject)Instantiate(Resources.Load("GUI/OutputLabel"));
     		referenceNode.GetComponent<RectTransform>().sizeDelta = new Vector2(nodeSize, nodeSize);
        		// Create all the nodes and connections of the selected agent's neural network
     		for(int l = 0; l < network.layers.Length; l++) {
@@ -69,8 +75,23 @@ public class AgentPanelController : MonoBehaviour {
     				}
         		}
       		}
+      		// Create input and output labels
+      		for(int n = 0; n < inputLabels.Length; n++) {
+				GameObject labelObj = (GameObject)Instantiate(referenceInputLabel, ConnectionsPanel.transform);
+				labelObj.transform.localPosition = new Vector2((1 - network.layers.Length) * horizontalSpacing - nodeSize/2 - 57, nodeSize * ((inputLabels.Length+1) / 2.0f - n - 0.5f));
+				labelObj.GetComponent<Text>().text = inputLabels[n];
+				network.layers[0].nodes[n].colour = inputColours[n];
+				network.layers[0].nodes[n].display();
+			}
+			for(int n = 0; n < outputLabels.Length; n++) {
+				GameObject labelObj = (GameObject)Instantiate(referenceOutputLabel, ConnectionsPanel.transform);
+				labelObj.transform.localPosition = new Vector2((2.0f * (network.layers.Length-1) + 1 - network.layers.Length) * horizontalSpacing + nodeSize/2 + 57, nodeSize * ((outputLabels.Length+1) / 2.0f - n - 0.5f));
+				labelObj.GetComponent<Text>().text = outputLabels[n];
+			}
       		Destroy(referenceNode);
       		Destroy(referenceConnection);
+      		Destroy(referenceInputLabel);
+      		Destroy(referenceOutputLabel);
       		network.setConnectionColours();
   		}
   	}

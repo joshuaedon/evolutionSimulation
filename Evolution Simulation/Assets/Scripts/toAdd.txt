@@ -1,18 +1,15 @@
 DONE
-
+Changed panel transparency and text colour, step button, agent redesign, nn labels and input node colours
 
 
 - Food
 	- Spawn type
 		- Grass spread
-		- Fruit spawn
 		- Drop from agents
 			- Constant value
 			- Percentage of health
 	- Health
 		- Agent attack
-- Breeding
-	- Type
 - Agent senses
 - God features
 	- Vertex objects must be deleted when !showVertices
@@ -20,7 +17,7 @@ DONE
 	- Add/remove food
 	- Save, Copy, move, delete agents
 - Graphs
-	- Population
+	- Max Population Text
 	- Colour
 - To try tab/notifications
 	- Mass extinction is a big factor in evolution
@@ -32,6 +29,7 @@ DONE
 	- Water damage/mutate
 - Setup menu
 - Fix thrashing
+- Particles
 
 BUGS
 - Can't click through statistics element

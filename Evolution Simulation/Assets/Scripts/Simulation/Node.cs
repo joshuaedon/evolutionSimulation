@@ -9,6 +9,7 @@ public class Node {
     public GameObject[] connectionObjects;
     public int layerNum;
     public int nodeNum;
+    public int colour;
 
     public Node(Node[] prevNodes, int layerNum, int nodeNum) {
         this.nodes = new Node[prevNodes.Length];
@@ -20,11 +21,14 @@ public class Node {
         this.connectionObjects = new GameObject[prevNodes.Length];
         this.layerNum = layerNum;
         this.nodeNum = nodeNum;
+        this.colour = 0;
     }
 
+    // Used when copying a network
     public Node(int layerNum, int nodeNum) {
         this.layerNum = layerNum;
         this.nodeNum = nodeNum;
+        this.colour = 0;
     }
 
     /*public Node(float[] a, float[] b, float aMutation, float bMutation) {
@@ -56,9 +60,6 @@ public class Node {
         float sum = 0;
         for (int n = 0; n < nodes.Length; n++)
             sum += nodes[n].value*weights[n];
-        //sum /= sqrt(currentNode.connections.length);
-        // ^Suggested in https://www.youtube.com/watch?v=8bNIkfRJZpo but he makes connection weights smaller when assigned
-        // - I think this will be better but may cause problems when mutations cause layer sizes to change
         // ACTIVATION FUNCTION
         sum = 1/(1 + Mathf.Exp(-sum));
         this.value = sum;
@@ -67,7 +68,12 @@ public class Node {
     public void display() {
         if(nodeObject != null) {
             float c = 0.5f + value / 2;
-            nodeObject.GetComponent<Image>().color = new Color(c, c, c);
+            if(colour == 0)
+            	nodeObject.GetComponent<Image>().color = new Color(c, c, c);
+            else if(colour == 1)
+            	nodeObject.GetComponent<Image>().color = new Color(0.263f, c, 0.094f);
+            else
+            	nodeObject.GetComponent<Image>().color = new Color(0, 0.157f, c);
             nodeObject.transform.GetChild(0).GetComponent<Text>().text = value.ToString("n2");
         }
     }
