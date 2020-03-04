@@ -45,19 +45,6 @@ public class NeuralNetwork {
 		setmaxWeight();
     }
 
-    /*public NeuralNetwork(Layer[] a, Layer[] b, float aMutation, float bMutation) {
-        this.prevOutputs = new float[a[a.Length-1].nodes.Length-1];
-        this.layers = new Layer[a.Length];
-        layers[0] = new Layer(0, a[0].nodes.Length-1);
-        for (int i = 1; i < a.Length; i++) {
-            if(i < b.Length)
-                layers[i] = new Layer(a[i].nodes, b[i].nodes, aMutation, bMutation);
-            else
-                layers[i] = new Layer(a[i].nodes, aMutation);
-        }
-        setmaxWeight();
-    }*/
-
     void setmaxWeight() {
         this.maxWeight = 0;
         for (int l = 1; l < layers.Length; l++) {
@@ -80,15 +67,12 @@ public class NeuralNetwork {
     }
     
     void calculate() {
-        // for(int i = 0; i < prevOutputs.Length; i++)
-        //     prevOutputs[i] = layers[layers.Length-1].nodes[i].value;
-
-        for (int l = 1; l < layers.Length; l++) {
-            for (int n = 0; n < layers[l].nodes.Length - 1; n++)
+        for(int l = 1; l < layers.Length; l++) {
+            for(int n = 0; n < layers[l].nodes.Length - 1; n++)
                 layers[l].nodes[n].calculateValue();
         }
-        for (int l = 0; l < layers.Length; l++) {
-            for (int n = 0; n < layers[l].nodes.Length; n++)
+        for(int l = 0; l < layers.Length; l++) {
+            for(int n = 0; n < layers[l].nodes.Length; n++)
                 layers[l].nodes[n].display();
         }
     }
@@ -96,15 +80,6 @@ public class NeuralNetwork {
     public float returnOutput(int output) {
         return layers[layers.Length-1].nodes[output].value;
     }
-
-    /*void addLayer() {
-        Layer[] newLayers = new Layer[layers.Length+1];
-        newLayers[0] = layers[0];
-        newLayers[1] = new Layer(layers[0].nodes.Length);
-        for(int i = 1; i < layers.Length; i++)
-            newLayers[i+1] = layers[i];
-        this.layers = newLayers;
-    }*/
 
     public void setConnectionColours() {
     	foreach(Layer l in layers) {
@@ -122,6 +97,10 @@ public class NeuralNetwork {
 				}
     		}
   		}
+    }
+
+    public float mutate() {
+		return mutateValue(mutateAmount);
     }
 
     // Mutate each weight in the network by a certain value with a 90% probability
@@ -148,12 +127,20 @@ public class NeuralNetwork {
 				}
 			}
 		}
+		mutateStructure();
 		setmaxWeight();
 		return sum / count;
     }
 
-    public float mutate() {
-		return mutateValue(mutateAmount);
+    void mutateStructure() {
+    	for (int l = 1; l < layers.Length; l++) {
+            for (int n = 0; n < layers[l].nodes.Length - 1; n++) {
+				for(int i = 0; i < layers[l-1].nodes.Length; i++) {
+					if(Random.Range(0f, 1f) < 0.01f)
+						layers[l].nodes[n].modifyConnection(layers[l-1].nodes[i]);
+				}
+			}
+		}
     }
 
     public void printWeights() {

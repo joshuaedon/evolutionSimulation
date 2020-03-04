@@ -64,7 +64,7 @@ public class GridController : MonoBehaviour {
         grassSpawnRate = 20;
         eatSpeed = 1f;
         hungerLoss = 0.005f;
-        underwaterFoodSpawn = true;
+        underwaterFoodSpawn = false;
 
         gridArray = new Chunk[0, 0];
         mesh = new Mesh();
@@ -268,13 +268,14 @@ public class GridController : MonoBehaviour {
             int col = Random.Range(0, cols);
             int row = Random.Range(0, rows);
             chunk = gridArray[col, row];
-            if(chunk.food < 1 && (underwaterFoodSpawn || !chunk.isWater())) {
+            if(chunk.food < 1) {
                 float add = Mathf.Min(Mathf.Min(toAdd, 1f - chunk.food), 0.5f);
                 toAdd -= add;
-                chunk.food += add;
-
-                // Reset the color of the chunk's vertex
-                updateVertexColour(chunk.xPos, chunk.zPos);
+                if(underwaterFoodSpawn || !chunk.isWater()) {
+                	chunk.food += add;
+	                // Reset the color of the chunk's vertex
+	                updateVertexColour(chunk.xPos, chunk.zPos);
+                }
             }
             tries++;
         }

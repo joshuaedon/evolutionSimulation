@@ -15,7 +15,7 @@ public class SimulationManager : MonoBehaviour {
 	public GameObject StatsPanel;
     public GameObject SettingsPanel;
     public static GameObject GraphPanel;
-	public GameObject AgentPanel;
+	public static GameObject AgentPanel;
 	public GameObject StepButton;
 	public GameObject AgentButtons;
 	public GameObject TerrainButtons;
@@ -162,10 +162,8 @@ public class SimulationManager : MonoBehaviour {
             			GridController.GC.updateGrid();
             			break;
             		} case 4: {
-            			foreach(Chunk chunk in brushChunks) {
+            			foreach(Chunk chunk in brushChunks)
             				chunk.yOffset = Mathf.Clamp(chunk.yOffset + (brushSize - Vector3.Distance(hit.point, new Vector3(chunk.xPos, 0f, chunk.zPos))) * 0.025f, -1f, 1f);
-            				Debug.Log(chunk.yOffset);
-            			}
         				GridController.GC.updateGrid();
             			break;
             		} case 5: {

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -31,38 +32,52 @@ public class Node {
         this.colour = 0;
     }
 
-    /*public Node(float[] a, float[] b, float aMutation, float bMutation) {
-        weights = new float[a.Length];
-        for (int i = 0; i < weights.Length; i++) {
-            if(i < b.Length && Random.Range(0, 2) == 0)
-                weights[i] = b[i] + Random.Range(-bMutation, bMutation);
-            else
-                weights[i] = a[i] + Random.Range(-aMutation, aMutation);
-        }
-    }
-
-    public Node(float[] a, float aMutation) {
-        weights = new float[a.Length];
-        for (int i = 0; i < weights.Length; i++)
-            weights[i] = a[i] + Random.Range(-aMutation, aMutation);
-    }
-
-    //Remove?
-    public Node(int prevSize, int nodeNum) {
-      	weights = new float[prevSize];
-        for (int i = 0; i < weights.Length-1; i++) {
-            weights[i] = 0;
-        }
-        weights[nodeNum] = 1;
-    }*/
-
     public void calculateValue() {
         float sum = 0;
         for (int n = 0; n < nodes.Length; n++)
             sum += nodes[n].value*weights[n];
         // ACTIVATION FUNCTION
-        sum = 1/(1 + Mathf.Exp(-sum));
+        // sum = 1/(1 + Mathf.Exp(-sum));
+        sum = Mathf.Max(sum, 0);
         this.value = sum;
+    }
+
+    public void modifyConnection(Node node) {
+    	bool addConnection = Random.Range(0f, 1f) < 0.5f;
+    	int connectionIndex = -1;
+    	for(int n = 0; n < this.nodes.Length; n++) {
+    		if(this.nodes[n].nodeNum == node.nodeNum) {
+    			connectionIndex = n;
+    			break;
+    		}
+    	}
+
+    	if(addConnection && connectionIndex == -1) {
+    		List<Node> nodesList = new List<Node>(this.nodes);
+    		nodesList.Add(node);
+    		this.nodes = nodesList.ToArray();
+
+    		List<float> weightsList = new List<float>(this.weights);
+    		weightsList.Add(Random.Range(-1f, 1f));
+    		this.weights = weightsList.ToArray();
+
+	        this.connectionObjects = new GameObject[this.connectionObjects.Length + 1];
+    	}
+
+    	if(!addConnection && connectionIndex > -1) {
+    		List<Node> nodesList = new List<Node>(this.nodes);
+    		nodesList.RemoveAt(connectionIndex);
+    		this.nodes = nodesList.ToArray();
+
+    		List<float> weightsList = new List<float>(this.weights);
+    		weightsList.RemoveAt(connectionIndex);
+    		this.weights = weightsList.ToArray();
+
+	        List<GameObject> connectionObjectsList = new List<GameObject>(this.connectionObjects);
+	        GameObject.Destroy(connectionObjectsList[connectionIndex]);
+    		connectionObjectsList.RemoveAt(connectionIndex);
+    		this.connectionObjects = connectionObjectsList.ToArray();
+    	}
     }
 
     public void display() {
@@ -74,7 +89,7 @@ public class Node {
             	nodeObject.GetComponent<Image>().color = new Color(0.263f, c, 0.094f);
             else
             	nodeObject.GetComponent<Image>().color = new Color(0, 0.157f, c);
-            nodeObject.transform.GetChild(0).GetComponent<Text>().text = value.ToString("n2");
+            nodeObject.transform.GetChild(0).GetComponent<Text>().text = value.ToString("n1");
         }
     }
 }

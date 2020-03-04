@@ -68,8 +68,8 @@ public class Agent {
         	// Loose hunger
         	this.hunger -= GridController.GC.hungerLoss;
         	if(chunk.isWater()) {
-        		network.mutateValue(1f);
-        		changeColour(1f);
+        		network.mutateValue(0.2f);
+        		changeColour(0.2f);
         		hunger -= 0.1f;
         	}
 
@@ -91,8 +91,12 @@ public class Agent {
             	reproduce();
 
             loadInputs();
-            if(this == SimulationManager.selectedAgent && (SimulationManager.NNFlow || chunk.isWater()))
-            	network.setConnectionColours();
+        	if(this == SimulationManager.selectedAgent) {
+        		if(chunk.isWater()) {
+        			SimulationManager.AgentPanel.GetComponent<AgentPanelController>().resetNetwork();
+    			} else if(SimulationManager.NNFlow)
+        			network.setConnectionColours();
+        	}
         } else {
         	// If the agent is in the menu screen, randomely move forward, turn left or right
             float rand = Random.Range(0f, 1f);
@@ -154,7 +158,7 @@ public class Agent {
     }
 
     public void changeColour(float amount) {
-    	colour = (colour + Random.Range(-amount/5f, amount/5f) + 1000000f) % 1f;
+    	colour = (colour + Random.Range(-amount/3f, amount/3f) + 1000000f) % 1f;
     	if(SimulationManager.selectedAgent != this)
     		MR.material.color = Color.HSVToRGB(colour, 1f, 1f);
     }
