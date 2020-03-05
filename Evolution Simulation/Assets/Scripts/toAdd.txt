@@ -1,13 +1,7 @@
 DONE
-Changed node penalty to 0.0000005 and mutateStrucProb to 0.01, added attack output and input, variable and health slider, water decreases health by 0.1/tick & cant reproduce in water, agent dies if no hunger or health, 2/3 chance to add a connection to a node in the previous layer & 25% less for every prev layer (as new layers never formed connections & destroyed old connections too fast so never good)
 
 
-- Food
-	- Drop from agents
-		- Constant value
-		- Percentage of health
-	- Health
-		- Agent attack
+
 - Agent senses
 - God features
 	- Save, Copy, move, delete agents

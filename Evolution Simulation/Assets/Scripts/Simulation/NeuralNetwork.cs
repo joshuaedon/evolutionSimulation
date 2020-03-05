@@ -130,15 +130,13 @@ public class NeuralNetwork {
   		}
     }
 
-    public float mutate() {
-		return mutateValue(mutateAmount);
+    public void mutate() {
+		mutateValue(mutateAmount);
     }
 
     // Mutate each weight in the network by a certain value with a 90% probability
     // There is a 10% chance the value will double recursively
-    public float mutateValue(float a) {
-		float sum = 0f;
-    	int count = 0;
+    public void mutateValue(float a) {
 		foreach(Layer l in layers) {
 			foreach(Node n in l.nodes) {
 				for(int c = 0; c < n.weights.Length; c++) {
@@ -151,8 +149,6 @@ public class NeuralNetwork {
 							done = true;
 					}
 					n.weights[c] += Random.Range(-amount, amount);
-					sum += amount;
-					count++;
 					// Weight decay
 					n.weights[c] *= weightDecay;
 				}
@@ -160,7 +156,6 @@ public class NeuralNetwork {
 		}
 		mutateStructure();
 		setmaxWeight();
-		return sum / count;
     }
 
     void mutateStructure() {
