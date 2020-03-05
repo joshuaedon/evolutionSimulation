@@ -74,7 +74,7 @@ public class SimulationManager : MonoBehaviour {
             if(AgentPanel.activeInHierarchy) {
                 AgentPanel.SetActive(false);
                 if(selectedAgent != null) {
-                    selectedAgent.agentObj.transform.GetChild(1).GetComponent<Renderer>().material.SetColor("_Color", Color.white);
+                    selectedAgent.plumbob.SetActive(false);;
                     selectedAgent = null;
                 }
             }
@@ -82,8 +82,8 @@ public class SimulationManager : MonoBehaviour {
                 // If the mouse is over a new agent, set its colour to red and set it as the selected agent, then create a new agent panel
                 foreach(Agent a in GridController.GC.agents) {
                     if(a.agentObj.transform.GetChild(0) == hit.transform || a.agentObj.transform.GetChild(1) == hit.transform) {
-                        a.agentObj.transform.GetChild(1).GetComponent<Renderer>().material.SetColor("_Color", Color.red);
                         selectedAgent = a;
+                        a.plumbob.SetActive(true);
                     }
                 }
                 AgentPanel.SetActive(true);// = (GameObject)Instantiate(Resources.Load("GUI/AgentPanel"), GameObject.Find("Canvas").transform);
@@ -322,7 +322,7 @@ public class SimulationManager : MonoBehaviour {
         GameObject.Find("GrassSpawnAmountSlider").GetComponent<Slider>().value = 45f;
         GameObject.Find("GrassSpawnRateSlider").GetComponent<Slider>().value = 20;
         GameObject.Find("EatSpeedSlider").GetComponent<Slider>().value = 1f;
-        GameObject.Find("HungerLossSlider").GetComponent<Slider>().value = 0.005f;
+        GameObject.Find("HungerLossSlider").GetComponent<Slider>().value = 0.003f;
     }
 
     public void adjustTerrainTimeStep(float value) {

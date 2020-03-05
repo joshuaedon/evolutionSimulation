@@ -1,5 +1,5 @@
 DONE
-Camera positioned a bit to the right of an agent when following, 
+Now using plumbob, chances of adding and removing layers and nodes are now equal, there is a penalty of 0.00001 food/tick/node that an agent has, angent colour is now based on the sum of their network weights
 
 
 - Food
@@ -20,6 +20,7 @@ Camera positioned a bit to the right of an agent when following,
 	- Propagation animation
 - Settings
 	- Water damage/mutate
+	- Node hunger loss penalty
 - Fix thrashing
 - Particles
 

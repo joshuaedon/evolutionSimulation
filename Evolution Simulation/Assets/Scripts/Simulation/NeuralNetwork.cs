@@ -9,6 +9,7 @@ public class NeuralNetwork {
     float mutateStrucProb = 0.005f;
     public Layer[] layers;
     public float maxWeight;
+    public int nodeCount;
     
     // Used for starting agents
     public NeuralNetwork(int[] layerSizes) {
@@ -18,6 +19,7 @@ public class NeuralNetwork {
         for (int i = 1; i < layers.Length; i++)
             layers[i] = new Layer(layers[i-1].nodes, layerSizes[i], i);
         setmaxWeight();
+        setNodeCount();
     }
 
     // Used when an agent reproduces
@@ -50,6 +52,7 @@ public class NeuralNetwork {
 			this.layers[l] = newL;
 		}
 		setmaxWeight();
+        setNodeCount();
     }
 
     void setmaxWeight() {
@@ -64,6 +67,23 @@ public class NeuralNetwork {
                 }
             }
         }
+    }
+
+     public float countWeights() {
+        float sum = 0;
+        foreach(Layer l in this.layers) {
+            foreach(Node n in l.nodes) {
+                for(int w = 0; w < n.weights.Length; w++)
+                    sum += n.weights[w];
+            }
+        }
+        return sum;
+    }
+
+    void setNodeCount() {
+    	nodeCount = 0;
+    	foreach(Layer l in this.layers)
+    		nodeCount += l.nodes.Length;
     }
     
     public void loadInputs(float[] inputs) {
@@ -145,7 +165,7 @@ public class NeuralNetwork {
 
     void mutateStructure() {
     	// Add layer
-		if(Random.Range(0f, 1f) < mutateStrucProb * 0.9f) {
+		if(Random.Range(0f, 1f) < mutateStrucProb) {
 			int curL = Random.Range(1, layers.Length);
 			// Add new layer at index curL
 			List<Layer> layerList = new List<Layer>(this.layers);
@@ -177,7 +197,7 @@ public class NeuralNetwork {
 
 		// Add nodes
 		for (int curL = 1; curL < layers.Length-1; curL++) {
-			if(Random.Range(0f, 1f) < mutateStrucProb * 0.9f) {
+			if(Random.Range(0f, 1f) < mutateStrucProb) {
 				// Add node at the top of layer
 				List<Node> nodeList = new List<Node>(this.layers[curL].nodes);
 				nodeList.Insert(0, new Node(curL, 0));
@@ -212,7 +232,7 @@ public class NeuralNetwork {
     		// For each node (appart from the bias node) in each layer
             for (int curN = 0; curN < layers[curL].nodes.Length - 1; curN++) {
             	// Set probability to add a layer over remove to 0.5 for the layer behind the current
-            	float probAdd = 0.5f * 0.99f;
+            	float probAdd = 0.5f;
             	// For each node in each layer before the current
             	for(int prevL = curL-1; prevL >= 0; prevL--) {
 					for(int prevN = 0; prevN < layers[prevL].nodes.Length; prevN++) {
@@ -225,6 +245,8 @@ public class NeuralNetwork {
 				}
 			}
 		}
+
+        setNodeCount();
     }
 
     void updateLayerNumbers(int startingLayer) {

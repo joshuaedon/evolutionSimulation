@@ -108,31 +108,33 @@ public class AgentPanelController : MonoBehaviour {
     }
 
     void Update() {
-    	// Update the agent's hunger bar
-    	transform.Find("HungerBar").GetComponent<Slider>().value = agent.hunger;
-    	transform.Find("TicksAliveText").GetComponent<Text>().text = "Ticks alive: " + agent.ticksAlive;
-    	transform.Find("MaxNetworkWeightText").GetComponent<Text>().text = "Max network weight: " + Mathf.Round(network.maxWeight * 100f) / 100f;
+    	if(SimulationManager.selectedAgent != null) {
+	    	// Update the agent's hunger bar
+	    	transform.Find("HungerBar").GetComponent<Slider>().value = agent.hunger;
+	    	transform.Find("TicksAliveText").GetComponent<Text>().text = "Ticks alive: " + agent.ticksAlive;
+	    	transform.Find("MaxNetworkWeightText").GetComponent<Text>().text = "Max network weight: " + Mathf.Round(network.maxWeight * 100f) / 100f;
 
-        // Highlight a node if the mouse is over it
-        if(EventSystem.current.IsPointerOverGameObject()) {
-            PointerEventData pointerEventData = new PointerEventData(EventSystem.current);
-            pointerEventData.position = Input.mousePosition;
+	        // Highlight a node if the mouse is over it
+	        if(EventSystem.current.IsPointerOverGameObject()) {
+	            PointerEventData pointerEventData = new PointerEventData(EventSystem.current);
+	            pointerEventData.position = Input.mousePosition;
 
-            List<RaycastResult> raycastResultsList = new List<RaycastResult>();
-            EventSystem.current.RaycastAll(pointerEventData, raycastResultsList);
+	            List<RaycastResult> raycastResultsList = new List<RaycastResult>();
+	            EventSystem.current.RaycastAll(pointerEventData, raycastResultsList);
 
-            bool highlighted = false;
-            for(int i = 0; i < raycastResultsList.Count; i++) {
-                if(raycastResultsList[i].gameObject.name == "NetworkNode(Clone)(Clone)") {
-                    highlightNode(raycastResultsList[i].gameObject);
-                    highlighted = true;
-                }
-            }
-            if(isHighlight && !highlighted)
-                unhighlight();
-        } else if(isHighlight) {
-            unhighlight();
-        }
+	            bool highlighted = false;
+	            for(int i = 0; i < raycastResultsList.Count; i++) {
+	                if(raycastResultsList[i].gameObject.name == "NetworkNode(Clone)(Clone)") {
+	                    highlightNode(raycastResultsList[i].gameObject);
+	                    highlighted = true;
+	                }
+	            }
+	            if(isHighlight && !highlighted)
+	                unhighlight();
+	        } else if(isHighlight) {
+	            unhighlight();
+	        }
+	    }
     }
 
     public void toggleNNFlow(bool b) {
@@ -156,8 +158,8 @@ public class AgentPanelController : MonoBehaviour {
         for(int l = 0; l < network.layers.Length; l++) {
             for(int n = 0; n < network.layers[l].nodes.Length; n++) {
                 Node curNode = network.layers[l].nodes[n];
-                if(curNode.nodeObject == node)/////////////////////////////
-    				Debug.Log(curNode.layerNum + ", " + curNode.nodeNum);///////////////
+        //         if(curNode.nodeObject == node)
+    				// Debug.Log(curNode.layerNum + ", " + curNode.nodeNum);
                 for(int c = 0; c < curNode.nodes.Length; c++) {
                     if(curNode.nodeObject == node || curNode.nodes[c].nodeObject == node)
                         curNode.connectionObjects[c].SetActive(true);

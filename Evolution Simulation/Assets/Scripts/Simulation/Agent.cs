@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Agent {
     public GameObject agentObj;
+    public GameObject plumbob;
     public MeshRenderer MR;
     public Chunk chunk;
     public NeuralNetwork network;
@@ -15,11 +16,13 @@ public class Agent {
 
     public Agent(GameObject agentObj, Chunk chunk) {
         this.agentObj = agentObj;
+        this.plumbob = agentObj.transform.GetChild(2).gameObject;
+        this.plumbob.SetActive(false);
         this.MR = agentObj.transform.GetChild(0).gameObject.GetComponent<MeshRenderer>();
         this.chunk = chunk;
         moveObj();
 
-        this.network = new NeuralNetwork(new int[] {12, 10, 5});
+        this.network = new NeuralNetwork(new int[] {12, 5});
         this.generation = 1;
         this.ticksAlive = 0;
         this.colour = Random.Range(0f, 1f);
@@ -33,6 +36,8 @@ public class Agent {
 
     public Agent(Chunk chunk, NeuralNetwork n, int generation, float colour) {
         this.agentObj = (GameObject)Transform.Instantiate(Resources.Load("Simulation/Agent"), GridController.GC.transform);
+        this.plumbob = agentObj.transform.GetChild(2).gameObject;
+        this.plumbob.SetActive(false);
         this.MR = agentObj.transform.GetChild(0).gameObject.GetComponent<MeshRenderer>();
         this.chunk = chunk;
         moveObj();
@@ -89,7 +94,7 @@ public class Agent {
     public void act(bool isMenu) {
         if(!isMenu) {
         	// Loose hunger
-        	this.hunger -= GridController.GC.hungerLoss;
+        	this.hunger -= GridController.GC.hungerLoss + this.network.nodeCount * 0.00001f;
         	if(chunk.isWater()) {
         		network.mutateValue(0.2f);
         		changeColour(0.2f);
@@ -186,9 +191,9 @@ public class Agent {
     }
 
     public void changeColour(float amount) {
-    	colour = (colour + Random.Range(-amount/3f, amount/3f) + 1000000f) % 1f;
-    	if(SimulationManager.selectedAgent != this)
-    		MR.material.color = Color.HSVToRGB(colour, 1f, 1f);
+    	// colour = (colour + Random.Range(-amount/3f, amount/3f) + 1000000f) % 1f;
+    	colour = (this.network.countWeights()/50f + 1000000f) % 1f;
+		MR.material.color = Color.HSVToRGB(colour, 1f, 1f);
     }
 
     Chunk getNewChunk() {
