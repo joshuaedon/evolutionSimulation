@@ -6,7 +6,7 @@ using UnityEngine;
 public class NeuralNetwork {
     public float mutateAmount;
     float weightDecay = 0.999f;
-    float mutateStrucProb = 0.005f;
+    float mutateStrucProb = 0.01f;
     public Layer[] layers;
     public float maxWeight;
     public int nodeCount;
@@ -232,7 +232,7 @@ public class NeuralNetwork {
     		// For each node (appart from the bias node) in each layer
             for (int curN = 0; curN < layers[curL].nodes.Length - 1; curN++) {
             	// Set probability to add a layer over remove to 0.5 for the layer behind the current
-            	float probAdd = 0.5f;
+            	float probAdd = 2f/3f;
             	// For each node in each layer before the current
             	for(int prevL = curL-1; prevL >= 0; prevL--) {
 					for(int prevN = 0; prevN < layers[prevL].nodes.Length; prevN++) {
@@ -241,7 +241,7 @@ public class NeuralNetwork {
 							layers[curL].nodes[curN].modifyConnection(layers[prevL].nodes[prevN], Random.Range(0f, 1f) < probAdd);
 					}
 					// Divide the probability to add by 2 for each layer back
-					probAdd /= 2f;
+					probAdd *= 0.75f;
 				}
 			}
 		}

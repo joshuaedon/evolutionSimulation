@@ -6,9 +6,9 @@ using UnityEngine.UI.Extensions;
 using UnityEngine.EventSystems;
 
 public class AgentPanelController : MonoBehaviour {
-	string[] inputLabels = {"Random", "Hunger", "Food Below", "Water Below", "Food Front", "Water Front", "Agent Front", "Stepped forward", "Turned left", "Turned right", "Ate", "Reproduced"};
-	int[] inputColours = {0, 0, 1, 2, 1, 2, 0, 0, 0, 0, 0, 0};
-    string[] outputLabels = {"Forwards", "Left", "Right", "Eat", "Reproduce"};
+	string[] inputLabels = {"Random", "Hunger", "Food Below", "Water Below", "Food Front", "Water Front", "Agent Front", "Stepped forward", "Turned left", "Turned right", "Ate", "Reproduced", "Attacked"};
+	int[] inputColours = {0, 0, 1, 2, 1, 2, 0, 0, 0, 0, 0, 0, 0};
+    string[] outputLabels = {"Forwards", "Left", "Right", "Eat", "Reproduce", "Attack"};
     bool isHighlight;
 	Agent agent;
     NeuralNetwork network;
@@ -111,6 +111,7 @@ public class AgentPanelController : MonoBehaviour {
     	if(SimulationManager.selectedAgent != null) {
 	    	// Update the agent's hunger bar
 	    	transform.Find("HungerBar").GetComponent<Slider>().value = agent.hunger;
+	    	transform.Find("HealthBar").GetComponent<Slider>().value = agent.health;
 	    	transform.Find("TicksAliveText").GetComponent<Text>().text = "Ticks alive: " + agent.ticksAlive;
 	    	transform.Find("MaxNetworkWeightText").GetComponent<Text>().text = "Max network weight: " + Mathf.Round(network.maxWeight * 100f) / 100f;
 

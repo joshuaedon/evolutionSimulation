@@ -63,7 +63,7 @@ public class GridController : MonoBehaviour {
         grassSpawnAmount = 45f;
         grassSpawnRate = 20;
         eatSpeed = 1f;
-        hungerLoss = 0.003f;
+        hungerLoss = 0.004f;
         underwaterFoodSpawn = false;
 
         gridArray = new Chunk[0, 0];
@@ -105,11 +105,12 @@ public class GridController : MonoBehaviour {
         // Step bots
         for(int i = agents.Count - 1; i >= 0; i--) {
             agents[i].act(isMenu);
-            if(agents[i].hunger <= 0) {
+            if(agents[i].hunger <= 0 || agents[i].health <= 0) {
                 if(SimulationManager.selectedAgent == agents[i])
                     SimulationManager.selectedAgent = null;
+                Destroy(agents[i].agentObj.transform.GetChild(0).gameObject.GetComponent<MeshRenderer>().material);
+                Destroy(agents[i].agentObj.transform.GetChild(1).gameObject.GetComponent<MeshRenderer>().material);
                 Destroy(agents[i].agentObj);
-                Destroy(agents[i].MR.material);
                 agents[i].chunk.agent = null;
                 agents.RemoveAt(i);
             }
@@ -151,8 +152,9 @@ public class GridController : MonoBehaviour {
         	if(agents[i].chunk.xPos >= cols || agents[i].chunk.zPos >= rows) {
         		if(SimulationManager.selectedAgent == agents[i])
                     SimulationManager.selectedAgent = null;
+	            Destroy(agents[i].agentObj.transform.GetChild(0).gameObject.GetComponent<MeshRenderer>().material);
+	            Destroy(agents[i].agentObj.transform.GetChild(1).gameObject.GetComponent<MeshRenderer>().material);
                 Destroy(agents[i].agentObj);
-                Destroy(agents[i].MR.material);
                 agents[i].chunk.agent = null;
                 agents.RemoveAt(i);
         	}

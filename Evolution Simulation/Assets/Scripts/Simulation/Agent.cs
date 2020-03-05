@@ -5,7 +5,6 @@ using UnityEngine;
 public class Agent {
     public GameObject agentObj;
     public GameObject plumbob;
-    public MeshRenderer MR;
     public Chunk chunk;
     public NeuralNetwork network;
     public int generation;
@@ -13,16 +12,16 @@ public class Agent {
     public float colour;
     int dir;
     public float hunger;
+    public float health;
 
     public Agent(GameObject agentObj, Chunk chunk) {
         this.agentObj = agentObj;
         this.plumbob = agentObj.transform.GetChild(2).gameObject;
         this.plumbob.SetActive(false);
-        this.MR = agentObj.transform.GetChild(0).gameObject.GetComponent<MeshRenderer>();
         this.chunk = chunk;
         moveObj();
 
-        this.network = new NeuralNetwork(new int[] {12, 5});
+        this.network = new NeuralNetwork(new int[] {13, 6});
         this.generation = 1;
         this.ticksAlive = 0;
         this.colour = Random.Range(0f, 1f);
@@ -32,13 +31,13 @@ public class Agent {
         // Rotate the agent's object to the correct direction
     	agentObj.transform.Rotate(0f, 90f - dir * 90f, 0f, Space.Self);
         this.hunger = 1;
+        this.health = 1;
     }
 
     public Agent(Chunk chunk, NeuralNetwork n, int generation, float colour) {
         this.agentObj = (GameObject)Transform.Instantiate(Resources.Load("Simulation/Agent"), GridController.GC.transform);
         this.plumbob = agentObj.transform.GetChild(2).gameObject;
         this.plumbob.SetActive(false);
-        this.MR = agentObj.transform.GetChild(0).gameObject.GetComponent<MeshRenderer>();
         this.chunk = chunk;
         moveObj();
 
@@ -52,6 +51,7 @@ public class Agent {
         // Rotate the agent's object to the correct direction
     	agentObj.transform.Rotate(0f, 90f - dir * 90f, 0f, Space.Self);
         this.hunger = 1;
+        this.health = 1;
     }
 
     public void moveObj() {
@@ -59,7 +59,7 @@ public class Agent {
     }
 
     public void loadInputs() {
-        float[] inputs = new float[12];
+        float[] inputs = new float[13];
         inputs[0] = Random.Range(0f, 1f);
         inputs[1] = this.hunger;
         inputs[2] = this.chunk.food;
@@ -73,34 +73,37 @@ public class Agent {
     }
 
     int highestOutput() {
-    	float forwardsOut = network.returnOutput(0);
-        float leftOut = network.returnOutput(1);
-        float rightOut = network.returnOutput(2);
-        float eatOut = network.returnOutput(3);
+    	float forwardsOut  = network.returnOutput(0);
+        float leftOut      = network.returnOutput(1);
+        float rightOut     = network.returnOutput(2);
+        float eatOut       = network.returnOutput(3);
         float reproduceOut = network.returnOutput(4);
-    	if(forwardsOut > Mathf.Max(Mathf.Max(Mathf.Max(leftOut, rightOut), eatOut), reproduceOut))
+        float attackOut    = network.returnOutput(5);
+    	if(forwardsOut > Mathf.Max(Mathf.Max(Mathf.Max(Mathf.Max(leftOut, rightOut), eatOut), reproduceOut), attackOut))
 	        return 0;
-	    else if(leftOut > Mathf.Max(Mathf.Max(rightOut, eatOut), reproduceOut))
+	    else if(leftOut > Mathf.Max(Mathf.Max(Mathf.Max(rightOut, eatOut), reproduceOut), attackOut))
 	        return 1;
-	    else if(rightOut > Mathf.Max(eatOut, reproduceOut))
+	    else if(rightOut > Mathf.Max(Mathf.Max(eatOut, reproduceOut), attackOut))
 	        return 2;
-	    else if(eatOut > reproduceOut)
+	    else if(eatOut > Mathf.Max(reproduceOut, attackOut))
 	    	return 3;
-	    else if(hunger > 0 && reproduceOut > 0)
+	    else if(reproduceOut > attackOut && hunger > 0 && !chunk.isWater())
 	    	return 4;
-	    return -5;
+	    else
+	    	return 5;
     }
 
     public void act(bool isMenu) {
         if(!isMenu) {
         	// Loose hunger
-        	this.hunger -= GridController.GC.hungerLoss + this.network.nodeCount * 0.00001f;
+        	this.hunger -= GridController.GC.hungerLoss + this.network.nodeCount * 0.0000005f;
         	if(chunk.isWater()) {
         		network.mutateValue(0.2f);
         		changeColour(0.2f);
-        		hunger -= 0.1f;
+        		health -= 0.1f;
         	}
 
+        	agentObj.transform.GetChild(1).gameObject.GetComponent<MeshRenderer>().material.color = Color.white;
         	// Move forward, turn left, right or eat depending on the agents NN outputs
       		int output = highestOutput();
       		switch(output) {
@@ -118,6 +121,9 @@ public class Agent {
       				break;
       			case 4:
 		            reproduce();
+      				break;
+      			case 5:
+		            attack();
       				break;
       		}
 
@@ -190,10 +196,29 @@ public class Agent {
     	}
     }
 
+    void attack() {
+    	// Change colour to black
+    	agentObj.transform.GetChild(1).gameObject.GetComponent<MeshRenderer>().material.color = Color.black;
+    	// If there is an agent infront, deal random damage
+    	Chunk newChunk = getNewChunk();
+        if(newChunk != null && newChunk.agent != null) {
+            newChunk.agent.health -= Random.Range(0f, 0.5f);
+            // If killed, eat as much as can, drop the rest on the ground under the attacked agent
+            if(newChunk.agent.health <= 0) {
+            	float toAdd = newChunk.agent.hunger;
+            	newChunk.agent.hunger = 0;
+            	float add = Mathf.Min(toAdd, 1f - this.hunger);
+            	this.hunger += add;
+            	toAdd -= add;
+            	newChunk.food = Mathf.Min(1f, newChunk.food + toAdd);
+            }
+        }
+    }
+
     public void changeColour(float amount) {
     	// colour = (colour + Random.Range(-amount/3f, amount/3f) + 1000000f) % 1f;
     	colour = (this.network.countWeights()/50f + 1000000f) % 1f;
-		MR.material.color = Color.HSVToRGB(colour, 1f, 1f);
+		agentObj.transform.GetChild(0).gameObject.GetComponent<MeshRenderer>().material.color = Color.HSVToRGB(colour, 1f, 1f);
     }
 
     Chunk getNewChunk() {

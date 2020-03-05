@@ -8418,7 +8418,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: ' 0.003 food/tick'
+  m_Text: ' 0.004 food/tick'
 --- !u!222 &1192494150
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -10621,7 +10621,7 @@ MonoBehaviour:
   m_MinValue: 0.001
   m_MaxValue: 0.05
   m_WholeNumbers: 0
-  m_Value: 0.003
+  m_Value: 0.004
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:

@@ -138,8 +138,9 @@ public class SimulationManager : MonoBehaviour {
             				if(SimulationManager.selectedAgent == chunk.agent)
 		                    	SimulationManager.selectedAgent = null;
 		                    if(chunk.agent != null) {
+				                Destroy(chunk.agent.agentObj.transform.GetChild(0).gameObject.GetComponent<MeshRenderer>().material);
+				                Destroy(chunk.agent.agentObj.transform.GetChild(1).gameObject.GetComponent<MeshRenderer>().material);
 				                Destroy(chunk.agent.agentObj);
-				                Destroy(chunk.agent.MR.material);
 				                GridController.GC.agents.Remove(chunk.agent);
 				                chunk.agent = null;
 			            	}
@@ -229,8 +230,9 @@ public class SimulationManager : MonoBehaviour {
         for(int i = GridController.GC.agents.Count - 1; i >= 0; i--) {
             if(SimulationManager.selectedAgent == GridController.GC.agents[i])
                 SimulationManager.selectedAgent = null;
+            Destroy(GridController.GC.agents[i].agentObj.transform.GetChild(0).gameObject.GetComponent<MeshRenderer>().material);
+            Destroy(GridController.GC.agents[i].agentObj.transform.GetChild(1).gameObject.GetComponent<MeshRenderer>().material);
             Destroy(GridController.GC.agents[i].agentObj);
-            Destroy(GridController.GC.agents[i].MR.material);
             GridController.GC.agents[i].chunk.agent = null;
             GridController.GC.agents.RemoveAt(i);
         }
@@ -322,7 +324,7 @@ public class SimulationManager : MonoBehaviour {
         GameObject.Find("GrassSpawnAmountSlider").GetComponent<Slider>().value = 45f;
         GameObject.Find("GrassSpawnRateSlider").GetComponent<Slider>().value = 20;
         GameObject.Find("EatSpeedSlider").GetComponent<Slider>().value = 1f;
-        GameObject.Find("HungerLossSlider").GetComponent<Slider>().value = 0.003f;
+        GameObject.Find("HungerLossSlider").GetComponent<Slider>().value = 0.004f;
     }
 
     public void adjustTerrainTimeStep(float value) {
