@@ -6,8 +6,8 @@ using UnityEngine.UI.Extensions;
 using UnityEngine.EventSystems;
 
 public class AgentPanelController : MonoBehaviour {
-	string[] inputLabels = {"Random", "Hunger", "Food Below", "Water Below", "Food Front", "Water Front", "Agent Front"};
-	int[] inputColours = {0, 0, 1, 2, 1, 2, 0};
+	string[] inputLabels = {"Random", "Hunger", "Food Below", "Water Below", "Food Front", "Water Front", "Agent Front", "Stepped forward", "Turned left", "Turned right", "Ate", "Reproduced"};
+	int[] inputColours = {0, 0, 1, 2, 1, 2, 0, 0, 0, 0, 0, 0};
     string[] outputLabels = {"Forwards", "Left", "Right", "Eat", "Reproduce"};
     bool isHighlight;
 	Agent agent;
@@ -90,14 +90,14 @@ public class AgentPanelController : MonoBehaviour {
   		// Create input and output labels
   		for(int n = 0; n < inputLabels.Length; n++) {
 			GameObject labelObj = (GameObject)Instantiate(referenceInputLabel, NodesPanel.transform);
-			labelObj.transform.localPosition = new Vector2((1 - network.layers.Length) * horizontalSpacing - nodeSize/2 - 57, nodeSize * ((inputLabels.Length+1) / 2.0f - n - 0.5f));
+			labelObj.transform.localPosition = new Vector2((1 - network.layers.Length) * horizontalSpacing - nodeSize/2 - 47, nodeSize * ((inputLabels.Length+1) / 2.0f - n - 0.5f));
 			labelObj.GetComponent<Text>().text = inputLabels[n];
 			network.layers[0].nodes[n].colour = inputColours[n];
 			network.layers[0].nodes[n].display();
 		}
 		for(int n = 0; n < outputLabels.Length; n++) {
 			GameObject labelObj = (GameObject)Instantiate(referenceOutputLabel, NodesPanel.transform);
-			labelObj.transform.localPosition = new Vector2((2.0f * (network.layers.Length-1) + 1 - network.layers.Length) * horizontalSpacing + nodeSize/2 + 57, nodeSize * ((outputLabels.Length+1) / 2.0f - n - 0.5f));
+			labelObj.transform.localPosition = new Vector2((2.0f * (network.layers.Length-1) + 1 - network.layers.Length) * horizontalSpacing + nodeSize/2 + 47, nodeSize * ((outputLabels.Length+1) / 2.0f - n - 0.5f));
 			labelObj.GetComponent<Text>().text = outputLabels[n];
 		}
   		Destroy(referenceNode);
@@ -110,6 +110,7 @@ public class AgentPanelController : MonoBehaviour {
     void Update() {
     	// Update the agent's hunger bar
     	transform.Find("HungerBar").GetComponent<Slider>().value = agent.hunger;
+    	transform.Find("TicksAliveText").GetComponent<Text>().text = "Ticks alive: " + agent.ticksAlive;
     	transform.Find("MaxNetworkWeightText").GetComponent<Text>().text = "Max network weight: " + Mathf.Round(network.maxWeight * 100f) / 100f;
 
         // Highlight a node if the mouse is over it
@@ -155,6 +156,8 @@ public class AgentPanelController : MonoBehaviour {
         for(int l = 0; l < network.layers.Length; l++) {
             for(int n = 0; n < network.layers[l].nodes.Length; n++) {
                 Node curNode = network.layers[l].nodes[n];
+                if(curNode.nodeObject == node)/////////////////////////////
+    				Debug.Log(curNode.layerNum + ", " + curNode.nodeNum);///////////////
                 for(int c = 0; c < curNode.nodes.Length; c++) {
                     if(curNode.nodeObject == node || curNode.nodes[c].nodeObject == node)
                         curNode.connectionObjects[c].SetActive(true);

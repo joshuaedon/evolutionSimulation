@@ -8,6 +8,7 @@ public class Agent {
     public Chunk chunk;
     public NeuralNetwork network;
     public int generation;
+    public int ticksAlive;
     public float colour;
     int dir;
     public float hunger;
@@ -18,8 +19,9 @@ public class Agent {
         this.chunk = chunk;
         moveObj();
 
-        this.network = new NeuralNetwork(new int[] {7, 10, 5});
+        this.network = new NeuralNetwork(new int[] {12, 10, 5});
         this.generation = 1;
+        this.ticksAlive = 0;
         this.colour = Random.Range(0f, 1f);
         changeColour(0f);
 
@@ -37,6 +39,7 @@ public class Agent {
 
         this.network = new NeuralNetwork(n);
         this.generation = generation;
+        this.ticksAlive = 0;
         this.colour = colour;
 		changeColour(this.network.mutate());
 
@@ -51,7 +54,7 @@ public class Agent {
     }
 
     public void loadInputs() {
-        float[] inputs = new float[7];
+        float[] inputs = new float[12];
         inputs[0] = Random.Range(0f, 1f);
         inputs[1] = this.hunger;
         inputs[2] = this.chunk.food;
@@ -60,7 +63,27 @@ public class Agent {
         inputs[4] = (newChunk != null) ? newChunk.food : 0f;
         inputs[5] = (newChunk == null || newChunk.isWater()) ? 1 : 0;
         inputs[6] = (newChunk == null || newChunk.agent == null) ? 0 : 1;
+        inputs[7 + highestOutput()] = 1f;
         network.loadInputs(inputs);
+    }
+
+    int highestOutput() {
+    	float forwardsOut = network.returnOutput(0);
+        float leftOut = network.returnOutput(1);
+        float rightOut = network.returnOutput(2);
+        float eatOut = network.returnOutput(3);
+        float reproduceOut = network.returnOutput(4);
+    	if(forwardsOut > Mathf.Max(Mathf.Max(Mathf.Max(leftOut, rightOut), eatOut), reproduceOut))
+	        return 0;
+	    else if(leftOut > Mathf.Max(Mathf.Max(rightOut, eatOut), reproduceOut))
+	        return 1;
+	    else if(rightOut > Mathf.Max(eatOut, reproduceOut))
+	        return 2;
+	    else if(eatOut > reproduceOut)
+	    	return 3;
+	    else if(hunger > 0 && reproduceOut > 0)
+	    	return 4;
+	    return -5;
     }
 
     public void act(bool isMenu) {
@@ -74,21 +97,24 @@ public class Agent {
         	}
 
         	// Move forward, turn left, right or eat depending on the agents NN outputs
-            float forwardsOut = network.returnOutput(0);
-            float leftOut = network.returnOutput(1);
-            float rightOut = network.returnOutput(2);
-            float eatOut = network.returnOutput(3);
-            float reproduceOut = network.returnOutput(4);
-            if(forwardsOut > Mathf.Max(Mathf.Max(Mathf.Max(leftOut, rightOut), eatOut), reproduceOut))
-                stepForward(isMenu);
-            else if(leftOut > Mathf.Max(Mathf.Max(rightOut, eatOut), reproduceOut))
-                turnLeft();
-            else if(rightOut > Mathf.Max(eatOut, reproduceOut))
-                turnRight();
-            else if(eatOut > reproduceOut)
-            	eat();
-            else if(hunger > 0 && reproduceOut > 0)
-            	reproduce();
+      		int output = highestOutput();
+      		switch(output) {
+      			case 0:
+                	stepForward(isMenu);
+      				break;
+      			case 1:
+                	turnLeft();
+      				break;
+      			case 2:
+                	turnRight();
+      				break;
+      			case 3:
+            		eat();
+      				break;
+      			case 4:
+		            reproduce();
+      				break;
+      		}
 
             loadInputs();
         	if(this == SimulationManager.selectedAgent) {
@@ -97,6 +123,8 @@ public class Agent {
     			} else if(SimulationManager.NNFlow)
         			network.setConnectionColours();
         	}
+
+        	ticksAlive++;
         } else {
         	// If the agent is in the menu screen, randomely move forward, turn left or right
             float rand = Random.Range(0f, 1f);

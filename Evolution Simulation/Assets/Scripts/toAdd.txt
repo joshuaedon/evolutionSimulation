@@ -1,20 +1,15 @@
 DONE
-
+Added ticks alive counter, connections can be made across multiple layers with decreasing probability (prob also decreased for all), a layer can be added at a random position when an agent mutates and a node can be added in each layer (chance = 0.99*chance to remove a layer/node), output layer uses sigmoid activation function
 
 
 - Food
-	- Spawn type
-		- Grass spread
-		- Drop from agents
-			- Constant value
-			- Percentage of health
+	- Drop from agents
+		- Constant value
+		- Percentage of health
 	- Health
 		- Agent attack
 - Agent senses
 - God features
-	- Vertex objects must be deleted when !showVertices
-	- Raise/lower land
-	- Add/remove food
 	- Save, Copy, move, delete agents
 - Graphs
 	- Max Population Text
@@ -22,12 +17,9 @@ DONE
 - To try tab/notifications
 	- Mass extinction is a big factor in evolution
 - Neural Networks
-	- Change so weights go across multiple layers
 	- Propagation animation
-	- Mutate weights tend to 0
 - Settings
 	- Water damage/mutate
-- Setup menu
 - Fix thrashing
 - Particles
 
@@ -39,9 +31,4 @@ BUGS
 
 
 
-
-
-
-- How hard is the machine learning cw?
-- Are they expecting us to have finished out projects completely by the presentation?
 

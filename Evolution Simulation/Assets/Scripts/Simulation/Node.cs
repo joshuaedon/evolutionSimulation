@@ -20,6 +20,7 @@ public class Node {
         for (int i = 0; i < weights.Length; i++)
             weights[i] = Random.Range(-1f, 1f);
         this.connectionObjects = new GameObject[prevNodes.Length];
+
         this.layerNum = layerNum;
         this.nodeNum = nodeNum;
         this.colour = 0;
@@ -27,23 +28,34 @@ public class Node {
 
     // Used when copying a network
     public Node(int layerNum, int nodeNum) {
+    	this.nodes = new Node[0];
+        this.weights = new float[0];
+        this.connectionObjects = new GameObject[0];
+
         this.layerNum = layerNum;
         this.nodeNum = nodeNum;
         this.colour = 0;
     }
 
-    public void calculateValue() {
+    public void calculateValueReLU() {
         float sum = 0;
         for (int n = 0; n < nodes.Length; n++)
             sum += nodes[n].value*weights[n];
         // ACTIVATION FUNCTION
-        // sum = 1/(1 + Mathf.Exp(-sum));
         sum = Mathf.Max(sum, 0);
         this.value = sum;
     }
 
-    public void modifyConnection(Node node) {
-    	bool addConnection = Random.Range(0f, 1f) < 0.5f;
+    public void calculateValueSigmoid() {
+        float sum = 0;
+        for (int n = 0; n < nodes.Length; n++)
+            sum += nodes[n].value*weights[n];
+        // ACTIVATION FUNCTION
+        sum = 1/(1 + Mathf.Exp(-sum));
+        this.value = sum;
+    }
+
+    public void modifyConnection(Node node, bool addConnection) {
     	int connectionIndex = -1;
     	for(int n = 0; n < this.nodes.Length; n++) {
     		if(this.nodes[n].nodeNum == node.nodeNum) {
