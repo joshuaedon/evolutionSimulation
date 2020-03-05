@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI.Extensions;
 using UnityEngine;
@@ -144,30 +145,39 @@ public class NeuralNetwork {
 
     void mutateStructure() {
     	// Add layer
-		if(Random.Range(0f, 1f) < mutateStrucProb * 0.99f) {
-			int l = Random.Range(1, layers.Length);
-			// Add new layer at index l
+		if(Random.Range(0f, 1f) < mutateStrucProb * 0.9f) {
+			int curL = Random.Range(1, layers.Length);
+			// Add new layer at index curL
 			List<Layer> layerList = new List<Layer>(this.layers);
-			layerList.Insert(l, new Layer());
+			layerList.Insert(curL, new Layer());
 			this.layers = layerList.ToArray();
 			// Update all the stored layer numbers
-			updateLayerNumbers(l);
+			updateLayerNumbers(curL);
 		}
 
-		// // Remove layers
-		// if(Random.Range(0f, 1f) < mutateStrucProb && this.layers.Length > 2) {
-		// 	int l = Random.Range(1, layers.Length-1);
-		// 	// Add new layer at index l
-		// 	List<Layer> layerList = new List<Layer>(this.layers);
-		// 	layerList.Insert(l, new Layer());
-		// 	this.layers = layerList.ToArray();
-		// 	// Update all the stored layer numbers
-		// 	updateLayerNumbers(l);
-		// }
+		// Remove layer
+		if(Random.Range(0f, 1f) < mutateStrucProb && this.layers.Length > 2) {
+			int curL = Random.Range(1, layers.Length-1);
+
+			foreach(Node curN in this.layers[curL].nodes) {
+				// Combine the nodes connections with any nodes ahead in the network which have a connection to the node
+				for (int l = curL+1; l < layers.Length; l++) {
+            		for (int n = 0; n < layers[l].nodes.Length - 1; n++)
+            			layers[l].nodes[n].combineConnections(curN);
+            	}
+            }
+
+			// Remove the layer at index curL
+			List<Layer> layerList = new List<Layer>(this.layers);
+			layerList.RemoveAt(curL);
+			this.layers = layerList.ToArray();
+			// Update all the stored layer numbers
+			updateLayerNumbers(curL);
+		}
 
 		// Add nodes
 		for (int curL = 1; curL < layers.Length-1; curL++) {
-			if(Random.Range(0f, 1f) < 0.1){//mutateStrucProb * 0.99f) {
+			if(Random.Range(0f, 1f) < mutateStrucProb * 0.9f) {
 				// Add node at the top of layer
 				List<Node> nodeList = new List<Node>(this.layers[curL].nodes);
 				nodeList.Insert(0, new Node(curL, 0));
@@ -177,10 +187,29 @@ public class NeuralNetwork {
 			}
 		}
 
+		// Remove nodes
+		for (int curL = 1; curL < layers.Length-1; curL++) {
+			if(Random.Range(0f, 1f) < mutateStrucProb && this.layers[curL].nodes.Length > 1) {
+				int curN = Random.Range(0, this.layers[curL].nodes.Length-1);
+				List<Node> nodeList = new List<Node>(this.layers[curL].nodes);
 
-		//// Add/remove connections
-    	// For each node (appart from the bias node) in each layer
+				// Combine the nodes connections with any nodes ahead in the network which have a connection to the node
+				for (int l = curL+1; l < layers.Length; l++) {
+            		for (int n = 0; n < layers[l].nodes.Length - 1; n++)
+            			layers[l].nodes[n].combineConnections(nodeList[curN]);
+            	}
+
+				// Remove the node
+				nodeList.RemoveAt(curN);
+				this.layers[curL].nodes = nodeList.ToArray();
+				// Update node numbers
+				updateNodeNumbers(curL);
+			}
+		}
+
+		// Add/remove connections
     	for (int curL = 1; curL < layers.Length; curL++) {
+    		// For each node (appart from the bias node) in each layer
             for (int curN = 0; curN < layers[curL].nodes.Length - 1; curN++) {
             	// Set probability to add a layer over remove to 0.5 for the layer behind the current
             	float probAdd = 0.5f * 0.99f;

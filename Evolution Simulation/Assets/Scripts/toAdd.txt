@@ -1,5 +1,5 @@
 DONE
-Added ticks alive counter, connections can be made across multiple layers with decreasing probability (prob also decreased for all), a layer can be added at a random position when an agent mutates and a node can be added in each layer (chance = 0.99*chance to remove a layer/node), output layer uses sigmoid activation function
+Camera positioned a bit to the right of an agent when following, 
 
 
 - Food

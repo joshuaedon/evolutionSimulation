@@ -20,7 +20,9 @@ public class CameraController : MonoBehaviour {
     	if(follow && SimulationManager.selectedAgent != null) {
     		// Locks the camera's position to focus on the selected agent
         	float dist = 2 * pos.y * Mathf.Tan(Mathf.PI / 6.0f);
-        	Vector3 agentPos = SimulationManager.selectedAgent.agentObj.transform.position;
+        	Vector3 forward = new Vector3(transform.forward.x, 0, transform.forward.z);
+        	// forward.RotateAround(Vector3.zero, Vector3.up, 90);
+        	Vector3 agentPos = SimulationManager.selectedAgent.agentObj.transform.position + Quaternion.AngleAxis(90, Vector3.up)*forward*10;
     		pos = new Vector3(agentPos.x - camDir.x * dist, pos.y, agentPos.z - camDir.z * dist);
     		transform.position = pos;
     	} else {

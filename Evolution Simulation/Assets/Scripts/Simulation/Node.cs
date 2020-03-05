@@ -58,7 +58,7 @@ public class Node {
     public void modifyConnection(Node node, bool addConnection) {
     	int connectionIndex = -1;
     	for(int n = 0; n < this.nodes.Length; n++) {
-    		if(this.nodes[n].nodeNum == node.nodeNum) {
+    		if(this.nodes[n] == node) {
     			connectionIndex = n;
     			break;
     		}
@@ -85,10 +85,57 @@ public class Node {
     		weightsList.RemoveAt(connectionIndex);
     		this.weights = weightsList.ToArray();
 
-	        List<GameObject> connectionObjectsList = new List<GameObject>(this.connectionObjects);
-	        GameObject.Destroy(connectionObjectsList[connectionIndex]);
-    		connectionObjectsList.RemoveAt(connectionIndex);
-    		this.connectionObjects = connectionObjectsList.ToArray();
+	        this.connectionObjects = new GameObject[this.connectionObjects.Length - 1];
+    	}
+    }
+
+    public void combineConnections(Node otherNode) {
+    	int connectionIndex = -1;
+    	for(int n = 0; n < this.nodes.Length; n++) {
+    		if(this.nodes[n] == otherNode) {
+    			connectionIndex = n;
+    			break;
+    		}
+    	}
+    	// If this node has a connecton to the node, combine the connections
+    	if(connectionIndex > -1) {
+    		// For each of the other node's connections
+    		for(int otherNodeN = 0; otherNodeN < otherNode.nodes.Length; otherNodeN++) {
+    			// Check wheter this node already has a connection to it
+    			int connectionIndex2 = -1;
+		    	for(int n = 0; n < this.nodes.Length; n++) {
+		    		if(this.nodes[n] == otherNode.nodes[otherNodeN]) {
+		    			connectionIndex2 = n;
+		    			break;
+		    		}
+		    	}
+		    	if(connectionIndex2 > -1) {
+		    		// If this node already has a connection to it, sum that weight with the new weight
+		    		this.weights[connectionIndex2] = this.weights[connectionIndex2] + otherNode.weights[otherNodeN] * this.weights[connectionIndex];
+		    	} else {
+		    		// If it does not, add the new connection
+		    		List<Node> nodesList2 = new List<Node>(this.nodes);
+		    		nodesList2.Add(otherNode.nodes[otherNodeN]);
+		    		this.nodes = nodesList2.ToArray();
+
+		    		List<float> weightsList2 = new List<float>(this.weights);
+		    		weightsList2.Add(otherNode.weights[otherNodeN] * this.weights[connectionIndex]);
+		    		this.weights = weightsList2.ToArray();
+
+			        this.connectionObjects = new GameObject[this.connectionObjects.Length + 1];
+		    	}
+    		}
+
+    		// Delete the connection to the other node
+    		List<Node> nodesList = new List<Node>(this.nodes);
+    		nodesList.RemoveAt(connectionIndex);
+    		this.nodes = nodesList.ToArray();
+
+    		List<float> weightsList = new List<float>(this.weights);
+    		weightsList.RemoveAt(connectionIndex);
+    		this.weights = weightsList.ToArray();
+
+    		this.connectionObjects = new GameObject[this.connectionObjects.Length - 1];
     	}
     }
 
