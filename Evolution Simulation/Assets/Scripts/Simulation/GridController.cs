@@ -62,7 +62,7 @@ public class GridController : MonoBehaviour {
         // Food
         grassSpawnAmount = 45f;
         grassSpawnRate = 20;
-        eatSpeed = 1f;
+        eatSpeed = 0.5f;
         hungerLoss = 0.004f;
         underwaterFoodSpawn = false;
 

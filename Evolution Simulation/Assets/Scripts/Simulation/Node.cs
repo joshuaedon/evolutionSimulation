@@ -147,8 +147,10 @@ public class Node {
             	nodeObject.GetComponent<Image>().color = new Color(c, c, c);
             else if(colour == 1)
             	nodeObject.GetComponent<Image>().color = new Color(0.263f, c, 0.094f);
-            else
+            else if(colour == 2)
             	nodeObject.GetComponent<Image>().color = new Color(0, 0.157f, c);
+            else
+            	nodeObject.GetComponent<Image>().color = new Color(c, 0.25f, 0.25f);
             nodeObject.transform.GetChild(0).GetComponent<Text>().text = value.ToString("n1");
         }
     }

@@ -8,16 +8,11 @@ using System.Linq;
 
 public class AgentPanelController : MonoBehaviour {
 	string[] inputLabels = {"Random", "Hunger",
-							"Food Below", "Water Below",
-							"Food Front", "Water Front", "Agent Front",
-							/*"Food Right", "Water Right", "Agent Right",
-							"Food Left", "Water Left", "Agent Left",*/
-							"Stepped forward", "Turned left", "Turned right", "Ate", "Reproduced", "Attacked"
-						   };
-	int[] inputColours = {0, 0, 1, 2, 1, 2, 0, /*1, 2, 0, 1, 2, 0,*/ 0, 0, 0, 0, 0, 0};
+							"Stepped forward", "Turned left", "Turned right", "Ate", "Reproduced", "Attacked",
+							"", "", "", "", "", "", "", "", ""};
+	string[] sensePositionLabels = {"Front Left", "Front", "Front Right", "Left", "Below", "Right", "Back Left", "Back", "Back Right"};
+	string[] senseThingLabels = {"Food", "Water", "Agent"};
     string[] outputLabels = {"Forwards", "Left", "Right", "Eat", "Reproduce", "Attack"};
-    // bool showSenses = false;
-    // List<Chunk> senseChunks;
     bool isHighlight;
 	Agent agent;
     NeuralNetwork network;
@@ -59,7 +54,7 @@ public class AgentPanelController : MonoBehaviour {
 			float width = transform.GetComponentInParent<Canvas>().GetComponent<RectTransform>().sizeDelta.x
 						+ transform.GetComponent<RectTransform>().sizeDelta.x
 						+ NodesPanel.GetComponent<RectTransform>().sizeDelta.x
-						- 20;
+						- 50;
 			float height = transform.GetComponentInParent<Canvas>().GetComponent<RectTransform>().sizeDelta.y
 						 + transform.GetComponent<RectTransform>().sizeDelta.y
 						 + NodesPanel.GetComponent<RectTransform>().sizeDelta.y
@@ -101,8 +96,12 @@ public class AgentPanelController : MonoBehaviour {
   		for(int n = 0; n < inputLabels.Length; n++) {
 			GameObject labelObj = (GameObject)Instantiate(referenceInputLabel, NodesPanel.transform);
 			labelObj.transform.localPosition = new Vector2((1 - network.layers.Length) * horizontalSpacing - nodeSize/2 - 47, nodeSize * ((inputLabels.Length+1) / 2.0f - n - 0.5f));
-			labelObj.GetComponent<Text>().text = inputLabels[n];
-			network.layers[0].nodes[n].colour = inputColours[n];
+			if(n <= 7)
+				labelObj.GetComponent<Text>().text = inputLabels[n];
+			else {
+				labelObj.GetComponent<Text>().text = senseThingLabels[agent.senseThings[n-8]] + " " + sensePositionLabels[agent.sensePositions[n-8]];
+				network.layers[0].nodes[n].colour = agent.senseThings[n-8]+1;
+			}
 			network.layers[0].nodes[n].display();
 		}
 		for(int n = 0; n < outputLabels.Length; n++) {
@@ -119,22 +118,6 @@ public class AgentPanelController : MonoBehaviour {
 
     void Update() {
     	if(SimulationManager.selectedAgent != null) {
-        	/*// Display sense vertices
-    		if(showSenses) {
-	            GameObject referenceVertex = (GameObject)Instantiate(Resources.Load("Simulation/Vertex"));
-				List<Chunk> newSenseChunks = agent.getChunks(1).Union<Chunk>(agent.getChunks(-1)).ToList<Chunk>();
-	            foreach(Chunk c in senseChunks.Except<Chunk>(newSenseChunks).ToList<Chunk>()) 
-					Destroy(c.vertexObj);
-				senseChunks = newSenseChunks;
-	            foreach(Chunk c in senseChunks) {
-                    if(c.vertexObj == null) {
-                        c.vertexObj = (GameObject)Instantiate(referenceVertex, transform);
-                        c.setVertexPos(GridController.GC.yScale);
-                    }
-	            }
-	            Destroy(referenceVertex);
-        	}*/
-
 	    	// Update the agent's hunger bar
 	    	transform.Find("HungerBar").GetComponent<Slider>().value = agent.hunger;
 	    	transform.Find("HealthBar").GetComponent<Slider>().value = agent.health;
@@ -161,17 +144,11 @@ public class AgentPanelController : MonoBehaviour {
 	        } else if(isHighlight) {
 	            unhighlight();
 	        }
+	    } else {
+	    	transform.Find("HungerBar").GetComponent<Slider>().value = 0;
+	    	transform.Find("HealthBar").GetComponent<Slider>().value = 0;
 	    }
     }
-
-    /*public void toggleShowSenses(bool b) {
-    	showSenses = b;
-    	if(!b) {
-    		foreach(Chunk c in senseChunks) 
-				Destroy(c.vertexObj);
-			senseChunks.Clear();
-    	}
-    }*/
 
     public void toggleNNFlow(bool b) {
     	SimulationManager.NNFlow = b;
@@ -194,8 +171,8 @@ public class AgentPanelController : MonoBehaviour {
         for(int l = 0; l < network.layers.Length; l++) {
             for(int n = 0; n < network.layers[l].nodes.Length; n++) {
                 Node curNode = network.layers[l].nodes[n];
-        //         if(curNode.nodeObject == node)
-    				// Debug.Log(curNode.layerNum + ", " + curNode.nodeNum);
+                // if(curNode.nodeObject == node)
+    			// 	Debug.Log(curNode.layerNum + ", " + curNode.nodeNum);
                 for(int c = 0; c < curNode.nodes.Length; c++) {
                     if(curNode.nodeObject == node || curNode.nodes[c].nodeObject == node)
                         curNode.connectionObjects[c].SetActive(true);
@@ -221,8 +198,6 @@ public class AgentPanelController : MonoBehaviour {
 
     void OnDisable() {
         if(NodesPanel != null) {
-	   //  	foreach(Chunk c in senseChunks) 
-				// Destroy(c.vertexObj);
     		foreach(Transform child in NodesPanel.transform)
                 GameObject.Destroy(child.gameObject);
     		foreach(Transform child in ConnectionsPanel.transform)

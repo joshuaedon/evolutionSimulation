@@ -116,15 +116,17 @@ public class NeuralNetwork {
     	foreach(Layer l in layers) {
 			foreach(Node n in l.nodes) {
 				for(int c = 0; c < n.nodes.Length; c++) {
-					UILineRenderer LineRenderer = n.connectionObjects[c].GetComponent<UILineRenderer>();
-		          	if(SimulationManager.NNFlow) {
-			            float opacity = Mathf.Abs(n.weights[c] * n.nodes[c].value / maxWeight);
-			            if(n.weights[c] < 0)
-			                LineRenderer.color = new Color(1.0f, 0.0f, 0.0f, opacity);
-			            else
-			                LineRenderer.color = new Color(0.0f, 1.0f, 0.0f, opacity);
-			        } else
-		            	LineRenderer.color = new Color(-n.weights[c], n.weights[c], 0, Mathf.Abs(n.weights[c]) / maxWeight);
+					if(n.connectionObjects[c] != null) {
+						UILineRenderer LineRenderer = n.connectionObjects[c].GetComponent<UILineRenderer>();
+			          	if(SimulationManager.NNFlow) {
+				            float opacity = Mathf.Abs(n.weights[c] * n.nodes[c].value / maxWeight);
+				            if(n.weights[c] < 0)
+				                LineRenderer.color = new Color(1.0f, 0.0f, 0.0f, opacity);
+				            else
+				                LineRenderer.color = new Color(0.0f, 1.0f, 0.0f, opacity);
+				        } else
+			            	LineRenderer.color = new Color(-n.weights[c], n.weights[c], 0, Mathf.Abs(n.weights[c]) / maxWeight);
+		            }
 				}
     		}
   		}

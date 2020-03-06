@@ -323,7 +323,7 @@ public class SimulationManager : MonoBehaviour {
         // Food
         GameObject.Find("GrassSpawnAmountSlider").GetComponent<Slider>().value = 45f;
         GameObject.Find("GrassSpawnRateSlider").GetComponent<Slider>().value = 20;
-        GameObject.Find("EatSpeedSlider").GetComponent<Slider>().value = 1f;
+        GameObject.Find("EatSpeedSlider").GetComponent<Slider>().value = 0.5f;
         GameObject.Find("HungerLossSlider").GetComponent<Slider>().value = 0.004f;
     }
 
