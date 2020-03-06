@@ -2,7 +2,6 @@ DONE
 
 
 
-- Agent senses
 - God features
 	- Save, Copy, move, delete agents
 - Graphs
@@ -12,11 +11,6 @@ DONE
 	- Mass extinction is a big factor in evolution
 - Neural Networks
 	- Propagation animation
-- Settings
-	- Water damage/mutate
-	- Node hunger loss penalty
-	- Attack damage
-	- Attack penalty
 - Fix thrashing
 - Particles
 

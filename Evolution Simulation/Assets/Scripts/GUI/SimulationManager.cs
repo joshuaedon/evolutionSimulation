@@ -325,6 +325,11 @@ public class SimulationManager : MonoBehaviour {
         GameObject.Find("GrassSpawnRateSlider").GetComponent<Slider>().value = 20;
         GameObject.Find("EatSpeedSlider").GetComponent<Slider>().value = 0.5f;
         GameObject.Find("HungerLossSlider").GetComponent<Slider>().value = 0.004f;
+        GameObject.Find("NodeHungerLossPenaltySlider").GetComponent<Slider>().value = 0.0000005f;
+
+        GameObject.Find("WaterDamageSlider").GetComponent<Slider>().value = 0.1f;
+        GameObject.Find("WaterMutateSlider").GetComponent<Slider>().value = 0.2f;
+        GameObject.Find("AttackDamageSlider").GetComponent<Slider>().value = 0.5f;
     }
 
     public void adjustTerrainTimeStep(float value) {
@@ -393,5 +398,25 @@ public class SimulationManager : MonoBehaviour {
     public void adjustHungerLoss(float value) {
         GridController.GC.hungerLoss = value;
         GameObject.Find("HungerLossValue").GetComponent<Text>().text = " " + Mathf.Round(value * 1000f) / 1000f + " food/tick";
+    }
+
+    public void adjustNodeHungerLossPenalty(float value) {
+        GridController.GC.nodeHungerLossPenalty = value;
+        GameObject.Find("NodeHungerLossPenaltyValue").GetComponent<Text>().text = " " + value + " food/tick";
+    }
+
+    public void adjustWaterDamage(float value) {
+        GridController.GC.waterDamage = value;
+        GameObject.Find("WaterDamageValue").GetComponent<Text>().text = " " + Mathf.Round(value * 100f) / 100f + " health/tick";
+    }
+
+    public void adjustWaterMutate(float value) {
+        GridController.GC.waterMutate = value;
+        GameObject.Find("WaterMutateValue").GetComponent<Text>().text = " " + Mathf.Round(value * 100f) / 100f;
+    }
+
+    public void adjustAttackDamage(float value) {
+        GridController.GC.attackDamage = value;
+        GameObject.Find("AttackDamageValue").GetComponent<Text>().text = " " + Mathf.Round(value * 100f) / 100f + " health/tick";
     }
 }

@@ -124,11 +124,11 @@ public class Agent {
     public void act(bool isMenu) {
         if(!isMenu) {
         	// Loose hunger and health
-        	this.hunger -= GridController.GC.hungerLoss + this.network.nodeCount * 0.0000005f;
+        	this.hunger -= GridController.GC.hungerLoss + this.network.nodeCount * GridController.GC.nodeHungerLossPenalty;
         	if(chunk.isWater()) {
-        		network.mutateValue(0.2f);
+        		network.mutateValue(GridController.GC.waterMutate);
         		changeColour();
-        		health -= 0.1f;
+        		health -= GridController.GC.waterDamage;
         	}
 
         	agentObj.transform.GetChild(1).gameObject.GetComponent<MeshRenderer>().material.color = Color.white;
@@ -218,7 +218,7 @@ public class Agent {
     	// If there is an agent infront, deal random damage
     	Chunk newChunk = getChunk(1);
         if(newChunk != null && newChunk.agent != null) {
-            newChunk.agent.health -= Random.Range(0f, 0.5f);
+            newChunk.agent.health -= Random.Range(0f, GridController.GC.attackDamage);
             // If killed, eat as much as can, drop the rest on the ground under the attacked agent
             if(newChunk.agent.health <= 0) {
             	float toAdd = newChunk.agent.hunger;

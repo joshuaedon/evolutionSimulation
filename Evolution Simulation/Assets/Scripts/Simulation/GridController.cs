@@ -29,6 +29,11 @@ public class GridController : MonoBehaviour {
     public float eatSpeed;
     public float hungerLoss;
     public bool underwaterFoodSpawn;
+    public float nodeHungerLossPenalty;
+    // Health
+    public float waterDamage;
+    public float waterMutate;
+    public float attackDamage;
     //// Grid state
     public Chunk[,] gridArray;
     Mesh mesh;
@@ -65,6 +70,11 @@ public class GridController : MonoBehaviour {
         eatSpeed = 0.5f;
         hungerLoss = 0.004f;
         underwaterFoodSpawn = false;
+        nodeHungerLossPenalty = 0.0000005f;
+        // Health
+        waterDamage = 0.1f;
+        waterMutate = 0.2f;
+        attackDamage = 0.5f;
 
         gridArray = new Chunk[0, 0];
         mesh = new Mesh();
