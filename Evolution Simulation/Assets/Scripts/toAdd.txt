@@ -1,5 +1,5 @@
 DONE
-
+When combining weights, use a new improved function
 
 
 - Agent senses

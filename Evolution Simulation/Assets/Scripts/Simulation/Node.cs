@@ -109,9 +109,10 @@ public class Node {
 		    			break;
 		    		}
 		    	}
+		    	float newWeight = Mathf.Min(otherNode.weights[otherNodeN] * this.weights[connectionIndex], otherNode.weights[otherNodeN] * Mathf.Abs(this.weights[connectionIndex]));
 		    	if(connectionIndex2 > -1) {
 		    		// If this node already has a connection to it, sum that weight with the new weight
-		    		this.weights[connectionIndex2] = this.weights[connectionIndex2] + otherNode.weights[otherNodeN] * this.weights[connectionIndex];
+		    		this.weights[connectionIndex2] += newWeight;
 		    	} else {
 		    		// If it does not, add the new connection
 		    		List<Node> nodesList2 = new List<Node>(this.nodes);
@@ -119,7 +120,7 @@ public class Node {
 		    		this.nodes = nodesList2.ToArray();
 
 		    		List<float> weightsList2 = new List<float>(this.weights);
-		    		weightsList2.Add(otherNode.weights[otherNodeN] * this.weights[connectionIndex]);
+		    		weightsList2.Add(newWeight);
 		    		this.weights = weightsList2.ToArray();
 
 			        this.connectionObjects = new GameObject[this.connectionObjects.Length + 1];
