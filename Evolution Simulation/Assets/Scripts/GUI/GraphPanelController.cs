@@ -8,11 +8,13 @@ using UnityEngine.EventSystems;
 public class GraphPanelController : MonoBehaviour {
     GameObject GraphTimeSlider;
     GameObject GraphTimeText;
+    GameObject MaxAgentsText;
     GameObject InnerGraphPanel;
 
 	public void OnEnable() {
 		GraphTimeSlider = transform.Find("GraphTimeSlider").gameObject;
 		GraphTimeText = transform.Find("GraphTimeText").gameObject;
+		MaxAgentsText = transform.Find("MaxAgentsText").gameObject;
 		InnerGraphPanel = transform.Find("InnerGraphPanel").gameObject;
 
 		if(GridController.GC != null)
@@ -24,6 +26,7 @@ public class GraphPanelController : MonoBehaviour {
   			GraphTimeSlider.GetComponent<Slider>().maxValue = GridController.GC.population.Count - 1;
   			int index = Mathf.RoundToInt(GraphTimeSlider.GetComponent<Slider>().value);
   			GraphTimeText.GetComponent<Text>().text = "Looking back " + 10 * Mathf.Pow(2, index) * (GridController.GC.population[index].Count - 1) + " ticks";
+  			MaxAgentsText.GetComponent<Text>().text = "" + GridController.GC.population[index][0];
   			clearGraph();
 
 	  		float width = transform.GetComponentInParent<Canvas>().GetComponent<RectTransform>().sizeDelta.x

@@ -26,7 +26,7 @@ public class Agent {
         this.chunk = chunk;
         moveObj();
 
-        this.network = new NeuralNetwork(new int[] {17, 6});
+        this.network = new NeuralNetwork(new int[] {18, 6});
         this.generation = 1;
         this.ticksAlive = 0;
         changeColour();
@@ -87,15 +87,16 @@ public class Agent {
     }
 
     public void loadInputs() {
-        float[] inputs = new float[17];
+        float[] inputs = new float[18];
 
         inputs[0] = Random.Range(0f, 1f);
         inputs[1] = this.hunger;
+        inputs[2] = this.health;
 
-        inputs[2 + highestOutput()] = 1f;
+        inputs[3 + highestOutput()] = 1f;
 
-        for(int i = 8; i < 17; i++)
-        	inputs[i] = getThingValue(getChunk(sensePositions[i-8]), senseThings[i-8]);
+        for(int i = 9; i < 18; i++)
+        	inputs[i] = getThingValue(getChunk(sensePositions[i-9]), senseThings[i-9]);
 
         network.loadInputs(inputs);
     }

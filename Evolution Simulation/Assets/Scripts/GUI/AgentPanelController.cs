@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 using System.Linq;
 
 public class AgentPanelController : MonoBehaviour {
-	string[] inputLabels = {"Random", "Hunger",
+	string[] inputLabels = {"Random", "Hunger", "Health",
 							"Stepped forward", "Turned left", "Turned right", "Ate", "Reproduced", "Attacked",
 							"", "", "", "", "", "", "", "", ""};
 	string[] sensePositionLabels = {"Front Left", "Front", "Front Right", "Left", "Below", "Right", "Back Left", "Back", "Back Right"};
@@ -96,11 +96,11 @@ public class AgentPanelController : MonoBehaviour {
   		for(int n = 0; n < inputLabels.Length; n++) {
 			GameObject labelObj = (GameObject)Instantiate(referenceInputLabel, NodesPanel.transform);
 			labelObj.transform.localPosition = new Vector2((1 - network.layers.Length) * horizontalSpacing - nodeSize/2 - 47, nodeSize * ((inputLabels.Length+1) / 2.0f - n - 0.5f));
-			if(n <= 7)
+			if(n <= 8)
 				labelObj.GetComponent<Text>().text = inputLabels[n];
 			else {
-				labelObj.GetComponent<Text>().text = senseThingLabels[agent.senseThings[n-8]] + " " + sensePositionLabels[agent.sensePositions[n-8]];
-				network.layers[0].nodes[n].colour = agent.senseThings[n-8]+1;
+				labelObj.GetComponent<Text>().text = senseThingLabels[agent.senseThings[n-9]] + " " + sensePositionLabels[agent.sensePositions[n-9]];
+				network.layers[0].nodes[n].colour = agent.senseThings[n-9]+1;
 			}
 			network.layers[0].nodes[n].display();
 		}
@@ -117,7 +117,7 @@ public class AgentPanelController : MonoBehaviour {
     }
 
     void Update() {
-    	if(SimulationManager.selectedAgent != null) {
+    	if(this.agent != null) {
 	    	// Update the agent's hunger bar
 	    	transform.Find("HungerBar").GetComponent<Slider>().value = agent.hunger;
 	    	transform.Find("HealthBar").GetComponent<Slider>().value = agent.health;

@@ -47,6 +47,8 @@ public class GridController : MonoBehaviour {
     public List<List<int>> population;
     
     void OnEnable() {
+    	Screen.fullScreen = false;
+
         isMenu = false;
         osn = new OpenSimplexNoise();
 

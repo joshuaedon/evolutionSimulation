@@ -1,5 +1,5 @@
 DONE
-
+Fixed bug: network still interactable after agent death, max agents graph text, added health input
 
 
 - God features
