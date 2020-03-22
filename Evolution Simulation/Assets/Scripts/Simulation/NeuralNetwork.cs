@@ -6,7 +6,7 @@ using UnityEngine;
 public class NeuralNetwork {
     public float mutateAmount;
     float weightDecay = 0.999f;
-    float mutateStrucProb = 0.01f;
+    float mutateStrucProb = 0.02f;
     public Layer[] layers;
     public float maxWeight;
     public int nodeCount;
@@ -162,7 +162,7 @@ public class NeuralNetwork {
 
     void mutateStructure() {
     	// Add layer
-		if(Random.Range(0f, 1f) < mutateStrucProb) {
+		if(Random.Range(0f, 1f) < mutateAmount) {
 			int curL = Random.Range(1, layers.Length);
 			// Add new layer at index curL
 			List<Layer> layerList = new List<Layer>(this.layers);
@@ -173,7 +173,7 @@ public class NeuralNetwork {
 		}
 
 		// Remove layer
-		if(Random.Range(0f, 1f) < mutateStrucProb && this.layers.Length > 2) {
+		if(Random.Range(0f, 1f) < mutateAmount && this.layers.Length > 2) {
 			int curL = Random.Range(1, layers.Length-1);
 
 			foreach(Node curN in this.layers[curL].nodes) {
@@ -194,7 +194,7 @@ public class NeuralNetwork {
 
 		// Add nodes
 		for (int curL = 1; curL < layers.Length-1; curL++) {
-			if(Random.Range(0f, 1f) < mutateStrucProb) {
+			if(Random.Range(0f, 1f) < mutateAmount) {
 				// Add node at the top of layer
 				List<Node> nodeList = new List<Node>(this.layers[curL].nodes);
 				nodeList.Insert(0, new Node(curL, 0));
@@ -206,7 +206,7 @@ public class NeuralNetwork {
 
 		// Remove nodes
 		for (int curL = 1; curL < layers.Length-1; curL++) {
-			if(Random.Range(0f, 1f) < mutateStrucProb && this.layers[curL].nodes.Length > 1) {
+			if(Random.Range(0f, 1f) < mutateAmount && this.layers[curL].nodes.Length > 1) {
 				int curN = Random.Range(0, this.layers[curL].nodes.Length-1);
 				List<Node> nodeList = new List<Node>(this.layers[curL].nodes);
 
@@ -233,8 +233,7 @@ public class NeuralNetwork {
             	// For each node in each layer before the current
             	for(int prevL = curL-1; prevL >= 0; prevL--) {
 					for(int prevN = 0; prevN < layers[prevL].nodes.Length; prevN++) {
-						// Have a 1/200 chance of modifying the node
-						if(Random.Range(0f, 1f) < mutateStrucProb)
+						if(Random.Range(0f, 1f) < mutateAmount)
 							layers[curL].nodes[curN].modifyConnection(layers[prevL].nodes[prevN], Random.Range(0f, 1f) < probAdd);
 					}
 					// Divide the probability to add by 2 for each layer back

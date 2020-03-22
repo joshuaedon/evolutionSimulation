@@ -28,12 +28,13 @@ public class GridController : MonoBehaviour {
     public float grassSpawnAmount;
     public float eatSpeed;
     public float hungerLoss;
-    public bool underwaterFoodSpawn;
     public float nodeHungerLossPenalty;
+    public bool underwaterFoodSpawn;
     // Health
+    public float attackDamage;
     public float waterDamage;
     public float waterMutate;
-    public float attackDamage;
+    public bool seaAgents;
     //// Grid state
     public Chunk[,] gridArray;
     Mesh mesh;
@@ -71,12 +72,13 @@ public class GridController : MonoBehaviour {
         grassSpawnRate = 20;
         eatSpeed = 0.5f;
         hungerLoss = 0.004f;
-        underwaterFoodSpawn = false;
         nodeHungerLossPenalty = 0.0000005f;
+        underwaterFoodSpawn = false;
         // Health
+        attackDamage = 0.5f;
         waterDamage = 0.1f;
         waterMutate = 0.2f;
-        attackDamage = 0.5f;
+        seaAgents = false;
 
         gridArray = new Chunk[0, 0];
         mesh = new Mesh();
@@ -260,7 +262,7 @@ public class GridController : MonoBehaviour {
                 int row = Random.Range(0, rows);
                 chunk = gridArray[col, row];
                 tries++;
-            } while((chunk.isWater() || chunk.agent != null) && tries < 100);
+            } while(((chunk.isWater() && !seaAgents) || chunk.agent != null) && tries < 100);
             if(tries < 100) {
                 GameObject agentObj = (GameObject)Instantiate(referenceAgent, transform);
                 Agent agent = new Agent(agentObj, chunk);

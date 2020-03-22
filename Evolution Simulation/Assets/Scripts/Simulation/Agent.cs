@@ -8,6 +8,7 @@ public class Agent {
     public Chunk chunk;
 
     public NeuralNetwork network;
+    public float landSea;
     public int generation;
     public int ticksAlive;
 
@@ -27,6 +28,7 @@ public class Agent {
         moveObj();
 
         this.network = new NeuralNetwork(new int[] {18, 6});
+        this.landSea = 0.5f;
         this.generation = 1;
         this.ticksAlive = 0;
         changeColour();
@@ -46,7 +48,7 @@ public class Agent {
         this.health = 1;
     }
 
-    public Agent(Chunk chunk, NeuralNetwork n, int generation, int[] sensePositions, int[] senseThings) {
+    public Agent(Chunk chunk, NeuralNetwork n, float landSea, int generation, int[] sensePositions, int[] senseThings) {
         this.agentObj = (GameObject)Transform.Instantiate(Resources.Load("Simulation/Agent"), GridController.GC.transform);
         this.plumbob = agentObj.transform.GetChild(2).gameObject;
         this.plumbob.SetActive(false);
@@ -54,6 +56,7 @@ public class Agent {
         moveObj();
 
         this.network = new NeuralNetwork(n);
+        this.landSea = Mathf.Clamp(landSea + Random.Range(-this.network.mutateAmount, this.network.mutateAmount), 0f, 1f);
         this.generation = generation;
         this.ticksAlive = 0;
         this.network.mutate();
@@ -116,21 +119,29 @@ public class Agent {
 	        return 2;
 	    else if(eatOut > Mathf.Max(reproduceOut, attackOut))
 	    	return 3;
-	    else if(reproduceOut > attackOut && hunger > 0 && !chunk.isWater())
+	    else if(reproduceOut > attackOut && canReproduce() && hunger > 0)
 	    	return 4;
-	    else
+	    else if(attackOut > 0)
 	    	return 5;
+	    else
+	    	return 0;
     }
 
     public void act(bool isMenu) {
         if(!isMenu) {
         	// Loose hunger and health
-        	this.hunger -= GridController.GC.hungerLoss + this.network.nodeCount * GridController.GC.nodeHungerLossPenalty;
-        	if(chunk.isWater()) {
-        		network.mutateValue(GridController.GC.waterMutate);
-        		changeColour();
-        		health -= GridController.GC.waterDamage;
-        	}
+        	this.hunger -= GridController.GC.hungerLoss + (network.nodeCount + network.layers.Length*10) * GridController.GC.nodeHungerLossPenalty;
+
+        	float mult = Mathf.Pow(chunk.isWater() ?
+        				 (GridController.GC.seaAgents ? this.landSea : 1) :
+        				 (1f - (GridController.GC.seaAgents ? this.landSea : 1)), 2);
+        	if(mult > 0.001) {
+        		if(GridController.GC.waterMutate > 0) {
+		    		network.mutateValue(mult * GridController.GC.waterMutate);
+		    		changeColour();
+		    	}
+	    		health -= mult * GridController.GC.waterDamage;
+	    	}
 
         	agentObj.transform.GetChild(1).gameObject.GetComponent<MeshRenderer>().material.color = Color.white;
         	// Move forward, turn left, right, eat or attack depending on the agent's NN outputs
@@ -205,7 +216,7 @@ public class Agent {
     	}
     	if(chunks.Count > 0) {
     		Chunk c = chunks[Random.Range(0, chunks.Count)];
-    		Agent offspring = new Agent(c, this.network, this.generation+1, this.sensePositions, this.senseThings);
+    		Agent offspring = new Agent(c, this.network, this.landSea, this.generation+1, this.sensePositions, this.senseThings);
     		this.hunger /= 1f + Mathf.Min(GridController.GC.agents.Count / 200f, 1f);
     		offspring.hunger = this.hunger;
     		c.agent = offspring;
@@ -219,7 +230,7 @@ public class Agent {
     	// If there is an agent infront, deal random damage
     	Chunk newChunk = getChunk(1);
         if(newChunk != null && newChunk.agent != null) {
-            newChunk.agent.health -= Random.Range(0f, GridController.GC.attackDamage);
+            newChunk.agent.health -= 2f*Random.Range(0f, GridController.GC.attackDamage);
             // If killed, eat as much as can, drop the rest on the ground under the attacked agent
             if(newChunk.agent.health <= 0) {
             	float toAdd = newChunk.agent.hunger;
@@ -258,18 +269,18 @@ public class Agent {
     	}
     	if(position == 0 || position == 3 || position == 6) {
     		switch(this.dir) {
-	            case 0: newRow--; break;
-	            case 1: newCol++; break;
-	            case 2: newRow++; break;
-	            case 3: newCol--; break;
-	        }
-    	}
-    	if(position == 2 || position == 5 || position == 8) {
-    		switch(this.dir) {
 	            case 0: newRow++; break;
 	            case 1: newCol--; break;
 	            case 2: newRow--; break;
 	            case 3: newCol++; break;
+	        }
+    	}
+    	if(position == 2 || position == 5 || position == 8) {
+    		switch(this.dir) {
+	            case 0: newRow--; break;
+	            case 1: newCol++; break;
+	            case 2: newRow++; break;
+	            case 3: newCol--; break;
 	        }
     	}
         if(newCol >= 0 && newRow >= 0 && newCol < GridController.GC.cols && newRow < GridController.GC.rows) {
@@ -285,6 +296,11 @@ public class Agent {
         	case 2: return (c == null || c.agent == null) ? 0 : 1;
         }
         return 100f;
+    }
+
+    bool canReproduce() {
+    	float val = GridController.GC.seaAgents ? this.landSea : 1f;
+    	return (Random.Range(0f, 1f) > Mathf.Pow(val, 2) && this.chunk.isWater()) || (Mathf.Pow(Random.Range(0f, 1f), 2) < val && !this.chunk.isWater());
     }
 
     /*public Chunk[] getChunks(int positive) {

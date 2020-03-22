@@ -22,7 +22,7 @@ public class SimulationManager : MonoBehaviour {
 	public GameObject GrassButtons;
 
     void Start() {
-		NNFlow = false;
+		NNFlow = true;
         godTool = 0;
         brushChunks = new List<Chunk>();
         brushSize = 5f;
@@ -380,6 +380,7 @@ public class SimulationManager : MonoBehaviour {
         GameObject.Find("SeaBorderValue").GetComponent<Text>().text = " " + value;
     }
 
+
     public void adjustGrassSpawnAmount(float value) {
         GridController.GC.grassSpawnAmount = value;
         GameObject.Find("GrassSpawnAmountValue").GetComponent<Text>().text = " " + Mathf.Round(value * GridController.GC.cols * GridController.GC.rows / 100f) / 100f + " food";
@@ -405,6 +406,16 @@ public class SimulationManager : MonoBehaviour {
         GameObject.Find("NodeHungerLossPenaltyValue").GetComponent<Text>().text = " " + value + " food/tick";
     }
 
+    public void toggleUnderwaterFoodSpawn(bool b) {
+    	GridController.GC.underwaterFoodSpawn = b;
+    }
+
+
+    public void adjustAttackDamage(float value) {
+        GridController.GC.attackDamage = value;
+        GameObject.Find("AttackDamageValue").GetComponent<Text>().text = " " + Mathf.Round(value * 100f) / 100f + " health/tick";
+    }
+
     public void adjustWaterDamage(float value) {
         GridController.GC.waterDamage = value;
         GameObject.Find("WaterDamageValue").GetComponent<Text>().text = " " + Mathf.Round(value * 100f) / 100f + " health/tick";
@@ -415,8 +426,7 @@ public class SimulationManager : MonoBehaviour {
         GameObject.Find("WaterMutateValue").GetComponent<Text>().text = " " + Mathf.Round(value * 100f) / 100f;
     }
 
-    public void adjustAttackDamage(float value) {
-        GridController.GC.attackDamage = value;
-        GameObject.Find("AttackDamageValue").GetComponent<Text>().text = " " + Mathf.Round(value * 100f) / 100f + " health/tick";
+    public void toggleSeaAgents(bool b) {
+    	GridController.GC.seaAgents = b;
     }
 }

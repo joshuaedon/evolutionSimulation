@@ -1,5 +1,5 @@
 DONE
-Fixed bug: network still interactable after agent death, max agents graph text, added health input
+Allow agents to get hurt on land instead of the sea, added toggles for sea agents and underwater food spawn, agents can be spawned in water if sea agents is true, can see land/sea value in agent panel, the damage that agents take and the change that they can reproduce on land/water have a quadratic relation to the agents' land/sea values
 
 
 - God features

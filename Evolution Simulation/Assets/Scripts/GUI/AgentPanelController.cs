@@ -9,7 +9,8 @@ using System.Linq;
 public class AgentPanelController : MonoBehaviour {
 	string[] inputLabels = {"Random", "Hunger", "Health",
 							"Stepped forward", "Turned left", "Turned right", "Ate", "Reproduced", "Attacked",
-							"", "", "", "", "", "", "", "", ""};
+							"", "", "", "", "", "", "", "", "",
+							"Constant"};
 	string[] sensePositionLabels = {"Front Left", "Front", "Front Right", "Left", "Below", "Right", "Back Left", "Back", "Back Right"};
 	string[] senseThingLabels = {"Food", "Water", "Agent"};
     string[] outputLabels = {"Forwards", "Left", "Right", "Eat", "Reproduce", "Attack"};
@@ -95,8 +96,10 @@ public class AgentPanelController : MonoBehaviour {
   		// Create input and output labels
   		for(int n = 0; n < inputLabels.Length; n++) {
 			GameObject labelObj = (GameObject)Instantiate(referenceInputLabel, NodesPanel.transform);
-			labelObj.transform.localPosition = new Vector2((1 - network.layers.Length) * horizontalSpacing - nodeSize/2 - 47, nodeSize * ((inputLabels.Length+1) / 2.0f - n - 0.5f));
+			labelObj.transform.localPosition = new Vector2((1 - network.layers.Length) * horizontalSpacing - nodeSize/2 - 47, nodeSize * (inputLabels.Length / 2.0f - n - 0.5f));
 			if(n <= 8)
+				labelObj.GetComponent<Text>().text = inputLabels[n];
+			else if(n == inputLabels.Length-1)
 				labelObj.GetComponent<Text>().text = inputLabels[n];
 			else {
 				labelObj.GetComponent<Text>().text = senseThingLabels[agent.senseThings[n-9]] + " " + sensePositionLabels[agent.sensePositions[n-9]];
@@ -122,7 +125,7 @@ public class AgentPanelController : MonoBehaviour {
 	    	transform.Find("HungerBar").GetComponent<Slider>().value = agent.hunger;
 	    	transform.Find("HealthBar").GetComponent<Slider>().value = agent.health;
 	    	transform.Find("TicksAliveText").GetComponent<Text>().text = "Ticks alive: " + agent.ticksAlive;
-	    	transform.Find("MaxNetworkWeightText").GetComponent<Text>().text = "Max network weight: " + Mathf.Round(network.maxWeight * 100f) / 100f;
+	    	transform.Find("LandSeaText").GetComponent<Text>().text = "Land(1) / sea(0): " + (GridController.GC.seaAgents ? Mathf.Round(agent.landSea * 100f) / 100f : 1f);
 
 	        // Highlight a node if the mouse is over it
 	        if(EventSystem.current.IsPointerOverGameObject()) {
