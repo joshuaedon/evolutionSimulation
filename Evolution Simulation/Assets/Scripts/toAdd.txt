@@ -1,5 +1,5 @@
 DONE
-Clearing and reseting agents resets the graphs and time (bias set to keep terrain consistent), graphs are drawn every frame rather than when they are updated, 
+ 
 
 
 - God features

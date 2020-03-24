@@ -99,10 +99,9 @@ public class GridController : MonoBehaviour {
         population.Add(new List<int>());
         population[0].Add(0);
 
-    	agentRecordFrequency = 100;
+    	agentRecordFrequency = 25;
         agentRecords = new List<List<AgentRecord>>();
         agentRecords.Add(new List<AgentRecord>());
-        agentRecords[0].Add(new AgentRecord());
     }
 
     void Update() {
@@ -159,17 +158,15 @@ public class GridController : MonoBehaviour {
                 	}
                 	AgentRecord record = new AgentRecord(
                 		time,
-						agents[i].landSea, agents[i].generation, agents[i].ticksAlive, (agents[i].network.countWeights()/50f + 1000000f) % 1f,
+						agents[i].landSea, agents[i].generation, agents[i].ticksAlive, (agents[i].network.countWeights()/25f + 1000000f) % 1f,
 						senseFood, senseWater, senseAgent,
 						senseFront, senseSide, senseBack,
 						agents[i].network.nodeCount, agents[i].kills);
 
-                	agentRecords[0].Insert(1, record);
-                	agentRecords[0][0] = agentRecords[0][0].updateMaxRecord(record);
+                	agentRecords[0].Insert(0, record);
                 	for(int j = 1; j < agentRecords.Count; j++) {
                 		if(Random.Range(0f, 1f) < 0.5f) {
-                			agentRecords[j].Insert(1, record);
-                			agentRecords[j][0].updateMaxRecord(record);
+                			agentRecords[j].Insert(0, record);
                 		} else
                 			break;
                 	}
@@ -347,101 +344,14 @@ public class GridController : MonoBehaviour {
         //     Debug.Log(toAdd + " food could not be spawned");
     }
 
-    public struct AgentRecord {
-    	public int deathTick;
-    	public float landSea;
-    	public int generation;
-    	public int ticksAlive;
-    	public float colour;
-    	public int senseFood;
-    	public int senseWater;
-    	public int senseAgent;
-    	public int senseFront;
-    	public int senseSide;
-    	public int senseBack;
-    	public int nodes;
-    	public int kills;
-
-    	public AgentRecord(int deathTick,
-    					   float landSea, int generation, int ticksAlive, float colour,
-    					   int senseFood, int senseWater, int senseAgent,
-    					   int senseFront, int senseSide, int senseBack,
-    					   int nodes, int kills) {
-    		this.deathTick = deathTick;
-    		this.landSea = landSea;
-	    	this.generation = generation;
-	    	this.ticksAlive = ticksAlive;
-	    	this.colour = colour;
-	    	this.senseFood = senseFood;
-	    	this.senseWater = senseWater;
-	    	this.senseAgent = senseAgent;
-	    	this.senseFront = senseFront;
-	    	this.senseSide = senseSide;
-	    	this.senseBack = senseBack;
-	    	this.nodes = nodes;
-	    	this.kills = kills;
-    	}
-
-    	 public AgentRecord updateMaxRecord(AgentRecord r) {
-			this.deathTick = Mathf.Max(this.deathTick, r.deathTick);
-			this.landSea = Mathf.Max(this.landSea, r.landSea);
-			this.generation = Mathf.Max(this.generation, r.generation);
-			this.ticksAlive = Mathf.Max(this.ticksAlive, r.ticksAlive);
-			this.colour = Mathf.Max(this.colour, r.colour);
-			this.senseFood = Mathf.Max(this.senseFood, r.senseFood);
-			this.senseWater = Mathf.Max(this.senseWater, r.senseWater);
-			this.senseAgent = Mathf.Max(this.senseAgent, r.senseAgent);
-			this.senseFront = Mathf.Max(this.senseFront, r.senseFront);
-			this.senseSide = Mathf.Max(this.senseSide, r.senseSide);
-			this.senseBack = Mathf.Max(this.senseBack, r.senseBack);
-			this.nodes = Mathf.Max(this.nodes, r.nodes);
-			this.kills = Mathf.Max(this.kills, r.kills);
-			return this;
-	    }
-
-	    public bool compareRecords(AgentRecord r) {
-	    	return this.landSea >= r.landSea || this.generation >= r.generation || this.ticksAlive >= r.ticksAlive || this.colour >= r.colour ||
-	    		this.senseFood >= r.senseFood || this.senseWater >= r.senseWater || this.senseAgent >= r.senseAgent ||
-	    		this.senseFront >= r.senseFront || this.senseSide >= r.senseSide || this.senseBack >= r.senseBack ||
-	    		this.nodes >= r.nodes || this.kills >= r.kills;
-	    }
-
-	    public float get(int index) {
-	    	switch(index) {
-		    	case 0: return deathTick;
-	    		case 1: return landSea;
-		    	case 2: return generation;
-		    	case 3: return ticksAlive;
-		    	case 4: return colour;
-		    	case 5: return senseFood;
-		    	case 6: return senseWater;
-		    	case 7: return senseAgent;
-		    	case 8: return senseFront;
-		    	case 9: return senseSide;
-		    	case 10: return senseBack;
-		    	case 11: return nodes;
-		    	case 12: return kills;
-		    }
-		    return 0;
-	    }
-
-	    public void print() {
-	    	Debug.Log(this.deathTick + ", " +
-	    		this.landSea + ", " + this.generation + ", " + this.ticksAlive + ", " + this.colour + ", " +
-	    		this.senseFood + ", " + this.senseWater + ", " + this.senseAgent + ", " +
-	    		this.senseFront + ", " + this.senseSide + ", " + this.senseBack + ", " +
-	    		this.nodes + ", " + this.kills);
-	    }
-    }
-
     public void recordStats() {
-    	string s = "[";
-		for(int i = 0; i < population.Count; i++)
-			s += population[i].Count + ", ";
-		s += "], [";
-		for(int i = 0; i < agentRecords.Count; i++)
-			s += agentRecords[i].Count + ", ";
-		s += "]";
+  //   	string s = "[";
+		// for(int i = 0; i < population.Count; i++)
+		// 	s += population[i].Count + ", ";
+		// s += "], [";
+		// for(int i = 0; i < agentRecords.Count; i++)
+		// 	s += agentRecords[i].Count + ", ";
+		// s += "]";
 		// Debug.Log(s);
 
     	int popCount = agents.Count;
@@ -460,10 +370,9 @@ public class GridController : MonoBehaviour {
 
     		// Add a new agent records list, copy over every other record and set the max values
     		agentRecords.Add(new List<AgentRecord>());
-    		agentRecords[agentRecords.Count - 1].Add(new AgentRecord());
-    		for(int i = 1; i < agentRecords[agentRecords.Count - 2].Count; i += 2)
+    		for(int i = 2; i < agentRecords[agentRecords.Count - 2].Count; i += 2) {
     			agentRecords[agentRecords.Count - 1].Add(agentRecords[agentRecords.Count - 2][i]);
-
+    		}
     	}
 
     	for(int i = 0; i < population.Count; i++) {
@@ -484,15 +393,8 @@ public class GridController : MonoBehaviour {
     	}
 
     	for(int i = 0; i < agentRecords.Count; i++) {
-    		while(agentRecords[i].Count > 1 && time - agentRecords[i][agentRecords[i].Count - 1].deathTick > 1000 * Mathf.Pow(2, i)) {
-    			if(agentRecords[i][0].compareRecords(agentRecords[i][agentRecords[i].Count - 1])) {
-    				AgentRecord maxRecord = new AgentRecord();
-    				for(int j = 0; j < agentRecords[i].Count - 1; j++)
-    					maxRecord.updateMaxRecord(agentRecords[i][j]);
-    				agentRecords[i][0] = maxRecord;
-				}
+    		while(agentRecords[i].Count > 2 && time - agentRecords[i][agentRecords[i].Count - 1].deathTick > 1000 * Mathf.Pow(2, i)) {
 				agentRecords[i].RemoveAt(agentRecords[i].Count - 1);
-
     		}
     	}
     }

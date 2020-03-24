@@ -246,7 +246,7 @@ public class Agent {
     }
 
      public void changeColour() {
-    	float colour = (this.network.countWeights()/50f + 1000000f) % 1f;
+    	float colour = (this.network.countWeights()/25f + 1000000f) % 1f;
 		agentObj.transform.GetChild(0).gameObject.GetComponent<MeshRenderer>().material.color = Color.HSVToRGB(colour, 1f, 1f);
     }
 
@@ -333,4 +333,117 @@ public class Agent {
 
     	return true;
     }*/
+}
+
+public struct AgentRecord {
+	public int deathTick;
+	public float landSea;
+	public int generation;
+	public int ticksAlive;
+	public float colour;
+	public int senseFood;
+	public int senseWater;
+	public int senseAgent;
+	public int senseFront;
+	public int senseSide;
+	public int senseBack;
+	public int nodes;
+	public int kills;
+
+	public AgentRecord(bool a) {
+		this.deathTick = int.MaxValue;
+		this.landSea = float.MaxValue;
+    	this.generation = int.MaxValue;
+    	this.ticksAlive = int.MaxValue;
+    	this.colour = float.MaxValue;
+    	this.senseFood = int.MaxValue;
+    	this.senseWater = int.MaxValue;
+    	this.senseAgent = int.MaxValue;
+    	this.senseFront = int.MaxValue;
+    	this.senseSide = int.MaxValue;
+    	this.senseBack = int.MaxValue;
+    	this.nodes = int.MaxValue;
+    	this.kills = int.MaxValue;
+	}
+
+	public AgentRecord(int deathTick,
+					   float landSea, int generation, int ticksAlive, float colour,
+					   int senseFood, int senseWater, int senseAgent,
+					   int senseFront, int senseSide, int senseBack,
+					   int nodes, int kills) {
+		this.deathTick = deathTick;
+		this.landSea = landSea;
+    	this.generation = generation;
+    	this.ticksAlive = ticksAlive;
+    	this.colour = colour;
+    	this.senseFood = senseFood;
+    	this.senseWater = senseWater;
+    	this.senseAgent = senseAgent;
+    	this.senseFront = senseFront;
+    	this.senseSide = senseSide;
+    	this.senseBack = senseBack;
+    	this.nodes = nodes;
+    	this.kills = kills;
+	}
+
+ 	public AgentRecord updateMaxRecord(AgentRecord r) {
+		this.deathTick = Mathf.Max(this.deathTick, r.deathTick);
+		this.landSea = Mathf.Max(this.landSea, r.landSea);
+		this.generation = Mathf.Max(this.generation, r.generation);
+		this.ticksAlive = Mathf.Max(this.ticksAlive, r.ticksAlive);
+		this.colour = Mathf.Max(this.colour, r.colour);
+		this.senseFood = Mathf.Max(this.senseFood, r.senseFood);
+		this.senseWater = Mathf.Max(this.senseWater, r.senseWater);
+		this.senseAgent = Mathf.Max(this.senseAgent, r.senseAgent);
+		this.senseFront = Mathf.Max(this.senseFront, r.senseFront);
+		this.senseSide = Mathf.Max(this.senseSide, r.senseSide);
+		this.senseBack = Mathf.Max(this.senseBack, r.senseBack);
+		this.nodes = Mathf.Max(this.nodes, r.nodes);
+		this.kills = Mathf.Max(this.kills, r.kills);
+		return this;
+    }
+
+    public AgentRecord updateMinRecord(AgentRecord r) {
+		this.deathTick = Mathf.Min(this.deathTick, r.deathTick);
+		this.landSea = Mathf.Min(this.landSea, r.landSea);
+		this.generation = Mathf.Min(this.generation, r.generation);
+		this.ticksAlive = Mathf.Min(this.ticksAlive, r.ticksAlive);
+		this.colour = Mathf.Min(this.colour, r.colour);
+		this.senseFood = Mathf.Min(this.senseFood, r.senseFood);
+		this.senseWater = Mathf.Min(this.senseWater, r.senseWater);
+		this.senseAgent = Mathf.Min(this.senseAgent, r.senseAgent);
+		this.senseFront = Mathf.Min(this.senseFront, r.senseFront);
+		this.senseSide = Mathf.Min(this.senseSide, r.senseSide);
+		this.senseBack = Mathf.Min(this.senseBack, r.senseBack);
+		this.nodes = Mathf.Min(this.nodes, r.nodes);
+		this.kills = Mathf.Min(this.kills, r.kills);
+		return this;
+    }
+
+    public float get(int index) {
+    	switch(index) {
+	    	case 0: return deathTick;
+    		case 1: return landSea;
+	    	case 2: return generation;
+	    	case 3: return ticksAlive;
+	    	case 4: return colour;
+	    	case 5: return senseFood;
+	    	case 6: return senseWater;
+	    	case 7: return senseAgent;
+	    	case 8: return senseFront;
+	    	case 9: return senseSide;
+	    	case 10: return senseBack;
+	    	case 11: return nodes;
+	    	case 12: return kills;
+	    }
+	    return 0;
+    }
+
+    public void print() {
+    	Debug.Log(this.deathTick + ", " +
+    		this.landSea + ", " + this.generation + ", " + this.ticksAlive + ", " + this.colour + ", " +
+    		this.senseFood + ", " + this.senseWater + ", " + this.senseAgent + ", " +
+    		this.senseFront + ", " + this.senseSide + ", " + this.senseBack + ", " +
+    		this.nodes + ", " + this.kills);
+    }
 }
