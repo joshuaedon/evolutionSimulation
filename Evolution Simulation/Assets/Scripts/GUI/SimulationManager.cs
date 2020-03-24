@@ -236,6 +236,8 @@ public class SimulationManager : MonoBehaviour {
             GridController.GC.agents[i].chunk.agent = null;
             GridController.GC.agents.RemoveAt(i);
         }
+
+        GridController.GC.resetGraphs();
     }
 
     public void agentResetButton() {
@@ -316,7 +318,7 @@ public class SimulationManager : MonoBehaviour {
         // Terrain
         GameObject.Find("ColumnsSlider").GetComponent<Slider>().value = 150;
         GameObject.Find("RowsSlider").GetComponent<Slider>().value = 75;
-        GameObject.Find("NoiseScaleSlider").GetComponent<Slider>().value = 20f;
+        GameObject.Find("NoiseScaleSlider").GetComponent<Slider>().value = 25f;
         GameObject.Find("SeaLevelSlider").GetComponent<Slider>().value = 0.45f;
         GameObject.Find("YScaleSlider").GetComponent<Slider>().value = 5f;
         GameObject.Find("SeaBorderSlider").GetComponent<Slider>().value = 10f;

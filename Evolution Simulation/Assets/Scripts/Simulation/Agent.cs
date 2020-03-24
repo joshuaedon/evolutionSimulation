@@ -11,6 +11,7 @@ public class Agent {
     public float landSea;
     public int generation;
     public int ticksAlive;
+    public int kills;
 
     public int[] sensePositions;
     public int[] senseThings;
@@ -130,7 +131,7 @@ public class Agent {
     public void act(bool isMenu) {
         if(!isMenu) {
         	// Loose hunger and health
-        	this.hunger -= GridController.GC.hungerLoss + (network.nodeCount + network.layers.Length*10) * GridController.GC.nodeHungerLossPenalty;
+        	this.hunger -= GridController.GC.hungerLoss + (this.network.nodeCount + network.layers.Length*10) * GridController.GC.nodeHungerLossPenalty;
 
         	float mult = Mathf.Pow(chunk.isWater() ?
         				 (GridController.GC.seaAgents ? this.landSea : 1) :
@@ -233,6 +234,7 @@ public class Agent {
             newChunk.agent.health -= 2f*Random.Range(0f, GridController.GC.attackDamage);
             // If killed, eat as much as can, drop the rest on the ground under the attacked agent
             if(newChunk.agent.health <= 0) {
+            	kills++;
             	float toAdd = newChunk.agent.hunger;
             	newChunk.agent.hunger = 0;
             	float add = Mathf.Min(toAdd, 1f - this.hunger);

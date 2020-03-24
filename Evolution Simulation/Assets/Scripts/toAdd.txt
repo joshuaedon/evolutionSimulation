@@ -1,11 +1,10 @@
 DONE
-Allow agents to get hurt on land instead of the sea, added toggles for sea agents and underwater food spawn, agents can be spawned in water if sea agents is true, can see land/sea value in agent panel, the damage that agents take and the change that they can reproduce on land/water have a quadratic relation to the agents' land/sea values
+Clearing and reseting agents resets the graphs and time (bias set to keep terrain consistent), graphs are drawn every frame rather than when they are updated, 
 
 
 - God features
-	- Save, Copy, move, delete agents
+	- Save, Copy, move
 - Graphs
-	- Max Population Text
 	- Colour
 - To try tab/notifications
 	- Mass extinction is a big factor in evolution
@@ -15,9 +14,8 @@ Allow agents to get hurt on land instead of the sea, added toggles for sea agent
 - Particles
 
 BUGS
-- Can't click through statistics element
-- Fix positions for different screen dimentions
 - terainUpdate variable
+- check if graphs work after agent reset
 
 
 
