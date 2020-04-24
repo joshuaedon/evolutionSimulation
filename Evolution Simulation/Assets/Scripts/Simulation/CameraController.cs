@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
+using System.Collections.Generic;
 
 public class CameraController : MonoBehaviour {
     public static float minPanSpeed = 20f;
@@ -13,6 +14,10 @@ public class CameraController : MonoBehaviour {
     public static float rotateSpeed = 80f;
 
     public static bool follow = false;
+
+    // Android support
+    Vector3 touchPrev; 
+    int touchCountPrev; 
 
     void Update() {
         Vector3 pos = transform.position;
@@ -42,16 +47,36 @@ public class CameraController : MonoBehaviour {
 	        flatCamDir = Quaternion.Euler(0, -90, 0) * flatCamDir;
 	        if(Input.GetKey("d")/* || Input.mousePosition.x >= Screen.width - panBorderThickness*/)
 	            pos += flatCamDir * panSpeed * Time.deltaTime;
+
+           	// Android support
+			if(Input.GetMouseButtonDown(0) && !IsPointerOverUIObject())
+				touchPrev = Input.mousePosition;
+			if(Input.GetMouseButton(0) && !IsPointerOverUIObject()) {
+				if(touchCountPrev <= 1 && Input.touchCount <= 1)
+					pos += new Vector3((touchPrev.x - Input.mousePosition.x) / Screen.width, 0, (touchPrev.y - Input.mousePosition.y) / Screen.height) * 100f;
+				// Update touch position so that the camera stops moving when the user's finger does
+	       		touchCountPrev = Input.touchCount;
+				touchPrev = Input.mousePosition;
+			}
         }
 
         // Zoom the camera in/out
-        if(!EventSystem.current.IsPointerOverGameObject() && !Input.GetKey(KeyCode.LeftControl)) {
+        if(!IsPointerOverUIObject() && !Input.GetKey(KeyCode.LeftControl))
         	pos += Vector3.Normalize(camDir) * Input.GetAxis("Mouse ScrollWheel") * scrollSpeed * 100f * Time.deltaTime;
-	        // Cap the camera's height
-	        pos.x = Mathf.Clamp(pos.x, -panLimit, GridController.GC.cols + panLimit);
-	        pos.y = Mathf.Clamp(pos.y, minY, maxY);
-	        pos.z = Mathf.Clamp(pos.z, -panLimit, GridController.GC.rows + panLimit);
-    	}
+    	// Android support
+		if(Input.touchCount == 2) {
+			Vector2 touchZeroPrevPos = Input.GetTouch(0).position - Input.GetTouch(0).deltaPosition;
+			Vector2 touchOnePrevPos  = Input.GetTouch(1).position - Input.GetTouch(1).deltaPosition;
+
+			float prevMag = (touchZeroPrevPos - touchOnePrevPos).magnitude;
+			float curMag = (Input.GetTouch(0).position - Input.GetTouch(1).position).magnitude;
+
+			pos += Vector3.Normalize(camDir) * (curMag - prevMag) * scrollSpeed * Time.deltaTime;
+		}
+        // Cap the camera's height
+        pos.x = Mathf.Clamp(pos.x, -panLimit, GridController.GC.cols + panLimit);
+        pos.y = Mathf.Clamp(pos.y, minY, maxY);
+        pos.z = Mathf.Clamp(pos.z, -panLimit, GridController.GC.rows + panLimit);
         transform.position = pos;
 
         // Rotate the camera
@@ -64,4 +89,12 @@ public class CameraController : MonoBehaviour {
     public void toggleFollow(bool b) {
     	follow = b;
     }
+
+    private bool IsPointerOverUIObject() {
+		PointerEventData eventDataCurrentPosition = new PointerEventData(EventSystem.current);
+		eventDataCurrentPosition.position = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
+		List<RaycastResult> results = new List<RaycastResult>();
+		EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
+		return results.Count > 0;
+	}
 }

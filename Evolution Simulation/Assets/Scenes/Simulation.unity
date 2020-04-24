@@ -557,10 +557,10 @@ RectTransform:
   m_Father: {fileID: 769773931}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 83.17501, y: 114.869995}
-  m_SizeDelta: {x: 133.65, y: 30}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 83.17502, y: -90.130005}
+  m_SizeDelta: {x: -166.35, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &22025231
 MonoBehaviour:
@@ -1314,7 +1314,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.25}
   m_AnchorMax: {x: 1, y: 0.75}
-  m_AnchoredPosition: {x: -4.9999847, y: 0}
+  m_AnchoredPosition: {x: -5, y: 0}
   m_SizeDelta: {x: -20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &115638638
@@ -2991,7 +2991,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: ' 0.0000005 food/tick'
+  m_Text: ' 2 * 10^-7 food/tick'
 --- !u!222 &238938410
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3587,8 +3587,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1369942148}
   m_HandleRect: {fileID: 1369942147}
   m_Direction: 0
-  m_Value: 0
-  m_Size: 1
+  m_Value: 1
+  m_Size: 0.9999999
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -3736,10 +3736,10 @@ RectTransform:
   m_Father: {fileID: 769773931}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 1}
-  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: -15}
-  m_SizeDelta: {x: 280, y: 20}
+  m_SizeDelta: {x: -20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &291722554
 MonoBehaviour:
@@ -5973,10 +5973,10 @@ RectTransform:
   m_Father: {fileID: 769773931}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 83.17501, y: 144.86996}
-  m_SizeDelta: {x: 133.65, y: 30}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 83.17502, y: -60.130035}
+  m_SizeDelta: {x: -166.35, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &521025929
 MonoBehaviour:
@@ -6846,7 +6846,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1601014997}
   m_Direction: 2
   m_Value: 1
-  m_Size: 0.53823745
+  m_Size: 0.5600435
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -6959,10 +6959,10 @@ RectTransform:
   m_Father: {fileID: 769773931}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -53.65, y: 144.87}
-  m_SizeDelta: {x: 140, y: 30}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: -53.65, y: -60.130005}
+  m_SizeDelta: {x: -160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &608110277
 MonoBehaviour:
@@ -7039,6 +7039,8 @@ MonoBehaviour:
     - m_Text: Nodes
       m_Image: {fileID: 0}
     - m_Text: Kills
+      m_Image: {fileID: 0}
+    - m_Text: Children
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
@@ -7449,10 +7451,10 @@ RectTransform:
   m_Father: {fileID: 769773931}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -53.649994, y: 114.869995}
-  m_SizeDelta: {x: 140, y: 30}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: -53.649994, y: -90.130005}
+  m_SizeDelta: {x: -160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &684792772
 MonoBehaviour:
@@ -7527,6 +7529,8 @@ MonoBehaviour:
     - m_Text: Nodes
       m_Image: {fileID: 0}
     - m_Text: Kills
+      m_Image: {fileID: 0}
+    - m_Text: Children
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
@@ -8478,10 +8482,10 @@ RectTransform:
   m_Father: {fileID: 769773931}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -133.7, y: 114.87002}
-  m_SizeDelta: {x: 20.1, y: 30}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: -133.7, y: -90.12998}
+  m_SizeDelta: {x: -279.9, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &799831083
 MonoBehaviour:
@@ -8819,7 +8823,7 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 1
   m_WholeNumbers: 0
-  m_Value: 0.5
+  m_Value: 1
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
@@ -10543,10 +10547,10 @@ RectTransform:
   m_Father: {fileID: 769773931}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 1}
-  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: -35}
-  m_SizeDelta: {x: 287.5, y: 20}
+  m_SizeDelta: {x: -12.5, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &987504036
 MonoBehaviour:
@@ -14186,7 +14190,7 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 200
   m_WholeNumbers: 0
-  m_Value: 45
+  m_Value: 70
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
@@ -16779,9 +16783,9 @@ MonoBehaviour:
   m_HandleRect: {fileID: 915223318}
   m_Direction: 0
   m_MinValue: 0
-  m_MaxValue: 0.00001
+  m_MaxValue: 10
   m_WholeNumbers: 0
-  m_Value: 0.0000005
+  m_Value: 2
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
@@ -18576,7 +18580,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: ' 0.5 health/tick'
+  m_Text: ' 1 health/tick'
 --- !u!222 &1974824107
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -18729,10 +18733,10 @@ RectTransform:
   m_Father: {fileID: 769773931}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -133.7, y: 144.87}
-  m_SizeDelta: {x: 20.1, y: 30}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: -133.7, y: -60.130005}
+  m_SizeDelta: {x: -279.9, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2004454442
 MonoBehaviour:
@@ -18944,7 +18948,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: ' 50.63 food'
+  m_Text: ' 78.75 food'
 --- !u!222 &2016325851
 CanvasRenderer:
   m_ObjectHideFlags: 0

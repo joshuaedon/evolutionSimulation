@@ -20,6 +20,8 @@ public class SimulationManager : MonoBehaviour {
 	public GameObject AgentButtons;
 	public GameObject TerrainButtons;
 	public GameObject GrassButtons;
+	// Android support
+	Vector3 clickMousePos;
 
     void Start() {
 		NNFlow = true;
@@ -64,10 +66,13 @@ public class SimulationManager : MonoBehaviour {
                 lastTickSpeedSliderVal = TickSpeedSlider.value;
                 TickSpeedSlider.value = 0;
             }
-        }     
+        }
 
+        // Save mouse position to tell whether a mouse up is a click or a drag
+        if(Input.GetMouseButtonDown(0) && !IsPointerOverUIObject())
+    		clickMousePos = Input.mousePosition;
         // Select agent	
-        if(Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject()) {
+        if(Input.GetMouseButtonUp(0) && !IsPointerOverUIObject() && clickMousePos == Input.mousePosition) {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
             // If an agent is already selected, set its colour back to white and destroy the old agent panel
@@ -90,7 +95,7 @@ public class SimulationManager : MonoBehaviour {
             }
         }
 
-        if(godTool != 0 && !UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) {
+        if(godTool != 0 && !IsPointerOverUIObject()) {
         	// Display vertices
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
@@ -323,15 +328,15 @@ public class SimulationManager : MonoBehaviour {
         GameObject.Find("YScaleSlider").GetComponent<Slider>().value = 5f;
         GameObject.Find("SeaBorderSlider").GetComponent<Slider>().value = 10f;
         // Food
-        GameObject.Find("GrassSpawnAmountSlider").GetComponent<Slider>().value = 45f;
+        GameObject.Find("GrassSpawnAmountSlider").GetComponent<Slider>().value = 70f;
         GameObject.Find("GrassSpawnRateSlider").GetComponent<Slider>().value = 20;
         GameObject.Find("EatSpeedSlider").GetComponent<Slider>().value = 0.5f;
         GameObject.Find("HungerLossSlider").GetComponent<Slider>().value = 0.004f;
-        GameObject.Find("NodeHungerLossPenaltySlider").GetComponent<Slider>().value = 0.0000005f;
+        GameObject.Find("NodeHungerLossPenaltySlider").GetComponent<Slider>().value = 2f;
 
         GameObject.Find("WaterDamageSlider").GetComponent<Slider>().value = 0.1f;
         GameObject.Find("WaterMutateSlider").GetComponent<Slider>().value = 0.2f;
-        GameObject.Find("AttackDamageSlider").GetComponent<Slider>().value = 0.5f;
+        GameObject.Find("AttackDamageSlider").GetComponent<Slider>().value = 1f;
     }
 
     public void adjustTerrainTimeStep(float value) {
@@ -405,7 +410,7 @@ public class SimulationManager : MonoBehaviour {
 
     public void adjustNodeHungerLossPenalty(float value) {
         GridController.GC.nodeHungerLossPenalty = value;
-        GameObject.Find("NodeHungerLossPenaltyValue").GetComponent<Text>().text = " " + value + " food/tick";
+        GameObject.Find("NodeHungerLossPenaltyValue").GetComponent<Text>().text = " " + Mathf.Round(value * 100f) / 100f + " * 10^-7 food/tick";
     }
 
     public void toggleUnderwaterFoodSpawn(bool b) {
@@ -431,4 +436,12 @@ public class SimulationManager : MonoBehaviour {
     public void toggleSeaAgents(bool b) {
     	GridController.GC.seaAgents = b;
     }
+
+    private bool IsPointerOverUIObject() {
+		PointerEventData eventDataCurrentPosition = new PointerEventData(EventSystem.current);
+		eventDataCurrentPosition.position = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
+		List<RaycastResult> results = new List<RaycastResult>();
+		EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
+		return results.Count > 0;
+	}
 }

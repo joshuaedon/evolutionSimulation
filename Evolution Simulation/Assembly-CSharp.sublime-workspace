@@ -1,0 +1,549 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"agentRe",
+				"agentRecords"
+			],
+			[
+				"Agent",
+				"AgentRecord"
+			],
+			[
+				"sens",
+				"sensePositions"
+			],
+			[
+				"sense",
+				"sensePositions"
+			],
+			[
+				"sensePo",
+				"sensePositionLabels"
+			],
+			[
+				"right",
+				"rightChunks"
+			],
+			[
+				"lookD",
+				"lookDir"
+			],
+			[
+				"connec",
+				"connectionObjects"
+			],
+			[
+				"connectonIn",
+				"connectionIndex2"
+			],
+			[
+				"brush",
+				"brushChunks"
+			],
+			[
+				"repro",
+				"reproduceOut"
+			],
+			[
+				"inp",
+				"inputColours"
+			],
+			[
+				"bru",
+				"brushSize"
+			],
+			[
+				"Gr",
+				"GraphTimeSlider"
+			],
+			[
+				"muta",
+				"mutateAmount"
+			],
+			[
+				"mut",
+				"mutateAmount"
+			],
+			[
+				"re",
+				"reproduce"
+			],
+			[
+				"node",
+				"nodeNum"
+			],
+			[
+				"layer",
+				"layerNum"
+			],
+			[
+				"grassSpa",
+				"adjustGrassSpawnAmount"
+			],
+			[
+				"gras",
+				"grassSpawnAmount"
+			],
+			[
+				"Simu",
+				"SimulationManager"
+			],
+			[
+				"vert",
+				"verticesP"
+			],
+			[
+				"ver",
+				"verticesP"
+			],
+			[
+				"Node",
+				"Nodes"
+			],
+			[
+				"Ray",
+				"RaycastResult"
+			],
+			[
+				"Grid",
+				"GridController"
+			],
+			[
+				"selec",
+				"selectedAgent"
+			],
+			[
+				"poin",
+				"pointList"
+			],
+			[
+				"Age",
+				"AgentPanel"
+			],
+			[
+				"getC",
+				"GetComponent"
+			],
+			[
+				"connectionO",
+				"connectionObj"
+			],
+			[
+				"staet",
+				"startingAgents"
+			],
+			[
+				"spawn",
+				"spawnAgents"
+			],
+			[
+				"terr",
+				"terrainTimeStep"
+			],
+			[
+				"weight",
+				"weights"
+			],
+			[
+				"gam",
+				"gameObject"
+			],
+			[
+				"De",
+				"Debug"
+			],
+			[
+				"grid",
+				"gridArray"
+			],
+			[
+				"G",
+				"GameObject"
+			],
+			[
+				"no",
+				"nodeSize"
+			],
+			[
+				"Agen",
+				"AgentPannel"
+			],
+			[
+				"for",
+				"foreach"
+			],
+			[
+				"s",
+				"size"
+			],
+			[
+				"input",
+				"inputLabels"
+			],
+			[
+				"terra",
+				"terrainScale"
+			],
+			[
+				"sc",
+				"screenPos"
+			],
+			[
+				"part",
+				"partnerMutation"
+			],
+			[
+				"min",
+				"minBotCount"
+			],
+			[
+				"max",
+				"maxBotCount"
+			],
+			[
+				"fra",
+				"framesPerTick"
+			],
+			[
+				"inacti",
+				"inactivityCount"
+			],
+			[
+				"get",
+				"getValue"
+			],
+			[
+				"obj",
+				"objSize"
+			],
+			[
+				"curren",
+				"currentNode"
+			],
+			[
+				"RETURN",
+				"returnOutput"
+			],
+			[
+				"return",
+				"returnOutput"
+			],
+			[
+				"outp",
+				"outputLabels"
+			],
+			[
+				"outP",
+				"outputLabels"
+			],
+			[
+				"output",
+				"outputLabels"
+			],
+			[
+				"senseSta",
+				"senseStartScreenPos"
+			],
+			[
+				"ret",
+				"returnOutput"
+			],
+			[
+				"cur",
+				"currHeight"
+			],
+			[
+				"g",
+				"getValue"
+			],
+			[
+				"nn",
+				"nnHeight"
+			],
+			[
+				"bot",
+				"botsTab"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 0.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/C/Users/joshu/Google Drive/Unity/Chess Roguelike/Assets/Scripts/RoomController.cs",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/Scripts/GUI/GraphPanelController.cs",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/Scripts/Simulation/Agent.cs",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/Scripts/Simulation/GridController.cs",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/Scripts/toAdd.txt",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/Scripts/Simulation/Node.cs",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/Scripts/GUI/AgentPanelController.cs",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/Scripts/GUI/SimulationManager.cs",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/unity-ui-extensions/Scripts/Utilities/NonDrawingGraphic.cs",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/Scripts/Simulation/NeuralNetwork.cs",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/Scripts/GUI/MenuCameraController.cs",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/Scripts/Simulation/Chunk.cs",
+		"/C/Users/joshu/Google Drive/Processing/evoltest/evoltestV4/Bot.pde",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/Scripts/Simulation/CameraController.cs",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/Scripts/Simulation/Layer.cs",
+		"/C/Users/joshu/Google Drive/Processing/evoltest/evoltestV4/Node.pde",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/Scripts/GUI/GridPanelController.cs",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/Scripts/GUI/MenuManager.cs",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/Scripts/Simulation/SimulationManager.cs",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/Scripts/Simulation/OpenSimplexNoise.cs",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/Scripts/GUI/StatsPanelController.cs",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/unity-ui-extensions/Scripts/Controls/Stepper.cs",
+		"/C/Users/joshu/Google Drive/Processing/evoltest/evoltestV4/evoltestV4.pde",
+		"/C/Users/joshu/Google Drive/Processing/evoltest/evoltestV4/UI.pde",
+		"/C/Users/joshu/Google Drive/Processing/evoltest/evoltestV4/Tabs.pde",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/DragBarController.cs",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/meshscript.cs",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/unity-ui-extensions/Scripts/Utilities/ScrollRectLinker.cs",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/unity-ui-extensions/Examples/FancyScrollView/03_InfiniteScroll/Example03Scene.cs",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/unity-ui-extensions/Scripts/Utilities/ExtensionsToggle.cs",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/Scripts/Simulation/DefaultValues.cs",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/Scripts/DefaultValues.cs",
+		"/C/Users/joshu/Google Drive/Processing/evoltest/evoltestV6/NeuralNetwork.pde",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/unity-ui-extensions/Examples/UILineRenderer/TestAddingPoints.cs",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/unity-ui-extensions/Scripts/Controls/ComboBox/DropDownListItem.cs",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/AddPoint.cs",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/unity-ui-extensions/Scripts/Primitives/UILineRenderer.cs",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/SimulationManager.cs",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/Scripts/GUI/MainMenuController.cs",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/Scripts/GUI/GUIController.cs",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/Scripts/Simulation/MenuCameraController.cs",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/Scripts/GUI/AgentStats.cs",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/Scripts/GUI/StatsManager.cs",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/Scripts/Simulation/gridControllerTest.cs",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/Scripts/defaultValues.cs",
+		"/C/Users/joshu/Google Drive/Processing/evoltest/evoltestV6/Node.pde",
+		"/C/Users/joshu/Google Drive/Processing/evoltest/evoltestV6/evoltestV6.pde",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/Scripts/Simulation/AgentScript.cs",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/Scripts/Simulation/AgentController.cs",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/AgentController.cs",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/NewScript.cs",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/Scripts/Simulation/GUI/StatsManager.cs",
+		"/C/Users/joshu/Google Drive/Processing/evoltest/evoltestV6/Tabs.pde",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/Scripts/Simulation/GUI/AgentStats.cs",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/.git/COMMIT_EDITMSG",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/Scripts/Simulation/Agent.cs.meta",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/Scripts/MainMenu/MenuManager.cs",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/Materials/StandardVertex.shader",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/Materials/Grid Shader.shader",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/Scripts/Simulation/GUI/AgentSelect.cs",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/Scripts/toAdd.cs.meta",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/Scripts/Simulation/NeuralNetwork.cs.meta",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/Simulation/Scripts/GridController.cs",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/Simulation/Scripts/CameraController.cs",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/Simulation/Scripts/Agent.cs",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/Menu/Scripts/MenuManager.cs",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/Scripts/NeuralNetwork.cs",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/Scripts/Agent.cs",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/Scripts/Chunk.cs",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/Scripts/GridController.cs",
+		"/C/Users/joshu/Google Drive/Processing/evoltest/evoltestV6/Bot.pde",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/Scripts/Node.cs",
+		"/C/Users/joshu/Google Drive/Processing/evoltest/evoltestV6/Chunk.pde",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/Scripts/Layer.cs",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/Scripts/AgentController.cs",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/Scripts/CameraController.cs",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/Scripts/GridController.cs.meta",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS325 - Compiler Design/Coursework/grammar.txt",
+		"/C/Users/joshu/Google Drive/Unity/AI Race/Assets/Scripts/playerController.cs",
+		"/C/Users/joshu/Google Drive/Unity/AI Race/Assets/Scripts/playerMovement.cs",
+		"/C/Users/joshu/Google Drive/Processing/evoltest/evoltestV6/notes.pde",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS325 - Compiler Design/Coursework/grammar - Copy.js",
+		"/C/Users/joshu/OneDrive/Desktop/grammar - Copy.js",
+		"/C/Users/joshu/OneDrive/Desktop/grammar.js",
+		"/C/Users/joshu/Google Drive/Unity/AI Race/Assets/Scripts/cameraController.cs",
+		"/C/Users/joshu/Google Drive/Unity/AI Race/Assets/Scripts/mapController.cs",
+		"/C/Users/joshu/Google Drive/Unity/Dungeon Crawler/Assets/Scripts/CameraController.cs",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Dungeon Crawler/Assets/Scripts/CameraController.cs",
+		"/C/Users/joshu/Google Drive/School/Warwick/Year 3/CS310 - Project/evolutionSimulation/Evolution Simulation/Assets/Scripts/AgentController.cs.meta",
+		"/C/Users/joshu/Google Drive/Processing/evoltest/evoltest/Node.pde",
+		"/C/Users/joshu/Google Drive/Processing/evoltest/evoltest/Bot.pde",
+		"/C/Users/joshu/Google Drive/Processing/evoltest/evoltest/notes.pde",
+		"/C/Users/joshu/OneDrive/Desktop/jaguar-capital copy/index.html",
+		"/C/Users/joshu/AppData/Local/Temp/Temp1_My profile.zip/My profile/style.css",
+		"/C/Users/joshu/OneDrive/Desktop/ffff/My profile/index.html",
+		"/C/Users/joshu/OneDrive/Desktop/ffff/My profile/style.css",
+		"/C/Users/joshu/OneDrive/Desktop/ffff/__MACOSX/My profile/._index.html",
+		"/C/Users/joshu/Google Drive/Processing/evoltest/evoltest/UI.pde",
+		"/C/Users/joshu/Google Drive/Processing/evoltest/evoltest/evoltest.pde",
+		"/C/Users/joshu/Google Drive/Processing/evoltest/evoltest/Chunk.pde",
+		"/C/Users/joshu/Google Drive/Processing/evoltest/evoltest/NeuralNetwork.pde",
+		"/C/Users/joshu/Google Drive/Processing/evoltest/evoltest/Food.pde",
+		"/C/Users/joshu/Google Drive/Processing/evoltest/evoltest/Layer.pde",
+		"/C/Users/joshu/Google Drive/Processing/evoltest/evoltest/Object.pde",
+		"/C/Users/joshu/Google Drive/Processing/evoltest/evoltest/GUI.pde",
+		"/C/Users/joshu/Google Drive/Processing/evoltest/evoltest/settings.pde",
+		"/C/Users/joshu/Google Drive/Processing/evoltest/Bot.pde",
+		"/C/Users/joshu/Google Drive/Processing/evoltest/settings.pde",
+		"/C/Users/joshu/Google Drive/Processing/evoltest/UI.pde",
+		"/C/Users/joshu/Google Drive/Processing/evoltest/Chunk.pde",
+		"/C/Users/joshu/Google Drive/Processing/evoltest/NeuralNetwork.pde",
+		"/C/Users/joshu/Google Drive/Processing/evoltest/evoltest.pde",
+		"/C/Users/joshu/Google Drive/Processing/evoltest/notes.pde",
+		"/C/Users/joshu/Google Drive/Processing/evoltest/Object.pde",
+		"/C/Users/joshu/Google Drive/Processing/evoltest/Node.pde",
+		"/C/Users/joshu/Google Drive/Processing/Evolution/Water.pde",
+		"/C/Users/joshu/Google Drive/Processing/Evolution/Grass.pde",
+		"/C/Users/joshu/Google Drive/Processing/Evolution/Chunk.pde",
+		"/C/Users/joshu/Google Drive/Processing/Evolution/userInput.pde",
+		"/C/Users/joshu/Google Drive/Processing/Evolution/Object.pde",
+		"/C/Users/joshu/Google Drive/Processing/Evolution/NeuralNetwork.pde"
+	],
+	"find":
+	{
+		"height": 24.0
+	},
+	"find_in_files":
+	{
+		"height": 102.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 24.0
+	},
+	"input":
+	{
+		"height": 40.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "Assembly-CSharp.sublime-project",
+	"replace":
+	{
+		"height": 44.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 223.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

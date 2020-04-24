@@ -12,6 +12,7 @@ public class Agent {
     public int generation;
     public int ticksAlive;
     public int kills;
+    public int children;
 
     public int[] sensePositions;
     public int[] senseThings;
@@ -131,7 +132,7 @@ public class Agent {
     public void act(bool isMenu) {
         if(!isMenu) {
         	// Loose hunger and health
-        	this.hunger -= GridController.GC.hungerLoss + (this.network.nodeCount + network.layers.Length*10) * GridController.GC.nodeHungerLossPenalty;
+        	this.hunger -= GridController.GC.hungerLoss + 0.0000001f * (this.network.nodeCount + network.layers.Length*20) * GridController.GC.nodeHungerLossPenalty;
 
         	float mult = Mathf.Pow(chunk.isWater() ?
         				 (GridController.GC.seaAgents ? this.landSea : 1) :
@@ -222,6 +223,7 @@ public class Agent {
     		offspring.hunger = this.hunger;
     		c.agent = offspring;
     		GridController.GC.agents.Add(offspring);
+    		this.children++;
     	}
     }
 
@@ -349,6 +351,7 @@ public struct AgentRecord {
 	public int senseBack;
 	public int nodes;
 	public int kills;
+	public int children;
 
 	public AgentRecord(bool a) {
 		this.deathTick = int.MaxValue;
@@ -364,13 +367,14 @@ public struct AgentRecord {
     	this.senseBack = int.MaxValue;
     	this.nodes = int.MaxValue;
     	this.kills = int.MaxValue;
+    	this.children = int.MaxValue;
 	}
 
 	public AgentRecord(int deathTick,
 					   float landSea, int generation, int ticksAlive, float colour,
 					   int senseFood, int senseWater, int senseAgent,
 					   int senseFront, int senseSide, int senseBack,
-					   int nodes, int kills) {
+					   int nodes, int kills, int children) {
 		this.deathTick = deathTick;
 		this.landSea = landSea;
     	this.generation = generation;
@@ -384,6 +388,7 @@ public struct AgentRecord {
     	this.senseBack = senseBack;
     	this.nodes = nodes;
     	this.kills = kills;
+    	this.children = children;
 	}
 
  	public AgentRecord updateMaxRecord(AgentRecord r) {
@@ -400,6 +405,7 @@ public struct AgentRecord {
 		this.senseBack = Mathf.Max(this.senseBack, r.senseBack);
 		this.nodes = Mathf.Max(this.nodes, r.nodes);
 		this.kills = Mathf.Max(this.kills, r.kills);
+		this.children = Mathf.Max(this.children, r.children);
 		return this;
     }
 
@@ -417,6 +423,7 @@ public struct AgentRecord {
 		this.senseBack = Mathf.Min(this.senseBack, r.senseBack);
 		this.nodes = Mathf.Min(this.nodes, r.nodes);
 		this.kills = Mathf.Min(this.kills, r.kills);
+		this.children = Mathf.Min(this.children, r.children);
 		return this;
     }
 
@@ -435,6 +442,7 @@ public struct AgentRecord {
 	    	case 10: return senseBack;
 	    	case 11: return nodes;
 	    	case 12: return kills;
+	    	case 13: return children;
 	    }
 	    return 0;
     }
@@ -444,6 +452,6 @@ public struct AgentRecord {
     		this.landSea + ", " + this.generation + ", " + this.ticksAlive + ", " + this.colour + ", " +
     		this.senseFood + ", " + this.senseWater + ", " + this.senseAgent + ", " +
     		this.senseFront + ", " + this.senseSide + ", " + this.senseBack + ", " +
-    		this.nodes + ", " + this.kills);
+    		this.nodes + ", " + this.kills + ", " + this.children);
     }
 }

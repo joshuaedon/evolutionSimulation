@@ -42,7 +42,7 @@ public class Node {
         for (int n = 0; n < nodes.Length; n++)
             sum += nodes[n].value*weights[n];
         // ACTIVATION FUNCTION
-        sum = Mathf.Max(sum, sum/10f);
+        sum = Mathf.Max(sum, 0/*sum/10f*/);
         this.value = sum;
     }
 

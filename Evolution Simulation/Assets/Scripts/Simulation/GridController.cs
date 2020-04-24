@@ -69,14 +69,14 @@ public class GridController : MonoBehaviour {
         yScale = 5f;
         seaBorder = 10;
         // Food
-        grassSpawnAmount = 45f;
+        grassSpawnAmount = 70f;
         grassSpawnRate = 20;
         eatSpeed = 0.5f;
         hungerLoss = 0.004f;
-        nodeHungerLossPenalty = 0.0000005f;
+        nodeHungerLossPenalty = 2f;
         underwaterFoodSpawn = false;
         // Health
-        attackDamage = 0.5f;
+        attackDamage = 1f;
         waterDamage = 0.1f;
         waterMutate = 0.2f;
         seaAgents = false;
@@ -161,7 +161,7 @@ public class GridController : MonoBehaviour {
 						agents[i].landSea, agents[i].generation, agents[i].ticksAlive, (agents[i].network.countWeights()/25f + 1000000f) % 1f,
 						senseFood, senseWater, senseAgent,
 						senseFront, senseSide, senseBack,
-						agents[i].network.nodeCount, agents[i].kills);
+						agents[i].network.nodeCount, agents[i].kills, agents[i].children);
 
                 	agentRecords[0].Insert(0, record);
                 	for(int j = 1; j < agentRecords.Count; j++) {
