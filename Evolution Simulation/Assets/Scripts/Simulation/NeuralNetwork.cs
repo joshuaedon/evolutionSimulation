@@ -193,7 +193,7 @@ public class NeuralNetwork {
 		}
 
 		// Add nodes
-		for (int curL = 1; curL < layers.Length-1; curL++) {
+		/*for (int curL = 1; curL < layers.Length-1; curL++) {
 			if(Random.Range(0f, 1f) < mutateAmount) {
 				// Add node at the top of layer
 				List<Node> nodeList = new List<Node>(this.layers[curL].nodes);
@@ -202,11 +202,46 @@ public class NeuralNetwork {
 				// Update node numbers
 				updateNodeNumbers(curL);
 			}
-		}
+		}*/
+		if(layers.Length > 2 && Random.Range(0f, 1f) < mutateAmount*1.5f) {
+			int tries = 0;
+			int curL, curN, curC;
+			do {
+				curL = Random.Range(2, layers.Length);
+				curN = Random.Range(0, layers[curL].nodes.Length - 1);
+				curC = Random.Range(0, layers[curL].nodes[curN].nodes.Length);
+				tries++;
+				if(layers[curL].nodes.Length - 1 == 0 || layers[curL].nodes[curN].nodes.Length == 0)
+					tries = 10;
+			} while(tries < 10 && layers[curL].nodes[curN].layerNum - layers[curL].nodes[curN].nodes[curC].layerNum <= 1);
+
+			if(tries < 10) {
+				int newNodeLayer = Random.Range(layers[curL].nodes[curN].nodes[curC].layerNum + 1, layers[curL].nodes[curN].layerNum);
+				List<Node> newNodeList = new List<Node>(this.layers[newNodeLayer].nodes);
+
+				Node newNode = new Node(newNodeLayer, 0);
+				newNode.nodes = new Node[]{layers[curL].nodes[curN].nodes[curC]};
+				newNode.weights = new float[]{1f};
+				newNode.connectionObjects = new GameObject[1];
+				layers[curL].nodes[curN].nodes[curC] = newNode;
+
+				newNodeList.Insert(0, newNode);
+				this.layers[newNodeLayer].nodes = newNodeList.ToArray();
+				updateNodeNumbers(newNodeLayer);
+			} else {
+				int newNodeLayer = Random.Range(1, layers.Length - 1);
+				List<Node> newNodeList = new List<Node>(this.layers[newNodeLayer].nodes);
+
+				newNodeList.Insert(0, new Node(newNodeLayer, 0));
+				this.layers[newNodeLayer].nodes = newNodeList.ToArray();
+				updateNodeNumbers(newNodeLayer);
+			}
+        }
 
 		// Remove nodes
-		for (int curL = 1; curL < layers.Length-1; curL++) {
-			if(Random.Range(0f, 1f) < mutateAmount && this.layers[curL].nodes.Length > 1) {
+		if(layers.Length > 2 && Random.Range(0f, 1f) < mutateAmount) {
+			int curL = Random.Range(1, layers.Length - 1);
+			if(this.layers[curL].nodes.Length > 1) {
 				int curN = Random.Range(0, this.layers[curL].nodes.Length-1);
 				List<Node> nodeList = new List<Node>(this.layers[curL].nodes);
 
@@ -225,7 +260,7 @@ public class NeuralNetwork {
 		}
 
 		// Add/remove connections
-    	for (int curL = 1; curL < layers.Length; curL++) {
+    	for(int curL = 1; curL < layers.Length; curL++) {
     		// For each node (appart from the bias node) in each layer
             for (int curN = 0; curN < layers[curL].nodes.Length - 1; curN++) {
             	// Set probability to add a layer over remove to 0.5 for the layer behind the current

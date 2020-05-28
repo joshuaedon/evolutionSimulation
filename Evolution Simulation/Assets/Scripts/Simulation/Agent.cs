@@ -9,6 +9,7 @@ public class Agent {
 
     public NeuralNetwork network;
     public float landSea;
+    public float encodedInputs;
     public int generation;
     public int ticksAlive;
     public int kills;
@@ -31,6 +32,7 @@ public class Agent {
 
         this.network = new NeuralNetwork(new int[] {18, 6});
         this.landSea = 0.5f;
+        this.encodedInputs = 1f;
         this.generation = 1;
         this.ticksAlive = 0;
         changeColour();
@@ -98,7 +100,9 @@ public class Agent {
         inputs[1] = this.hunger;
         inputs[2] = this.health;
 
-        inputs[3 + highestOutput()] = 1f;
+        for(int i = 0; i < 6; i++)
+        	inputs[i + 3] = 0.01f * network.returnOutput(i);
+        inputs[3 + highestOutput()] += 0.99f;
 
         for(int i = 9; i < 18; i++)
         	inputs[i] = getThingValue(getChunk(sensePositions[i-9]), senseThings[i-9]);

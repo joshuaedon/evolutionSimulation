@@ -1,0 +1,5 @@
+- All source files in 'Evolution Simulation' folder (these can be compiled and run using the unity engine)
+- C# source code (.cs) files under 'Evolution Simulation/Assets/Scripts'
+- Android APK in 'Android Build'
+- Runnable PC file under 'PC Build'
+- If having touble getting agents to survive, increase the 'terrain scale' in the settings menu (at the bottom). Can also increase 'food spawn amount' or decrease 'hunger loss'. Speed up and wait for evolution :)

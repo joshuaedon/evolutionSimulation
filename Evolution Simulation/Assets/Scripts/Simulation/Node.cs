@@ -109,7 +109,8 @@ public class Node {
 		    			break;
 		    		}
 		    	}
-		    	float newWeight = Mathf.Min(otherNode.weights[otherNodeN] * this.weights[connectionIndex], otherNode.weights[otherNodeN] * Mathf.Abs(this.weights[connectionIndex]));
+		    	// float newWeight = Mathf.Min(otherNode.weights[otherNodeN] * this.weights[connectionIndex], otherNode.weights[otherNodeN] * Mathf.Abs(this.weights[connectionIndex]));
+		    	float newWeight = (otherNode.weights[otherNodeN] < 0 && this.weights[connectionIndex] < 0) ? 0 : otherNode.weights[otherNodeN] * this.weights[connectionIndex];
 		    	if(connectionIndex2 > -1) {
 		    		// If this node already has a connection to it, sum that weight with the new weight
 		    		this.weights[connectionIndex2] += newWeight;
