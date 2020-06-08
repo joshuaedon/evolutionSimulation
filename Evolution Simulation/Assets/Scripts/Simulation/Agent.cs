@@ -2,95 +2,81 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Agent {
-    public GameObject agentObj;
-    public GameObject plumbob;
+public class Agent : MonoBehaviour {
+    // public GameObject highlight;
     public Chunk chunk;
 
     public NeuralNetwork network;
-    public float landSea;
-    public float encodedInputs;
+    // public float encodedInputs;
     public int generation;
+    
     public int ticksAlive;
     public int kills;
     public int children;
 
-    public int[] sensePositions;
-    public int[] senseThings;
+    // public int[] sensePositions;
+    // public int[] senseThings;
 
     int dir;
 
     public float hunger;
     public float health;
 
-    public Agent(GameObject agentObj, Chunk chunk) {
-        this.agentObj = agentObj;
-        this.plumbob = agentObj.transform.GetChild(2).gameObject;
-        this.plumbob.SetActive(false);
-        this.chunk = chunk;
-        moveObj();
-
-        this.network = new NeuralNetwork(new int[] {18, 6});
-        this.landSea = 0.5f;
-        this.encodedInputs = 1f;
-        this.generation = 1;
+    void Awake() {
+        // this.highlight = transform.GetChild(4).gameObject;
+        // this.highlight.SetActive(false);
+        transform.GetChild(4).gameObject.SetActive(false);
         this.ticksAlive = 0;
-        changeColour();
-
-        this.sensePositions = new int[9];
-        for(int i = 0; i < 9; i++)
-        	sensePositions[i] = Random.Range(0, 9);
-        this.senseThings = new int [9];
-        for(int i = 0; i < 9; i++)
-        	senseThings[i] = Random.Range(0, 3);
+        // this.sensePositions = new int[9];
+        // this.senseThings = new int[9];
 
         this.dir = Random.Range(0, 4);
         // Rotate the agent's object to the correct direction
-    	agentObj.transform.Rotate(0f, 90f - dir * 90f, 0f, Space.Self);
+    	transform.Rotate(0f, 0f, dir * 90f, Space.Self);
 
         this.hunger = 1;
         this.health = 1;
     }
 
-    public Agent(Chunk chunk, NeuralNetwork n, float landSea, int generation, int[] sensePositions, int[] senseThings) {
-        this.agentObj = (GameObject)Transform.Instantiate(Resources.Load("Simulation/Agent"), GridController.GC.transform);
-        this.plumbob = agentObj.transform.GetChild(2).gameObject;
-        this.plumbob.SetActive(false);
+    public void initiate(Chunk chunk) {
         this.chunk = chunk;
         moveObj();
 
-        this.network = new NeuralNetwork(n);
-        this.landSea = Mathf.Clamp(landSea + Random.Range(-this.network.mutateAmount, this.network.mutateAmount), 0f, 1f);
-        this.generation = generation;
-        this.ticksAlive = 0;
-        this.network.mutate();
-		changeColour();
+        this.generation = 1;
+        this.network = new NeuralNetwork(10);
+        setColour();
 
-        this.sensePositions = new int[9];
-		for(int i = 0; i < 9; i++) {
+        // for(int i = 0; i < 9; i++)
+        // 	sensePositions[i] = Random.Range(0, 9);
+        // for(int i = 0; i < 9; i++)
+        // 	senseThings[i] = Random.Range(0, 3);
+    }
+
+    public void inherit(Chunk chunk, int generation, NeuralNetwork n/*, int[] sensePositions, int[] senseThings*/) {
+        this.chunk = chunk;
+        moveObj();
+
+        this.generation = generation;
+        this.network = new NeuralNetwork(n);
+        this.network.mutate();
+		setColour();
+
+		/*for(int i = 0; i < 9; i++) {
 			if(Random.Range(0f, 1f) < this.network.mutateAmount / 5f)
         		this.sensePositions[i] = Random.Range(0, 9);
         	else
         		this.sensePositions[i] = sensePositions[i];
 		}
-        this.senseThings = new int[9];
         for(int i = 0; i < 9; i++) {
 			if(Random.Range(0f, 1f) < this.network.mutateAmount / 5f)
         		this.senseThings[i] = Random.Range(0, 3);
         	else
         		this.senseThings[i] = senseThings[i];
-		}
-
-        this.dir = Random.Range(0, 4);
-        // Rotate the agent's object to the correct direction
-    	agentObj.transform.Rotate(0f, 90f - dir * 90f, 0f, Space.Self);
-
-        this.hunger = 1;
-        this.health = 1;
+		}*/
     }
 
     public void moveObj() {
-        agentObj.transform.position = new Vector3(chunk.xPos, GridController.GC.yScale * Mathf.Clamp(chunk.yPos + chunk.yOffset, 0f, 1f) + 0.5f, chunk.zPos);
+		transform.position = new Vector3(chunk.col - 0.5f - SettingsPanel.cols/2f, chunk.row - 0.5f - SettingsPanel.rows/2f, 0);
     }
 
     public void loadInputs() {
@@ -136,20 +122,17 @@ public class Agent {
     public void act(bool isMenu) {
         if(!isMenu) {
         	// Loose hunger and health
-        	this.hunger -= GridController.GC.hungerLoss + 0.0000001f * (this.network.nodeCount + network.layers.Length*20) * GridController.GC.nodeHungerLossPenalty;
+        	this.hunger -= SettingsPanel.hungerLoss + 0.0000001f * (this.network.nodeCount + network.layers.Length*20) * SettingsPanel.nodeHungerLossPenalty;
 
-        	float mult = Mathf.Pow(chunk.isWater() ?
-        				 (GridController.GC.seaAgents ? this.landSea : 1) :
-        				 (1f - (GridController.GC.seaAgents ? this.landSea : 1)), 2);
-        	if(mult > 0.001) {
-        		if(GridController.GC.waterMutate > 0) {
-		    		network.mutateValue(mult * GridController.GC.waterMutate);
-		    		changeColour();
+        	if(chunk.isWater()) {
+        		if(SettingsPanel.waterMutate > 0) {
+		    		network.mutateValue(SettingsPanel.waterMutate);
+		    		setColour();
 		    	}
-	    		health -= mult * GridController.GC.waterDamage;
+	    		health -= SettingsPanel.waterDamage;
 	    	}
 
-        	agentObj.transform.GetChild(1).gameObject.GetComponent<MeshRenderer>().material.color = Color.white;
+        	transform.GetChild(1).gameObject.GetComponent<SpriteRenderer>().material.color = Color.white;
         	// Move forward, turn left, right, eat or attack depending on the agent's NN outputs
       		int output = highestOutput();
       		switch(output) {
@@ -162,10 +145,10 @@ public class Agent {
       		}
 
             loadInputs();
-        	if(this == SimulationManager.selectedAgent) {
+        	if(this == AgentPanel.selectedAgent) {
         		if(chunk.isWater()) {
-        			SimulationManager.AgentPanel.GetComponent<AgentPanelController>().resetNetwork();
-    			} else if(SimulationManager.NNFlow)
+        			ToolsPanel.agentPanel.GetComponent<AgentPanel>().resetNetwork();
+    			} else if(AgentPanel.NNFlow)
         			network.setConnectionColours();
         	}
 
@@ -184,12 +167,12 @@ public class Agent {
 
     void turnLeft() {
         this.dir = (dir + 1) % 4;
-        agentObj.transform.Rotate(0f, -90, 0f, Space.Self);
+        transform.Rotate(0f, 0f, 90f, Space.Self);
     }
 
     void turnRight() {
         this.dir = (dir + 3) % 4;
-        agentObj.transform.Rotate(0f, 90, 0f, Space.Self);
+        transform.Rotate(0f, 0f, -90f, Space.Self);
     }
 
     void stepForward(bool isMenu) {
@@ -204,40 +187,41 @@ public class Agent {
     }
 
     void eat() {
-    	float amount = Mathf.Min(GridController.GC.eatSpeed, Mathf.Min(1f - hunger, chunk.food));
+    	float amount = Mathf.Min(SettingsPanel.eatSpeed, Mathf.Min(1f - hunger, chunk.food));
     	hunger += amount;
     	chunk.food -= amount;
     	// Reset the color of the chunk's vertex
-        GridController.GC.updateVertexColour(chunk.xPos, chunk.zPos);
+        Grid.gridArray[chunk.col, chunk.row].updateColour();
     }
     
     public void reproduce() {
     	List<Chunk> chunks = new List<Chunk>();
-    	for(int i = Mathf.Max(chunk.xPos-1, 0); i <= Mathf.Min(chunk.xPos+1, GridController.GC.gridArray.GetLength(0)-1); i++) {
-    		for(int j = Mathf.Max(chunk.zPos-1, 0); j <= Mathf.Min(chunk.zPos+1, GridController.GC.gridArray.GetLength(1)-1); j++) {
-    			Chunk c = GridController.GC.gridArray[i, j];
+    	for(int i = Mathf.Max(chunk.col-1, 0); i <= Mathf.Min(chunk.col+1, Grid.gridArray.GetLength(0)-1); i++) {
+    		for(int j = Mathf.Max(chunk.row-1, 0); j <= Mathf.Min(chunk.row+1, Grid.gridArray.GetLength(1)-1); j++) {
+    			Chunk c = Grid.gridArray[i, j];
     			if(c.agent == null)
     				chunks.Add(c);
     		}
     	}
     	if(chunks.Count > 0) {
-    		Chunk c = chunks[Random.Range(0, chunks.Count)];
-    		Agent offspring = new Agent(c, this.network, this.landSea, this.generation+1, this.sensePositions, this.senseThings);
-    		this.hunger /= 1f + Mathf.Min(GridController.GC.agents.Count / 200f, 1f);
+    		Chunk chunk = chunks[Random.Range(0, chunks.Count)];
+    		Agent offspring = ((GameObject)Instantiate(Resources.Load("Simulation/Agent"), GameObject.Find("Agents").transform)).GetComponent<Agent>();
+            offspring.inherit(chunk, this.generation+1, this.network, this.sensePositions, this.senseThings);
+    		this.hunger /= 1f + Mathf.Min(Grid.agents.Count / 200f, 1f);
     		offspring.hunger = this.hunger;
-    		c.agent = offspring;
-    		GridController.GC.agents.Add(offspring);
+    		chunk.agent = offspring;
+    		Grid.agents.Add(offspring);
     		this.children++;
     	}
     }
 
     void attack() {
     	// Change colour to black
-    	agentObj.transform.GetChild(1).gameObject.GetComponent<MeshRenderer>().material.color = Color.black;
+    	transform.GetChild(1).gameObject.GetComponent<SpriteRenderer>().material.color = Color.black;
     	// If there is an agent infront, deal random damage
     	Chunk newChunk = getChunk(1);
         if(newChunk != null && newChunk.agent != null) {
-            newChunk.agent.health -= 2f*Random.Range(0f, GridController.GC.attackDamage);
+            newChunk.agent.health -= 2f*Random.Range(0f, SettingsPanel.attackDamage);
             // If killed, eat as much as can, drop the rest on the ground under the attacked agent
             if(newChunk.agent.health <= 0) {
             	kills++;
@@ -251,14 +235,14 @@ public class Agent {
         }
     }
 
-     public void changeColour() {
+    public void setColour() {
     	float colour = (this.network.countWeights()/25f + 1000000f) % 1f;
-		agentObj.transform.GetChild(0).gameObject.GetComponent<MeshRenderer>().material.color = Color.HSVToRGB(colour, 1f, 1f);
+		transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>().material.color = Color.HSVToRGB(colour, 1f, 1f);
     }
 
     Chunk getChunk(int position) {
-		int newCol = chunk.xPos;
-        int newRow = chunk.zPos;
+		int newCol = chunk.col;
+        int newRow = chunk.row;
         if(position == 0 || position == 1 || position == 2) {
 	        switch(this.dir) {
 	            case 0: newCol++; break;
@@ -291,8 +275,8 @@ public class Agent {
 	            case 3: newCol--; break;
 	        }
     	}
-        if(newCol >= 0 && newRow >= 0 && newCol < GridController.GC.cols && newRow < GridController.GC.rows) {
-            return GridController.GC.gridArray[newCol, newRow];
+        if(newCol >= 0 && newRow >= 0 && newCol < SettingsPanel.cols && newRow < SettingsPanel.rows) {
+            return Grid.gridArray[newCol, newRow];
         }
         return null;
     }
@@ -307,43 +291,12 @@ public class Agent {
     }
 
     bool canReproduce() {
-    	float val = GridController.GC.seaAgents ? this.landSea : 1f;
-    	return (Random.Range(0f, 1f) > Mathf.Pow(val, 2) && this.chunk.isWater()) || (Mathf.Pow(Random.Range(0f, 1f), 2) < val && !this.chunk.isWater());
+    	return !this.chunk.isWater();
     }
-
-    /*public Chunk[] getChunks(int positive) {
-    	float direction = (-positive * lookDir * Mathf.PI + (dir * Mathf.PI / 2f)) % (2f * Mathf.PI);
-    	float range = lookRange * Mathf.PI;
-    	float distance = lookDist * 5f + 1f;
-
-    	List<Chunk> chunks = new List<Chunk>();
-    	for(int c = -Mathf.FloorToInt(distance); c <= distance; c++) {
-    		for(int r = -Mathf.FloorToInt(distance); r <= distance; r++) {
-    			if(this.chunk.xPos + c >= 0 && this.chunk.zPos + r >= 0 && this.chunk.xPos + c < GridController.GC.cols && this.chunk.zPos + r < GridController.GC.rows) {
-    				if((c != 0 || r != 0) && checkChunk(direction, range, distance, c, r))
-    					chunks.Add(GridController.GC.gridArray[this.chunk.xPos + c, this.chunk.zPos + r]);
-    			}
-			}
-    	}
-
-    	return chunks.ToArray();
-    }
-
-    bool checkChunk(float direction, float range, float distance, int c, int r) {
-    	if(Mathf.Pow(c*c + r*r, 0.5f) > distance)
-    		return false;
-
-    	float difference = Mathf.Abs(Mathf.Atan2(r, c) - direction);
-    	if(difference > range && difference < Mathf.PI * 2 - range)
-    		return false;
-
-    	return true;
-    }*/
 }
 
 public struct AgentRecord {
 	public int deathTick;
-	public float landSea;
 	public int generation;
 	public int ticksAlive;
 	public float colour;
@@ -359,7 +312,6 @@ public struct AgentRecord {
 
 	public AgentRecord(bool a) {
 		this.deathTick = int.MaxValue;
-		this.landSea = float.MaxValue;
     	this.generation = int.MaxValue;
     	this.ticksAlive = int.MaxValue;
     	this.colour = float.MaxValue;
@@ -375,12 +327,11 @@ public struct AgentRecord {
 	}
 
 	public AgentRecord(int deathTick,
-					   float landSea, int generation, int ticksAlive, float colour,
+					   int generation, int ticksAlive, float colour,
 					   int senseFood, int senseWater, int senseAgent,
 					   int senseFront, int senseSide, int senseBack,
 					   int nodes, int kills, int children) {
 		this.deathTick = deathTick;
-		this.landSea = landSea;
     	this.generation = generation;
     	this.ticksAlive = ticksAlive;
     	this.colour = colour;
@@ -397,7 +348,6 @@ public struct AgentRecord {
 
  	public AgentRecord updateMaxRecord(AgentRecord r) {
 		this.deathTick = Mathf.Max(this.deathTick, r.deathTick);
-		this.landSea = Mathf.Max(this.landSea, r.landSea);
 		this.generation = Mathf.Max(this.generation, r.generation);
 		this.ticksAlive = Mathf.Max(this.ticksAlive, r.ticksAlive);
 		this.colour = Mathf.Max(this.colour, r.colour);
@@ -415,7 +365,6 @@ public struct AgentRecord {
 
     public AgentRecord updateMinRecord(AgentRecord r) {
 		this.deathTick = Mathf.Min(this.deathTick, r.deathTick);
-		this.landSea = Mathf.Min(this.landSea, r.landSea);
 		this.generation = Mathf.Min(this.generation, r.generation);
 		this.ticksAlive = Mathf.Min(this.ticksAlive, r.ticksAlive);
 		this.colour = Mathf.Min(this.colour, r.colour);
@@ -434,7 +383,6 @@ public struct AgentRecord {
     public float get(int index) {
     	switch(index) {
 	    	case 0: return deathTick;
-    		case 1: return landSea;
 	    	case 2: return generation;
 	    	case 3: return ticksAlive;
 	    	case 4: return colour;
@@ -453,7 +401,7 @@ public struct AgentRecord {
 
     public void print() {
     	Debug.Log(this.deathTick + ", " +
-    		this.landSea + ", " + this.generation + ", " + this.ticksAlive + ", " + this.colour + ", " +
+    		this.generation + ", " + this.ticksAlive + ", " + this.colour + ", " +
     		this.senseFood + ", " + this.senseWater + ", " + this.senseAgent + ", " +
     		this.senseFront + ", " + this.senseSide + ", " + this.senseBack + ", " +
     		this.nodes + ", " + this.kills + ", " + this.children);

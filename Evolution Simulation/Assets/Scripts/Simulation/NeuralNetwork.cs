@@ -4,28 +4,37 @@ using UnityEngine.UI.Extensions;
 using UnityEngine;
 
 public class NeuralNetwork {
-    public float mutateAmount;
-    float weightDecay = 0.999f;
-    float mutateStrucProb = 0.02f;
-    public Layer[] layers;
+    public float mutateWeight;
+    public List<Node> nodes;
+    public List<Node> inputNodes;
+    public List<Node> outputNodes;
     public float maxWeight;
-    public int nodeCount;
     
-    // Used for starting agents
-    public NeuralNetwork(int[] layerSizes) {
-        this.mutateAmount = 0.1f;
-        this.layers = new Layer[layerSizes.Length];
-        layers[0] = new Layer(new Node[0], layerSizes[0], 0);
-        for (int i = 1; i < layers.Length; i++)
-            layers[i] = new Layer(layers[i-1].nodes, layerSizes[i], i);
+    // Initiated network
+    public NeuralNetwork(int nodeCount) {
+        this.mutateWeight = 1f;
+        this.nodes = new List<Node>();
+        for(int n = 0; n < nodeCount; n++) {
+        	if(Random.Range(0f, 1f) <= addInputOutputNodeChance) {
+        		if(Random.Range(0f, 1f) <= 0.5f)
+            		nodes.Add(new InputNode(n));
+            	else
+            		nodes.Add(new OutputNode());
+        	} else {
+        		nodes.Add(new CalculatedNode(n));
+        	}
+        }
+        foreach(Node node in this.nodes) {
+        	if(node is CalculatedNode)
+				((CalculatedNode)node).initiate(this.nodes);
+        }
         setmaxWeight();
-        setNodeCount();
     }
 
-    // Used when an agent reproduces
+    // Inherited network
     public NeuralNetwork(NeuralNetwork oldNetwork) {
     	// Modify mutate amount
-    	this.mutateAmount = Mathf.Max(oldNetwork.mutateAmount * Random.Range(0.9f, 1f/0.9f), 0.005f);
+    	this.mutateWeight = Mathf.Max(oldNetwork.mutateWeight * Random.Range(0.9f, 1f/0.9f), 0.005f);
     	// Copy parent agent's network
     	this.layers = new Layer[oldNetwork.layers.Length];
     	for(int l = 0; l < oldNetwork.layers.Length; l++) {
@@ -52,38 +61,23 @@ public class NeuralNetwork {
 			this.layers[l] = newL;
 		}
 		setmaxWeight();
-        setNodeCount();
     }
 
     void setmaxWeight() {
         this.maxWeight = 0;
-        for (int l = 1; l < layers.Length; l++) {
-            Layer currentLayer = layers[l];
-            for (int n = 0; n < currentLayer.nodes.Length - 1; n++) {
-                Node currentNode = currentLayer.nodes[n];
-                for (int w = 0; w < currentNode.weights.Length; w++) {
-                    if(Mathf.Abs(currentNode.weights[w]) > this.maxWeight)
-                        this.maxWeight = Mathf.Abs(currentNode.weights[w]);
-                }
-            }
+        foreach(CalculatedNode node in this.nodes) {
+            foreach(float weight in node.weights)
+                this.maxWeight = Mathf.Max(this.maxWeight, Mathf.Abs(weight));
         }
     }
 
-     public float countWeights() {
+    public float countWeights() {
         float sum = 0;
-        foreach(Layer l in this.layers) {
-            foreach(Node n in l.nodes) {
-                for(int w = 0; w < n.weights.Length; w++)
-                    sum += n.weights[w];
-            }
+        foreach(CalculatedNode node in this.nodes) {
+            foreach(float weight in node.weights)
+                sum += weight;
         }
         return sum;
-    }
-
-    void setNodeCount() {
-    	nodeCount = 0;
-    	foreach(Layer l in this.layers)
-    		nodeCount += l.nodes.Length;
     }
     
     public void loadInputs(float[] inputs) {
@@ -118,7 +112,7 @@ public class NeuralNetwork {
 				for(int c = 0; c < n.nodes.Length; c++) {
 					if(n.connectionObjects[c] != null) {
 						UILineRenderer LineRenderer = n.connectionObjects[c].GetComponent<UILineRenderer>();
-			          	if(SimulationManager.NNFlow) {
+			          	if(AgentPanel.NNFlow) {
 				            float opacity = Mathf.Abs(n.weights[c] * n.nodes[c].value / maxWeight);
 				            if(n.weights[c] < 0)
 				                LineRenderer.color = new Color(1.0f, 0.0f, 0.0f, opacity);
@@ -133,7 +127,7 @@ public class NeuralNetwork {
     }
 
     public void mutate() {
-		mutateValue(mutateAmount);
+		mutateValue(mutateWeight);
     }
 
     // Mutate each weight in the network by a certain value with a 90% probability
@@ -162,7 +156,7 @@ public class NeuralNetwork {
 
     void mutateStructure() {
     	// Add layer
-		if(Random.Range(0f, 1f) < mutateAmount) {
+		if(Random.Range(0f, 1f) < mutateWeight) {
 			int curL = Random.Range(1, layers.Length);
 			// Add new layer at index curL
 			List<Layer> layerList = new List<Layer>(this.layers);
@@ -173,7 +167,7 @@ public class NeuralNetwork {
 		}
 
 		// Remove layer
-		if(Random.Range(0f, 1f) < mutateAmount && this.layers.Length > 2) {
+		if(Random.Range(0f, 1f) < mutateWeight && this.layers.Length > 2) {
 			int curL = Random.Range(1, layers.Length-1);
 
 			foreach(Node curN in this.layers[curL].nodes) {
@@ -194,7 +188,7 @@ public class NeuralNetwork {
 
 		// Add nodes
 		/*for (int curL = 1; curL < layers.Length-1; curL++) {
-			if(Random.Range(0f, 1f) < mutateAmount) {
+			if(Random.Range(0f, 1f) < mutateWeight) {
 				// Add node at the top of layer
 				List<Node> nodeList = new List<Node>(this.layers[curL].nodes);
 				nodeList.Insert(0, new Node(curL, 0));
@@ -203,7 +197,7 @@ public class NeuralNetwork {
 				updateNodeNumbers(curL);
 			}
 		}*/
-		if(layers.Length > 2 && Random.Range(0f, 1f) < mutateAmount*1.5f) {
+		if(layers.Length > 2 && Random.Range(0f, 1f) < mutateWeight*1.5f) {
 			int tries = 0;
 			int curL, curN, curC;
 			do {
@@ -239,7 +233,7 @@ public class NeuralNetwork {
         }
 
 		// Remove nodes
-		if(layers.Length > 2 && Random.Range(0f, 1f) < mutateAmount) {
+		if(layers.Length > 2 && Random.Range(0f, 1f) < mutateWeight) {
 			int curL = Random.Range(1, layers.Length - 1);
 			if(this.layers[curL].nodes.Length > 1) {
 				int curN = Random.Range(0, this.layers[curL].nodes.Length-1);
@@ -268,7 +262,7 @@ public class NeuralNetwork {
             	// For each node in each layer before the current
             	for(int prevL = curL-1; prevL >= 0; prevL--) {
 					for(int prevN = 0; prevN < layers[prevL].nodes.Length; prevN++) {
-						if(Random.Range(0f, 1f) < mutateAmount)
+						if(Random.Range(0f, 1f) < mutateWeight)
 							layers[curL].nodes[curN].modifyConnection(layers[prevL].nodes[prevN], Random.Range(0f, 1f) < probAdd);
 					}
 					// Divide the probability to add by 2 for each layer back
